@@ -1,7 +1,7 @@
 <?php
 namespace PhpShardingPdo;
 class ShardingPdo{
-   public static function hello(){
+   public  function hello(){
        echo 'hello';
    }
 }
