@@ -1,5 +1,5 @@
 <?php
-namespace phpShardingPdo;
+namespace PhpShardingPdo;
 class ShardingPdo{
    public static function hello(){
        echo 'hello';
