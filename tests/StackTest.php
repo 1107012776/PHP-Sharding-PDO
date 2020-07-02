@@ -2,7 +2,13 @@
 
 use PHPUnit\Framework\TestCase;
 use PhpShardingPdo\Common\Common;
-include '../vendor/autoload.php';
+$file_load_path = '../../../autoload.php';
+if(file_exists($file_load_path)){
+    include $file_load_path;
+}else{
+    include '../vendor/autoload.php';
+}
+
 class StackTest extends TestCase
 {
     public function testRun(){
