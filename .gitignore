@@ -5,3 +5,5 @@
 *.ntvs*
 *.njsproj
 *.sln
+vendor
+composer.lock
