@@ -69,8 +69,8 @@ class ShardingInitConfig extends ShardingInitConfigInter
                     2
                 ]]));
         $shardingRuleConfig = new ShardingRuleConfiguration();
-        $shardingRuleConfig->add($tableRule);
-        $shardingRuleConfig->add($tableRule1);
+        $shardingRuleConfig->add($tableRule);  //表1规则
+        $shardingRuleConfig->add($tableRule1);  //表2规则
         $shardingRuleConfig->setActualDataNodes([
             'name' => 'db',  //数据库名称
             'range' => [1, 2] //范围
