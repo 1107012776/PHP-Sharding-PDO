@@ -49,6 +49,28 @@ class ShardingInitConfig extends ShardingInitConfigInter
                 ]]));
         $shardingRuleConfig = new ShardingRuleConfiguration();
         $shardingRuleConfig->add($tableRule);
+
+
+        $tableRule1 = new ShardingTableRuleConfig();
+
+        $tableRule1->setLogicTable('t_user');
+        $tableRule1->setDatabaseShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('db', [
+                'operator' => '%',
+                'data' => [    //具体的字段和相对运算符右边的数
+                    'user_id',  //字段名
+                    2
+                ]]));
+        $tableRule1->setTableShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('t_user_', [
+                'operator' => '%',
+                'data' => [    //具体的字段和相对运算符右边的数
+                    'order_id',  //字段名
+                    2
+                ]]));
+        $shardingRuleConfig = new ShardingRuleConfiguration();
+        $shardingRuleConfig->add($tableRule);
+        $shardingRuleConfig->add($tableRule1);
         $shardingRuleConfig->setActualDataNodes([
             'name' => 'db',  //数据库名称
             'range' => [1, 2] //范围
