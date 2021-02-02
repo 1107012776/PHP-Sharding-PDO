@@ -15,6 +15,7 @@ class ShardingPdo
     use \PhpShardingPdo\Components\GroupByShardingTrait;
     use \PhpShardingPdo\Components\InsertShardingTrait;
     use \PhpShardingPdo\Components\UpdateShardingTrait;
+    use \PhpShardingPdo\Components\DeleteShardingTrait;
     use \PhpShardingPdo\Components\TransactionShardingTrait;
     /**
      * @var ShardingRuleConfiguration
@@ -211,6 +212,16 @@ class ShardingPdo
         $this->_current_exec_db = $this->_getQpDb();
         $this->_current_exec_table = $this->_getQpTableName();
         return $this->_insertSharding();
+    }
+
+    /**
+     * 删除数据
+     * @return int|boolean
+     */
+    public function delete()
+    {
+        $this->_pare();
+        return $this->_deleteSharding();
     }
 
 

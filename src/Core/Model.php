@@ -115,6 +115,15 @@ class Model
         return $this->dao->insert($data);
     }
 
+    /**
+     * @param $data
+     * @return boolean|int
+     */
+    public function delete($data)
+    {
+        return $this->dao->delete($data);
+    }
+
 
     /**
      * 获取最后插入的id,有可能是插入失败，返回0

@@ -83,8 +83,8 @@ trait SelectSearchSharingTrait
         } else {
             $sql = 'select ' . $this->_field_str . ' from ' . $this->_current_exec_table . $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
         }
+        $statementArr = [];
         if (empty($this->_current_exec_db)) {  //没有找到数据库
-            $statementArr = [];
             $searchFunc = function ($sql) use (&$statementArr) {
                 foreach ($this->_databasePdoInstanceMap as $key => $db) {
                     /**
