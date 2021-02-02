@@ -122,13 +122,9 @@ trait TransactionShardingTrait
      */
     private function _prepareSubmit()
     {
-        $unqi = uniqid(time(), true);
-        $unqi = str_replace('.', '', $unqi);
-        if (empty(self::$_exeSqlXaUniqidFilePath)) {
-//            self::$_exeSqlXaUniqidFilePath = './' . date('YmdHis') . $unqi . '.log';
+        if (empty(self::$_exeSqlXaUniqidFilePath)) { //为空则不记录xa提交日志
             return false;
         }
-//        var_dump(self::$_exeSqlXaUniqidFilePath,self::$_exeSqlArr);
         foreach (self::$_exeSqlArr as $sql) {
             file_put_contents(self::$_exeSqlXaUniqidFilePath, $sql, FILE_APPEND);
         }
