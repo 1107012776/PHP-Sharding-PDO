@@ -116,12 +116,11 @@ class Model
     }
 
     /**
-     * @param $data
      * @return boolean|int
      */
-    public function delete($data)
+    public function delete()
     {
-        return $this->dao->delete($data);
+        return $this->dao->delete();
     }
 
 

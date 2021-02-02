@@ -87,5 +87,19 @@ class DemoTest extends TestCase
         $order->commit();
     }
 
+    /**
+     * 删除数据
+     * @throws \Exception
+     */
+    public function testDelete()
+    {
+        $order = new OrderModel();
+        $order->startTrans();
+        $order->startTrans();
+        $res = $order->renew()->where(['id' => 9])->delete();
+        var_dump($res);  //影响行数
+        $order->commit();
+        $order->commit();
+    }
 
 }

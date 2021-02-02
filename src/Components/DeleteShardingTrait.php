@@ -54,7 +54,7 @@ trait DeleteShardingTrait
             */
             foreach ($statementArr as $s) {
                     $tmp = $s->rowCount();
-                    !empty($tmp) && $result = array_merge($result, $tmp);
+                    !empty($tmp) && $result[] = $tmp;
             }
         } else {  //找到了具体的数据库
             empty($sqlArr) && $sqlArr = [$sql];
@@ -70,9 +70,9 @@ trait DeleteShardingTrait
              */
             foreach ($statementArr as $s) {
                 $tmp = $s->rowCount();
-                !empty($tmp) && $result = array_merge($result, $tmp);
+                !empty($tmp) && $result[] = $tmp;
             }
         }
-        return $result;
+        return array_sum($result);
     }
 }
