@@ -119,4 +119,14 @@ class ShardingInitConfig extends ShardingInitConfigInter
             die ("2Error!: " . $e->getMessage() . "<br/>");
         }
     }
+
+    /**
+     * 获取sql执行错误日志路径
+     * @return string
+     */
+    protected  function getExecXaSqlLogFilePath(){
+        $unqi = uniqid(time(), true);
+        $unqi = str_replace('.', '', $unqi);
+        return './' . date('YmdHis') . $unqi . '.log';
+    }
 }
