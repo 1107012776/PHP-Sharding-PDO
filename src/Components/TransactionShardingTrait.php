@@ -43,7 +43,7 @@ trait TransactionShardingTrait
          */
         foreach (self::$_useDatabaseArr as $db) {
             array_shift(self::$_useDatabaseArr);
-//            throw new \Exception('213213');
+//          throw new \Exception('中断则事务异常，产生xa日志');
             $db->commit();
         }
         $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
@@ -125,9 +125,11 @@ trait TransactionShardingTrait
         if (empty(self::$_exeSqlXaUniqidFilePath)) { //为空则不记录xa提交日志
             return false;
         }
+        $log = 'START'.PHP_EOL;
         foreach (self::$_exeSqlArr as $sql) {
-            file_put_contents(self::$_exeSqlXaUniqidFilePath, $sql, FILE_APPEND);
+            $log .= $sql;
         }
+        file_put_contents(str_replace('.log','-'.date('YmdHis').'.log',self::$_exeSqlXaUniqidFilePath), $log.PHP_EOL.'END'.PHP_EOL, FILE_APPEND);
     }
 
 

@@ -19,10 +19,10 @@ class ShardingDataSourceFactory
      * @param ShardingRuleConfiguration $config
      * @return ShardingPdo $share
      */
-    public static function createDataSource(array $databasePdoInstanceMap, ShardingRuleConfiguration $config)
+    public static function createDataSource(array $databasePdoInstanceMap, ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
     {
         if (empty(self::$_shardingPdo)) {
-            self::$_shardingPdo = new ShardingPdo($databasePdoInstanceMap, $config);
+            self::$_shardingPdo = new ShardingPdo($databasePdoInstanceMap, $config, $exeSqlXaUniqidFilePath);
         }
         return self::$_shardingPdo;
     }
