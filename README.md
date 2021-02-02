@@ -59,6 +59,28 @@ class ShardingInitConfig extends ShardingInitConfigInter
                 ]]));
         $shardingRuleConfig = new ShardingRuleConfiguration();
         $shardingRuleConfig->add($tableRule);
+
+
+        $tableRuleUser = new ShardingTableRuleConfig();
+
+        $tableRuleUser->setLogicTable('t_user');
+        $tableRuleUser->setDatabaseShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('db', [
+                'operator' => '%',
+                'data' => [    //具体的字段和相对运算符右边的数
+                    'user_id',  //字段名
+                    2
+                ]]));
+        $tableRuleUser->setTableShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('t_user_', [
+                'operator' => '%',
+                'data' => [    //具体的字段和相对运算符右边的数
+                    'order_id',  //字段名
+                    2
+                ]]));
+        $shardingRuleConfig = new ShardingRuleConfiguration();
+        $shardingRuleConfig->add($tableRule);  //表1规则
+        $shardingRuleConfig->add($tableRuleUser);  //表2规则
         $shardingRuleConfig->setActualDataNodes([
             'name' => 'db',  //数据库名称
             'range' => [1, 2] //范围
@@ -107,8 +129,17 @@ class ShardingInitConfig extends ShardingInitConfigInter
             die ("2Error!: " . $e->getMessage() . "<br/>");
         }
     }
-}
 
+    /**
+     * 获取sql执行xa日志路径，当xa提交失败的时候会出现该日志
+     * @return string
+     */
+    protected  function getExecXaSqlLogFilePath(){
+        $unqi = uniqid(time(), true);
+        $unqi = str_replace('.', '', $unqi);
+        return './' . date('YmdHis') . $unqi . '.log';
+    }
+}
 ```
 ##### 2.model创建
 ```php
@@ -127,6 +158,31 @@ use PhpShardingPdo\Core\Model;
 class OrderModel extends Model
 {
     protected $tableName = 't_order';
+    protected $tableNameIndexConfig = [
+        'index' => '0,1', //分表索引 index ,号分割
+        //'range' => [1,2]  //范围
+    ];
+    protected $shardingInitConfigClass = ShardingInitConfig::class;
+
+}
+```
+
+```php
+<?php
+
+namespace PhpShardingPdo\Test;
+
+use PhpShardingPdo\Core\Model;
+
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2019/7/25
+ * Time: 20:12
+ */
+class UserModel extends Model
+{
+    protected $tableName = 't_user';
     protected $tableNameIndexConfig = [
         'index' => '0,1', //分表索引 index ,号分割
         //'range' => [1,2]  //范围
@@ -161,13 +217,16 @@ var_dump($newObj === $order);  //输出false
 ###### 插入
 ```php
 <?php
-$order = new PhpShardingPdo\Test\OrderModel();
-$order->startTrans();  //支持事务嵌套
+$order = new \PhpShardingPdo\Test\OrderModel();
+$user = new \PhpShardingPdo\Test\UserModel();
+$order->startTrans();
 $order->startTrans();
 $insert = $order->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
 var_dump($insert, $order->getLastInsertId());
-$order->commit();
-$order->commit();
+$insert = $user->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
+var_dump($insert, $user->getLastInsertId());
+$user->commit();
+$user->commit();
 ```
 
 
