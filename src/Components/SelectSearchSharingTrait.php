@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * phpShardingPdo  file.
+ * @author linyushan
+ * @link https://www.developzhe.com/
+ * @package https://github.com/1107012776/PHP-Sharding-PDO
+ * @copyright Copyright &copy; 2019-2021
+ * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
+ */
 namespace PhpShardingPdo\Components;
 
 use \PhpShardingPdo\Core\StatementShardingPdo;
