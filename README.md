@@ -224,7 +224,7 @@ $order->startTrans();
 $order->startTrans();
 $insert = $order->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
 var_dump($insert, $order->getLastInsertId());
-$insert = $user->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
+$insert = $user->renew()->insert(['user_id' => 2, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
 var_dump($insert, $user->getLastInsertId());
 $user->commit();
 $user->commit();
