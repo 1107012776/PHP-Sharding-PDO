@@ -58,11 +58,6 @@ class ShardingInitConfig extends ShardingInitConfigInter
 
     protected static function initDataResurce1()
     {
-        //连接
-        $options = array(
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, //默认是PDO::ERRMODE_SILENT, 0, (忽略错误模式)
-            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,   // 默认是PDO::FETCH_BOTH, 4
-        );
         $dbms = 'mysql';     //数据库类型
         $host = 'localhost'; //数据库主机名
         $dbName = 'shardingpdo1';    //使用的数据库
@@ -70,7 +65,7 @@ class ShardingInitConfig extends ShardingInitConfigInter
         $pass = '123456';          //对应的密码
         $dsn = "$dbms:host=$host;dbname=$dbName;port=3306;charset=utf8mb4";
         try {
-            $dbh = new \PDO($dsn, $user, $pass, $options); //初始化一个PDO对象
+            $dbh = new \PDO($dsn, $user, $pass); //初始化一个PDO对象
             //默认这个不是长连接，如果需要数据库长连接，需要最后加一个参数：array(PDO::ATTR_PERSISTENT => true) 变成这样：
             //$this->dbh = new PDO($dsn, $user, $pass, array(PDO::ATTR_PERSISTENT => true));
             $dbh->query('set names utf8mb4;');
