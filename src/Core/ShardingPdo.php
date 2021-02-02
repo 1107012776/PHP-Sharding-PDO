@@ -72,9 +72,11 @@ class ShardingPdo
     /**
      * @param array $databasePdoInstanceMap
      * @param ShardingRuleConfiguration $config
+     * @param string $exeSqlXaUniqidFilePath  //xa提交失败日志记录
      */
-    public function __construct(array $databasePdoInstanceMap, ShardingRuleConfiguration $config)
+    public function __construct(array $databasePdoInstanceMap, ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
     {
+        self::$_exeSqlXaUniqidFilePath = $exeSqlXaUniqidFilePath;
         $this->_databasePdoInstanceMap = $databasePdoInstanceMap;
         $this->_shardingRuleConfiguration = $config;
     }

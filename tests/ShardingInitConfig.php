@@ -49,6 +49,28 @@ class ShardingInitConfig extends ShardingInitConfigInter
                 ]]));
         $shardingRuleConfig = new ShardingRuleConfiguration();
         $shardingRuleConfig->add($tableRule);
+
+
+        $tableRuleUser = new ShardingTableRuleConfig();
+
+        $tableRuleUser->setLogicTable('t_user');
+        $tableRuleUser->setDatabaseShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('db', [
+                'operator' => '%',
+                'data' => [    //具体的字段和相对运算符右边的数
+                    'user_id',  //字段名
+                    2
+                ]]));
+        $tableRuleUser->setTableShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('t_user_', [
+                'operator' => '%',
+                'data' => [    //具体的字段和相对运算符右边的数
+                    'order_id',  //字段名
+                    2
+                ]]));
+        $shardingRuleConfig = new ShardingRuleConfiguration();
+        $shardingRuleConfig->add($tableRule);  //表1规则
+        $shardingRuleConfig->add($tableRuleUser);  //表2规则
         $shardingRuleConfig->setActualDataNodes([
             'name' => 'db',  //数据库名称
             'range' => [1, 2] //范围
@@ -96,5 +118,15 @@ class ShardingInitConfig extends ShardingInitConfigInter
         } catch (\PDOException $e) {
             die ("2Error!: " . $e->getMessage() . "<br/>");
         }
+    }
+
+    /**
+     * 获取sql执行xa日志路径，当xa提交失败的时候会出现该日志
+     * @return string
+     */
+    protected  function getExecXaSqlLogFilePath(){
+        $unqi = uniqid(time(), true);
+        $unqi = str_replace('.', '', $unqi);
+        return './' . date('YmdHis') . $unqi . '.log';
     }
 }

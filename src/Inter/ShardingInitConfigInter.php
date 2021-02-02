@@ -28,7 +28,7 @@ abstract class ShardingInitConfigInter
         }
         $obj = new static();
         $shardingRuleConfig = $obj->getShardingRuleConfiguration();
-        self::$shardingPdo = ShardingDataSourceFactory::createDataSource($obj->getDataSourceMap(), $shardingRuleConfig);
+        self::$shardingPdo = ShardingDataSourceFactory::createDataSource($obj->getDataSourceMap(), $shardingRuleConfig, $obj->getExecXaSqlLogFilePath());
         return clone self::$shardingPdo;
     }
 
@@ -43,5 +43,11 @@ abstract class ShardingInitConfigInter
      * @return ShardingRuleConfiguration
      */
     abstract protected function getShardingRuleConfiguration();
+
+    /**
+     * 获取sql执行xa日志路径，当xa提交失败的时候会出现该日志
+     * @return string
+     */
+    abstract protected function getExecXaSqlLogFilePath();
 
 }
