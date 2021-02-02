@@ -10,10 +10,10 @@ namespace PhpShardingPdo\Components;
 trait TransactionShardingTrait
 {
 
-    private static $_startTransCount = 0; //事务开启统计
-    private static $_useDatabaseArr = [];  //已被使用的数据库PDO对象source,用于事务操作
-    private static $_exeSqlArr = [];  //事务中执行的sql
-    private static $_exeSqlXaUniqidFilePath = '';  //事务sql文件，用户分布式事务中错误之后的排查
+    private  $_startTransCount = 0; //事务开启统计
+    private  $_useDatabaseArr = [];  //已被使用的数据库PDO对象source,用于事务操作
+    private  $_exeSqlArr = [];  //事务中执行的sql
+    private  $_exeSqlXaUniqidFilePath = '';  //事务sql文件，用户分布式事务中错误之后的排查
 
     /**
      * 启动事务
@@ -22,7 +22,7 @@ trait TransactionShardingTrait
      */
     public function startTrans()
     {
-        self::$_startTransCount++;
+        $this->_startTransCount++;
         return;
     }
 
@@ -33,16 +33,16 @@ trait TransactionShardingTrait
      */
     public function commit()
     {
-        self::$_startTransCount--;
-        if (self::$_startTransCount > 0) {
+        $this->_startTransCount--;
+        if ($this->_startTransCount > 0) {
             return true;
         }
         $this->_prepareSubmit(); //预提交事务
         /**
          * @var \PDO $db
          */
-        foreach (self::$_useDatabaseArr as $db) {
-            array_shift(self::$_useDatabaseArr);
+        foreach ($this->_useDatabaseArr as $db) {
+            array_shift($this->_useDatabaseArr);
 //            throw new \Exception('213213');
             $db->commit();
         }
@@ -57,15 +57,15 @@ trait TransactionShardingTrait
      */
     public function rollback()
     {
-        self::$_startTransCount--;
-        if (self::$_startTransCount > 0) {
+        $this->_startTransCount--;
+        if ($this->_startTransCount > 0) {
             return true;
         }
         /**
          * @var \PDO $db
          */
-        foreach (self::$_useDatabaseArr as $db) {
-            array_shift(self::$_useDatabaseArr);
+        foreach ($this->_useDatabaseArr as $db) {
+            array_shift($this->_useDatabaseArr);
             $db->rollBack();
         }
         return true;
@@ -74,9 +74,9 @@ trait TransactionShardingTrait
     /**
      * 获取已被使用的数据库pdo
      */
-    public static function getUseDatabaseArr()
+    public  function getUseDatabaseArr()
     {
-        return self::$_useDatabaseArr;
+        return $this->_useDatabaseArr;
     }
 
     /**
@@ -84,17 +84,17 @@ trait TransactionShardingTrait
      * @return array|boolean
      * @var \PDO $db
      */
-    public static function setUseDatabaseArr($db)
+    public  function setUseDatabaseArr($db)
     {
-        if (self::$_startTransCount <= 0) {  //未开启事务
+        if ($this->_startTransCount <= 0) {  //未开启事务
             return false;
         }
-        if (in_array($db, self::$_useDatabaseArr)) {
-            return self::$_useDatabaseArr;
+        if (in_array($db, $this->_useDatabaseArr)) {
+            return $this->_useDatabaseArr;
         }
         $db->beginTransaction();
-        array_push(self::$_useDatabaseArr, $db);
-        return self::$_useDatabaseArr;
+        array_push($this->_useDatabaseArr, $db);
+        return $this->_useDatabaseArr;
     }
 
 
@@ -124,13 +124,13 @@ trait TransactionShardingTrait
     {
         $unqi = uniqid(time(), true);
         $unqi = str_replace('.', '', $unqi);
-        if (empty(self::$_exeSqlXaUniqidFilePath)) {
-//            self::$_exeSqlXaUniqidFilePath = './' . date('YmdHis') . $unqi . '.log';
+        if (empty($this->_exeSqlXaUniqidFilePath)) {
+//            $this->_exeSqlXaUniqidFilePath = './' . date('YmdHis') . $unqi . '.log';
             return false;
         }
-//        var_dump(self::$_exeSqlXaUniqidFilePath,self::$_exeSqlArr);
-        foreach (self::$_exeSqlArr as $sql) {
-            file_put_contents(self::$_exeSqlXaUniqidFilePath, $sql, FILE_APPEND);
+//        var_dump($this->_exeSqlXaUniqidFilePath,$this->_exeSqlArr);
+        foreach ($this->_exeSqlArr as $sql) {
+            file_put_contents($this->_exeSqlXaUniqidFilePath, $sql, FILE_APPEND);
         }
     }
 
@@ -145,7 +145,7 @@ trait TransactionShardingTrait
             $bVal = $this->_sqlAddslashes($bVal);
             $exeSql = str_replace($bKey, "'$bVal'", $exeSql);
         }
-        self::$_exeSqlArr[] = date('Y-m-d H:i:s') . ': ' . $exeSql . PHP_EOL;
+        $this->_exeSqlArr[] = date('Y-m-d H:i:s') . ': ' . $exeSql . PHP_EOL;
     }
 
 
@@ -154,7 +154,7 @@ trait TransactionShardingTrait
      */
     private function _delExeSqlLog()
     {
-        self::$_exeSqlArr = [];
-        @unlink(self::$_exeSqlXaUniqidFilePath);
+        $this->_exeSqlArr = [];
+        @unlink($this->_exeSqlXaUniqidFilePath);
     }
 }
