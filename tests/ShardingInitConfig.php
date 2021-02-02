@@ -1,9 +1,12 @@
 <?php
+
 namespace PhpShardingPdo\Test;
+
 use  \PhpShardingPdo\Core\ShardingTableRuleConfig;
 use  \PhpShardingPdo\Core\InlineShardingStrategyConfiguration;
 use  \PhpShardingPdo\Core\ShardingRuleConfiguration;
 use  \PhpShardingPdo\Inter\ShardingInitConfigInter;
+
 /**
  * Created by PhpStorm.
  * User: Administrator
@@ -16,10 +19,11 @@ class ShardingInitConfig extends ShardingInitConfigInter
      * 获取分库分表map各个数据的实例
      * return
      */
-    protected  function getDataSourceMap(){
+    protected function getDataSourceMap()
+    {
         return [
-            'db0' =>  self::initDataResurce1(),
-            'db1' =>  self::initDataResurce2()
+            'db0' => self::initDataResurce1(),
+            'db1' => self::initDataResurce2()
         ];
     }
 
@@ -43,7 +47,7 @@ class ShardingInitConfig extends ShardingInitConfigInter
                     'order_id',  //字段名
                     2
                 ]]));
-        $shardingRuleConfig  = new ShardingRuleConfiguration();
+        $shardingRuleConfig = new ShardingRuleConfiguration();
         $shardingRuleConfig->add($tableRule);
         $shardingRuleConfig->setActualDataNodes([
             'name' => 'db',  //数据库名称
