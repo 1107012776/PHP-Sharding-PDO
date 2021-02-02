@@ -125,7 +125,8 @@ trait TransactionShardingTrait
         $unqi = uniqid(time(), true);
         $unqi = str_replace('.', '', $unqi);
         if (empty(self::$_exeSqlXaUniqidFilePath)) {
-            self::$_exeSqlXaUniqidFilePath = './' . date('YmdHis') . $unqi . '.log';
+//            self::$_exeSqlXaUniqidFilePath = './' . date('YmdHis') . $unqi . '.log';
+            return false;
         }
 //        var_dump(self::$_exeSqlXaUniqidFilePath,self::$_exeSqlArr);
         foreach (self::$_exeSqlArr as $sql) {
