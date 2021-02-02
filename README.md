@@ -4,7 +4,7 @@ PHP版针对MySQL的分库切片类库，需要依赖PDO
 composer require lys/php-sharding-pdo
 
 #### 示例
-##### 查询
+##### 1.查询
 ```php
 <?php
    $order = new PhpShardingPdo\Test\OrderModel();
@@ -25,7 +25,7 @@ composer require lys/php-sharding-pdo
    var_dump($newObj === $order);  //输出false
 ```
 
-##### 插入
+##### 2.插入
 ```php
 <?php
    $order = new PhpShardingPdo\Test\OrderModel();
@@ -38,7 +38,7 @@ composer require lys/php-sharding-pdo
 ```
 
 
-##### 更新
+##### 3.更新
 ```php
 <?php
    $order = new PhpShardingPdo\Test\OrderModel();
