@@ -9,7 +9,7 @@ use PhpShardingPdo\Core\StatementShardingPdo;
  * User: linyushan
  * Date: 2019/8/1
  * Time: 11:51
- * @var \PhpShardingPdo\ShardingPdo $this
+ * @var \PhpShardingPdo\Core\ShardingPdo $this
  * @property \PDO $_current_exec_db
  */
 trait  GroupByShardingTrait

@@ -6,7 +6,7 @@ namespace PhpShardingPdo\Components;
  * User: lys
  * Date: 2019/8/1
  * Time: 17:03
- * @var \PhpShardingPdo\ShardingPdo $this
+ * @var \PhpShardingPdo\Core\ShardingPdo $this
  * @property \PDO $_current_exec_db
  */
 trait UpdateShardingTrait
