@@ -2,7 +2,7 @@
 
 
 /**
- * phpShardingPdo  file.
+ * PhpShardingPdo  file.
  * @author linyushan <1107012776@qq.com>
  * @link https://www.developzhe.com/
  * @package https://github.com/1107012776/PHP-Sharding-PDO
