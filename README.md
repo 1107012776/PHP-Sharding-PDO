@@ -3,7 +3,7 @@ PHP版针对MySQL的分库切片类库，需要依赖PDO
 ### 安装
 composer require lys/php-sharding-pdo
 ### 说明
-暂未开发好，请勿使用，仅限参考学习
+暂不支持协程
 
 #### 示例
 ##### 1.我们需要配置一下基本的分块规则配置类
