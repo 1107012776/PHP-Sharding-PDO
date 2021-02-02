@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 本地3306
+ Source Server         : 本地数据库
  Source Server Type    : MySQL
- Source Server Version : 50714
+ Source Server Version : 80020
  Source Host           : localhost:3306
- Source Schema         : db0
+ Source Schema         : shardingpdo1
 
  Target Server Type    : MySQL
- Target Server Version : 50714
+ Target Server Version : 80020
  File Encoding         : 65001
 
- Date: 25/07/2019 16:20:02
+ Date: 02/02/2021 18:08:51
 */
 
 SET NAMES utf8mb4;
@@ -22,9 +22,9 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_order_0`;
 CREATE TABLE `t_order_0`  (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `order_id` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `id` int unsigned NOT NULL,
+  `user_id` int unsigned NOT NULL,
+  `order_id` int unsigned NOT NULL,
   `create_time` datetime(0) NOT NULL DEFAULT '1970-01-01 08:00:00',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
@@ -34,13 +34,11 @@ CREATE TABLE `t_order_0`  (
 -- ----------------------------
 INSERT INTO `t_order_0` VALUES (1, 2, 2, '1970-01-01 08:00:00');
 INSERT INTO `t_order_0` VALUES (2, 2, 2, '1970-01-01 08:00:00');
-INSERT INTO `t_order_0` VALUES (3, 2, 2, '1970-01-01 08:00:00');
+INSERT INTO `t_order_0` VALUES (3, 2, 2, '2021-02-02 03:08:02');
 INSERT INTO `t_order_0` VALUES (4, 2, 2, '1970-01-01 08:00:00');
 INSERT INTO `t_order_0` VALUES (5, 2, 2, '1970-01-01 08:00:00');
 INSERT INTO `t_order_0` VALUES (6, 2, 2, '1970-01-01 08:00:00');
 INSERT INTO `t_order_0` VALUES (7, 2, 2, '1970-01-01 08:00:00');
-INSERT INTO `t_order_0` VALUES (8, 2, 2, '1970-01-01 08:00:00');
-INSERT INTO `t_order_0` VALUES (9, 2, 2, '1970-01-01 08:00:00');
 INSERT INTO `t_order_0` VALUES (10, 2, 2, '1970-01-01 08:00:00');
 INSERT INTO `t_order_0` VALUES (11, 2, 2, '1970-01-01 08:00:00');
 INSERT INTO `t_order_0` VALUES (12, 2, 2, '1970-01-01 08:00:00');
@@ -58,9 +56,9 @@ INSERT INTO `t_order_0` VALUES (20, 2, 2, '1970-01-01 08:00:00');
 -- ----------------------------
 DROP TABLE IF EXISTS `t_order_1`;
 CREATE TABLE `t_order_1`  (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `order_id` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `id` int unsigned NOT NULL,
+  `user_id` int unsigned NOT NULL,
+  `order_id` int unsigned NOT NULL,
   `create_time` datetime(0) NOT NULL DEFAULT '1970-01-01 08:00:00',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 59 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
@@ -69,13 +67,11 @@ CREATE TABLE `t_order_1`  (
 -- Records of t_order_1
 -- ----------------------------
 INSERT INTO `t_order_1` VALUES (1, 2, 1, '1970-01-01 08:00:00');
-INSERT INTO `t_order_1` VALUES (3, 2, 1, '1970-01-01 08:00:00');
+INSERT INTO `t_order_1` VALUES (3, 2, 1, '2021-02-02 03:08:02');
 INSERT INTO `t_order_1` VALUES (4, 2, 1, '1970-01-01 08:00:00');
 INSERT INTO `t_order_1` VALUES (5, 2, 1, '1970-01-01 08:00:00');
 INSERT INTO `t_order_1` VALUES (6, 2, 1, '1970-01-01 08:00:00');
 INSERT INTO `t_order_1` VALUES (7, 2, 1, '1970-01-01 08:00:00');
-INSERT INTO `t_order_1` VALUES (8, 2, 1, '1970-01-01 08:00:00');
-INSERT INTO `t_order_1` VALUES (9, 2, 1, '1970-01-01 08:00:00');
 INSERT INTO `t_order_1` VALUES (10, 2, 1, '1970-01-01 08:00:00');
 INSERT INTO `t_order_1` VALUES (11, 2, 1, '1970-01-01 08:00:00');
 INSERT INTO `t_order_1` VALUES (12, 2, 1, '1970-01-01 08:00:00');
@@ -125,5 +121,29 @@ INSERT INTO `t_order_1` VALUES (55, 2, 1, '1970-01-01 08:00:00');
 INSERT INTO `t_order_1` VALUES (56, 2, 1, '1970-01-01 08:00:00');
 INSERT INTO `t_order_1` VALUES (57, 2, 1, '1970-01-01 08:00:00');
 INSERT INTO `t_order_1` VALUES (58, 2, 1, '1970-01-01 08:00:00');
+
+-- ----------------------------
+-- Table structure for t_user_0
+-- ----------------------------
+DROP TABLE IF EXISTS `t_user_0`;
+CREATE TABLE `t_user_0`  (
+  `id` int unsigned NOT NULL,
+  `user_id` int unsigned NOT NULL,
+  `order_id` int unsigned NOT NULL,
+  `create_time` datetime(0) NOT NULL DEFAULT '1970-01-01 08:00:00',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for t_user_1
+-- ----------------------------
+DROP TABLE IF EXISTS `t_user_1`;
+CREATE TABLE `t_user_1`  (
+  `id` int unsigned NOT NULL,
+  `user_id` int unsigned NOT NULL,
+  `order_id` int unsigned NOT NULL,
+  `create_time` datetime(0) NOT NULL DEFAULT '1970-01-01 08:00:00',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

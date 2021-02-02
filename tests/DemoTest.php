@@ -64,12 +64,13 @@ class DemoTest extends TestCase
     public function testInsert()
     {
         $order = new OrderModel();
+        $user = new UserModel();
         $order->startTrans();
         $order->startTrans();
         $insert = $order->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
         var_dump($insert, $order->getLastInsertId());
-        $order->commit();
-        $order->commit();
+        $user->commit();
+        $user->commit();
     }
 
     /**
