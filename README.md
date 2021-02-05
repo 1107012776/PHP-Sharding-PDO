@@ -1,5 +1,5 @@
 # PHP-Sharding-PDO
-PHP与MySQL分库分表的类库插件，需要依赖PDO
+PHP与MySQL分库分表的类库插件，需要依赖PDO，PHP分库分表
 ### 安装
 composer require lys/php-sharding-pdo
 
