@@ -1,6 +1,6 @@
 {
   "name":"lys/php-sharding-pdo",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "authors": [
     {
       "name": "lys",
