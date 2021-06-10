@@ -37,6 +37,8 @@ class ShardingInitConfig extends ShardingInitConfigInter
     protected function getShardingRuleConfiguration()
     {
         // TODO: Implement getShardingRuleConfiguration() method.
+
+        //t_order表规则创建
         $tableRule = new ShardingTableRuleConfig();
 
         $tableRule->setLogicTable('t_order');
@@ -54,10 +56,9 @@ class ShardingInitConfig extends ShardingInitConfigInter
                     'order_id',  //字段名
                     2
                 ]]));
-        $shardingRuleConfig = new ShardingRuleConfiguration();
-        $shardingRuleConfig->add($tableRule);
 
 
+        //t_user表规则创建
         $tableRuleUser = new ShardingTableRuleConfig();
 
         $tableRuleUser->setLogicTable('t_user');
@@ -78,13 +79,6 @@ class ShardingInitConfig extends ShardingInitConfigInter
         $shardingRuleConfig = new ShardingRuleConfiguration();
         $shardingRuleConfig->add($tableRule);  //表1规则
         $shardingRuleConfig->add($tableRuleUser);  //表2规则
-        $shardingRuleConfig->setActualDataNodes([
-            'name' => 'db',  //数据库名称
-            'range' => [1, 2] //范围
-        ], [
-            'name' => 't_order',  //表名称
-            'range' => [1, 2] //范围
-        ]);
         return $shardingRuleConfig;
     }
 
