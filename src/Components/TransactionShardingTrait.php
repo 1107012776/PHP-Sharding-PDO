@@ -21,6 +21,7 @@ trait TransactionShardingTrait
     private static $_useDatabaseArr = [];  //已被使用的数据库PDO对象source,用于事务操作
     private static $_exeSqlArr = [];  //事务中执行的sql
     private static $_exeSqlXaUniqidFilePath = '';  //事务sql文件，用户分布式事务中错误之后的排查
+    private static $_exeSqlXaUniqidFilePathArr = []; //真实允许中生成的xa文件路径，上面那个非
 
     /**
      * 启动事务
@@ -136,7 +137,10 @@ trait TransactionShardingTrait
         foreach (self::$_exeSqlArr as $sql) {
             $log .= $sql;
         }
-        file_put_contents(str_replace('.log','-'.date('YmdHis').'.log',self::$_exeSqlXaUniqidFilePath), $log.PHP_EOL.'END'.PHP_EOL, FILE_APPEND);
+        $objHash = md5(spl_object_hash($this));  //加上这个避免串事务
+        $filePath = str_replace('.log','-'.$objHash.'-'.date('Y-m-d_H_i_s').'.log',self::$_exeSqlXaUniqidFilePath);
+        array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
+        file_put_contents($filePath, $log.PHP_EOL.'END'.PHP_EOL, FILE_APPEND);
     }
 
 
@@ -150,7 +154,7 @@ trait TransactionShardingTrait
             $bVal = $this->_sqlAddslashes($bVal);
             $exeSql = str_replace($bKey, "'$bVal'", $exeSql);
         }
-        self::$_exeSqlArr[] = date('Y-m-d H:i:s') . ': ' . $exeSql . PHP_EOL;
+        self::$_exeSqlArr[] = date('Y-m-d H:i:s') . ': ' . $exeSql .';'. PHP_EOL;
     }
 
 
@@ -160,6 +164,8 @@ trait TransactionShardingTrait
     private function _delExeSqlLog()
     {
         self::$_exeSqlArr = [];
-        @unlink(self::$_exeSqlXaUniqidFilePath);
+        foreach (self::$_exeSqlXaUniqidFilePathArr as $filePath){
+            @unlink($filePath);
+        }
     }
 }

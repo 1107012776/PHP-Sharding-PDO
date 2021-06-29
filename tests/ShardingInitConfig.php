@@ -126,8 +126,6 @@ class ShardingInitConfig extends ShardingInitConfigInter
      * @return string
      */
     protected  function getExecXaSqlLogFilePath(){
-        $unqi = uniqid(time(), true);
-        $unqi = str_replace('.', '', $unqi);
-        return './' . date('YmdHis') . $unqi . '.log';
+        return './execXaSqlLogFilePath.log';
     }
 }
