@@ -22,7 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_order_0`;
 CREATE TABLE `t_order_0`  (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
   `order_id` int unsigned NOT NULL,
   `create_time` datetime(0) NOT NULL DEFAULT '1970-01-01 08:00:00',
@@ -56,7 +56,7 @@ INSERT INTO `t_order_0` VALUES (20, 2, 2, '1970-01-01 08:00:00');
 -- ----------------------------
 DROP TABLE IF EXISTS `t_order_1`;
 CREATE TABLE `t_order_1`  (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
   `order_id` int unsigned NOT NULL,
   `create_time` datetime(0) NOT NULL DEFAULT '1970-01-01 08:00:00',
@@ -127,7 +127,7 @@ INSERT INTO `t_order_1` VALUES (58, 2, 1, '1970-01-01 08:00:00');
 -- ----------------------------
 DROP TABLE IF EXISTS `t_user_0`;
 CREATE TABLE `t_user_0`  (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
   `order_id` int unsigned NOT NULL,
   `create_time` datetime(0) NOT NULL DEFAULT '1970-01-01 08:00:00',
@@ -139,7 +139,7 @@ CREATE TABLE `t_user_0`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_user_1`;
 CREATE TABLE `t_user_1`  (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
   `order_id` int unsigned NOT NULL,
   `create_time` datetime(0) NOT NULL DEFAULT '1970-01-01 08:00:00',
