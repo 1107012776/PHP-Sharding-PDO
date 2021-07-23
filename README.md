@@ -4,7 +4,7 @@ PHP与MySQL分库分表的类库插件，需要依赖PDO，PHP分库分表
 composer require lys/php-sharding-pdo
 
 ### 说明
-暂不支持协程
+已支持协程，使用协程必须开启   \Swoole\Runtime::enableCoroutine();
 
 #### 示例
 ##### 1.我们需要配置一下基本的分块规则配置类

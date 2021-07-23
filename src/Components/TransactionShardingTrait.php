@@ -8,6 +8,10 @@
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
 namespace PhpShardingPdo\Components;
+
+
+use PhpShardingPdo\Core\ShardingPdoContext;
+
 /**
  * 事务管理，分库分表之后
  * User: linyushan
@@ -17,11 +21,19 @@ namespace PhpShardingPdo\Components;
 trait TransactionShardingTrait
 {
 
-    private static $_startTransCount = 0; //事务开启统计
-    private static $_useDatabaseArr = [];  //已被使用的数据库PDO对象source,用于事务操作
-    private static $_exeSqlArr = [];  //事务中执行的sql
-    private static $_exeSqlXaUniqidFilePath = '';  //事务sql文件，用户分布式事务中错误之后的排查
-    private static $_exeSqlXaUniqidFilePathArr = []; //真实允许中生成的xa文件路径，上面那个非
+    private static $_startTransCount = 'transactionSharding_startTransCount'; //事务开启统计
+    private static $_useDatabaseArr = 'transactionSharding_useDatabase';  //已被使用的数据库PDO对象source,用于事务操作
+    private static $_exeSqlArr = 'transactionSharding_exeSqlArr';  //事务中执行的sql
+    private static $_exeSqlXaUniqidFilePath = 'transactionSharding_exeSqlXaUniqidFilePath';  //事务sql文件，用户分布式事务中错误之后的排查
+    private static $_exeSqlXaUniqidFilePathArr = 'transactionSharding_exeSqlXaUniqidFilePathArr'; //真实允许中生成的xa文件路径，上面那个非
+
+    public function initTrans(){
+        ShardingPdoContext::setValue(self::$_startTransCount,0);
+        ShardingPdoContext::setValue(self::$_useDatabaseArr,[]);
+        ShardingPdoContext::setValue(self::$_exeSqlArr,[]);
+        ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePath,'');
+        ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr,[]);
+   }
 
     /**
      * 启动事务
@@ -30,7 +42,7 @@ trait TransactionShardingTrait
      */
     public function startTrans()
     {
-        self::$_startTransCount++;
+        ShardingPdoContext::incrValue(self::$_startTransCount);
         return;
     }
 
@@ -41,16 +53,17 @@ trait TransactionShardingTrait
      */
     public function commit()
     {
-        self::$_startTransCount--;
-        if (self::$_startTransCount > 0) {
+        ShardingPdoContext::decrValue(self::$_startTransCount);
+        if (ShardingPdoContext::getValue(self::$_startTransCount) > 0) {
             return true;
         }
         $this->_prepareSubmit(); //预提交事务
+        $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
         /**
          * @var \PDO $db
          */
-        foreach (self::$_useDatabaseArr as $db) {
-            array_shift(self::$_useDatabaseArr);
+        foreach ($useDatabaseArr as $db) {
+            ShardingPdoContext::array_shift(self::$_useDatabaseArr);
 //          throw new \Exception('中断则事务异常，产生xa日志');
             $db->commit();
         }
@@ -65,15 +78,16 @@ trait TransactionShardingTrait
      */
     public function rollback()
     {
-        self::$_startTransCount--;
-        if (self::$_startTransCount > 0) {
+        ShardingPdoContext::decrValue(self::$_startTransCount);
+        if (ShardingPdoContext::getValue(self::$_startTransCount) > 0) {
             return true;
         }
+        $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
         /**
          * @var \PDO $db
          */
-        foreach (self::$_useDatabaseArr as $db) {
-            array_shift(self::$_useDatabaseArr);
+        foreach ($useDatabaseArr as $db) {
+            ShardingPdoContext::array_shift(self::$_useDatabaseArr);
             $db->rollBack();
         }
         return true;
@@ -84,7 +98,7 @@ trait TransactionShardingTrait
      */
     public static function getUseDatabaseArr()
     {
-        return self::$_useDatabaseArr;
+        return ShardingPdoContext::getValue(self::$_useDatabaseArr);
     }
 
     /**
@@ -94,15 +108,15 @@ trait TransactionShardingTrait
      */
     public static function setUseDatabaseArr($db)
     {
-        if (self::$_startTransCount <= 0) {  //未开启事务
+        if (ShardingPdoContext::getValue(self::$_startTransCount) <= 0) {  //未开启事务
             return false;
         }
-        if (in_array($db, self::$_useDatabaseArr)) {
-            return self::$_useDatabaseArr;
+        if (in_array($db, self::getUseDatabaseArr())) {
+            return self::getUseDatabaseArr();
         }
         $db->beginTransaction();
-        array_push(self::$_useDatabaseArr, $db);
-        return self::$_useDatabaseArr;
+        ShardingPdoContext::array_push(self::$_useDatabaseArr, $db);
+        return ShardingPdoContext::getValue(self::$_useDatabaseArr);
     }
 
 
@@ -130,16 +144,17 @@ trait TransactionShardingTrait
      */
     private function _prepareSubmit()
     {
-        if (empty(self::$_exeSqlXaUniqidFilePath)) { //为空则不记录xa提交日志
+        if (empty(ShardingPdoContext::getValue(self::$_exeSqlXaUniqidFilePath))) { //为空则不记录xa提交日志
             return false;
         }
         $log = 'START'.PHP_EOL;
-        foreach (self::$_exeSqlArr as $sql) {
+        foreach (ShardingPdoContext::getValue(self::$_exeSqlArr) as $sql) {
             $log .= $sql;
         }
         $objHash = md5(spl_object_hash($this));  //加上这个避免串事务
-        $filePath = str_replace('.log','-'.$objHash.'-'.date('Y-m-d_H_i_s').'.log',self::$_exeSqlXaUniqidFilePath);
-        array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
+        $_exeSqlXaUniqidFilePath = ShardingPdoContext::getValue(self::$_exeSqlXaUniqidFilePath);
+        $filePath = str_replace('.log',ShardingPdoContext::getCid().'-'.$objHash.'-'.date('Y-m-d_H_i_s').'.log',$_exeSqlXaUniqidFilePath);
+        ShardingPdoContext::array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
         file_put_contents($filePath, $log.PHP_EOL.'END'.PHP_EOL, FILE_APPEND);
     }
 
@@ -154,7 +169,7 @@ trait TransactionShardingTrait
             $bVal = $this->_sqlAddslashes($bVal);
             $exeSql = str_replace($bKey, "'$bVal'", $exeSql);
         }
-        self::$_exeSqlArr[] = date('Y-m-d H:i:s') . ': ' . $exeSql .';'. PHP_EOL;
+        ShardingPdoContext::array_push(self::$_exeSqlArr,date('Y-m-d H:i:s') . ': ' . $exeSql .';'. PHP_EOL);
     }
 
 
@@ -163,9 +178,11 @@ trait TransactionShardingTrait
      */
     private function _delExeSqlLog()
     {
-        self::$_exeSqlArr = [];
-        foreach (self::$_exeSqlXaUniqidFilePathArr as $filePath){
+        ShardingPdoContext::setValue(self::$_exeSqlArr, []);
+        $_exeSqlXaUniqidFilePathArr = ShardingPdoContext::getValue(self::$_exeSqlXaUniqidFilePathArr);
+        foreach ($_exeSqlXaUniqidFilePathArr as $filePath){
             @unlink($filePath);
         }
+        ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);
     }
 }

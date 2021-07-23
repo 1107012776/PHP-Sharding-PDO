@@ -11,11 +11,12 @@ namespace PhpShardingPdo\Test;
 
 use PHPUnit\Framework\TestCase;
 
-$file_load_path = '../../../autoload.php';
+$file_load_path = __DIR__.'/../../../autoload.php';
 if (file_exists($file_load_path)) {
     include $file_load_path;
 } else {
-    include '../vendor/autoload.php';
+    $vendor = __DIR__.'/../vendor/autoload.php';
+    include $vendor;
 }
 
 
@@ -24,14 +25,9 @@ if (file_exists($file_load_path)) {
  */
 class DemoTest extends TestCase
 {
-    protected function setUp()
-    {
-
-
-    }
 
     /**
-     * php vendor/bin/phpunit tests/ConsumerTest.php --filter testSelect
+     * php vendor/bin/phpunit tests/DemoTest.php --filter testSelect
      * @throws
      */
     public function testSelect()
@@ -67,6 +63,7 @@ class DemoTest extends TestCase
     /**
      * 插入数据，支持事务嵌套
      * @throws \Exception
+     * php vendor/bin/phpunit tests/DemoTest.php --filter testInsert
      */
     public function testInsert()
     {
