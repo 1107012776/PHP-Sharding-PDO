@@ -88,8 +88,8 @@ class ShardingInitConfig extends ShardingInitConfigInter
         $dbms = 'mysql';     //数据库类型
         $host = 'localhost'; //数据库主机名
         $dbName = 'shardingpdo1';    //使用的数据库
-        $user = 'root';      //数据库连接用户名
-        $pass = 'lyslearn555';          //对应的密码
+        $user = 'test';      //数据库连接用户名
+        $pass = 'test';          //对应的密码
         $dsn = "$dbms:host=$host;dbname=$dbName;port=3306;charset=utf8mb4";
         try {
             $dbh = new \PDO($dsn, $user, $pass); //初始化一个PDO对象
@@ -107,8 +107,8 @@ class ShardingInitConfig extends ShardingInitConfigInter
         $dbms = 'mysql';     //数据库类型
         $host = 'localhost'; //数据库主机名
         $dbName = 'shardingpdo2';    //使用的数据库
-        $user = 'root';      //数据库连接用户名
-        $pass = 'lyslearn555';          //对应的密码
+        $user = 'test';      //数据库连接用户名
+        $pass = 'test';          //对应的密码
         $dsn = "$dbms:host=$host;dbname=$dbName;port=3306;charset=utf8mb4";
         try {
             $dbh = new \PDO($dsn, $user, $pass); //初始化一个PDO对象
