@@ -245,6 +245,10 @@ class ShardingPdo
             $zwKey = ":$key";  //占位符
             if (is_array($val)) {
                 switch ($val[0]) {
+                    case 'like':
+                        $this->_condition_str .= ' and ' . $key . ' like ' . $zwKey;
+                        $this->_condition_bind[$zwKey] = $val;
+                        break;
                     case 'gt':
                         $this->_condition_str .= ' and ' . $key . ' > ' . $zwKey;
                         $this->_condition_bind[$zwKey] = $val;
@@ -308,7 +312,7 @@ class ShardingPdo
         }
         $limit = str_replace(' limit ', '', $this->_limit_str);
         if (strstr($limit, ',')) {
-            $limit = explode(',', $limit)[0];
+            $limit = explode(',', $limit)[1];
         }
         return intval($limit);
     }
