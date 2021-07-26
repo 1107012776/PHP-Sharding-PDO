@@ -83,7 +83,8 @@ class ShardingPdo
      */
     public function __construct(array $databasePdoInstanceMap, ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
     {
-        self::$_exeSqlXaUniqidFilePath = $exeSqlXaUniqidFilePath;
+        $this->initTrans();
+        ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePath, $exeSqlXaUniqidFilePath);
         $this->_databasePdoInstanceMap = $databasePdoInstanceMap;
         $this->_shardingRuleConfiguration = $config;
     }
