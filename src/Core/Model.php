@@ -132,6 +132,7 @@ class Model
 
 
     /**
+     * 查找所有数据的条数
      * @return int
      */
     public function count()

@@ -201,8 +201,8 @@ class ShardingPdo
 
 
     /**
-     * 查找所有数据
-     * @return array|bool
+     * 查找所有数据的条数
+     * @return int
      */
     public function count()
     {
