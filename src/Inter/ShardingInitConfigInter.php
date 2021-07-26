@@ -20,23 +20,15 @@ use  PhpShardingPdo\Core\ShardingDataSourceFactory;
  */
 abstract class ShardingInitConfigInter
 {
-    /**
-     * @var \PhpShardingPdo\Core\ShardingPdo
-     */
-    private static $shardingPdo;
-
     /*
      * @return \PhpShardingPdo\Core\ShardingPdo
      */
     public static function init()
     {
-        if (!empty(self::$shardingPdo)) {
-            return clone self::$shardingPdo;
-        }
         $obj = new static();
         $shardingRuleConfig = $obj->getShardingRuleConfiguration();
-        self::$shardingPdo = ShardingDataSourceFactory::createDataSource($obj->getDataSourceMap(), $shardingRuleConfig, $obj->getExecXaSqlLogFilePath());
-        return clone self::$shardingPdo;
+        $shardingPdo = ShardingDataSourceFactory::createDataSource($obj->getDataSourceMap(), $shardingRuleConfig, $obj->getExecXaSqlLogFilePath());
+        return $shardingPdo;
     }
 
 
