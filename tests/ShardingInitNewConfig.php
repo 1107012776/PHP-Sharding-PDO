@@ -20,7 +20,7 @@ use  \PhpShardingPdo\Inter\ShardingInitConfigInter;
  * Date: 2019/7/24
  * Time: 18:48
  */
-class ShardingInitConfig extends ShardingInitConfigInter
+class ShardingInitNewConfig extends ShardingInitConfigInter
 {
     /**
      * 获取分库分表map各个数据的实例

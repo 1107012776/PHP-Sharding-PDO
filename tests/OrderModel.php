@@ -24,6 +24,6 @@ class OrderModel extends Model
         'index' => '0,1', //分表索引 index ,号分割
         //'range' => [1,2]  //范围
     ];
-    protected $shardingInitConfigClass = ShardingInitConfig::class;
+    protected $shardingInitConfigClass = ShardingInitNewConfig::class;
 
 }
