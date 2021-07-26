@@ -201,6 +201,27 @@ class ShardingPdo
 
 
     /**
+     * 查找所有数据
+     * @return array|bool
+     */
+    public function count()
+    {
+        $old = $this->_field_str;
+        $this->_field_str = 'count(*) as num';
+        $list = $this->_search();
+        $this->_field_str = $old;
+        $count = 0;
+        if(empty($list)){
+            return $count;
+        }
+        foreach ($list as &$value){
+            $count += $value['num'];
+        }
+        return $count;
+    }
+
+
+    /**
      * 更新所有数据
      * @return boolean|int
      */

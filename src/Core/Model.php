@@ -132,6 +132,16 @@ class Model
 
 
     /**
+     * @return int
+     */
+    public function count()
+    {
+        return $this->dao->count();
+    }
+
+
+
+    /**
      * 获取最后插入的id,有可能是插入失败，返回0
      * @return int
      */
