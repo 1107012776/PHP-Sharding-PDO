@@ -28,10 +28,10 @@ trait UpdateShardingTrait
         $column_str = '';
         $bindParams = [];
         foreach ($this->_update_data as $k => $v) {
-            $column_str = ' and ' . $k . ' = ' . ':update_' . $k;
+            $column_str .= ',' . $k . ' = ' . ':update_' . $k;
             $bindParams[':update_' . $k] = $v;
         }
-        $column_str = substr($column_str, 5, strlen($column_str) - 5);
+        !empty($column_str) && $column_str = substr($column_str, 1, strlen($column_str)-1);
         if (empty($column_str)) {
             return false;
         }
