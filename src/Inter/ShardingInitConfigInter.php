@@ -50,7 +50,7 @@ abstract class ShardingInitConfigInter
                 /**
                  * @var \PDO $db
                  */
-                foreach ($map as $db){
+                foreach ($map as &$db){
                     //让php先回收已断开长连接资源
                     $db->setAttribute(\PDO::ATTR_PERSISTENT, false);
                     $db = null;
