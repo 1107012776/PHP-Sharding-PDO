@@ -39,7 +39,7 @@ trait DeleteShardingTrait
         $statementArr = [];
         if (empty($this->_current_exec_db)) {  //没有找到数据库
             $deleteFunc = function ($sql) use (&$statementArr) {
-                foreach ($this->_databasePdoInstanceMap as $key => $db) {
+                foreach ($this->_databasePdoInstanceMap() as $key => $db) {
                     /**
                      * @var \PDOStatement $statement
                      * @var \PDO $db

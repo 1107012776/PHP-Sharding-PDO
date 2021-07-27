@@ -63,7 +63,7 @@ trait UpdateShardingTrait
             /**
              * @var \Pdo $db
              */
-            foreach ($this->_databasePdoInstanceMap as $key => $db) {  //没有找到具体的库
+            foreach ($this->_databasePdoInstanceMap() as $key => $db) {  //没有找到具体的库
                 self::setUseDatabaseArr($db);
                 /**
                  * @var \PDOStatement $statement
