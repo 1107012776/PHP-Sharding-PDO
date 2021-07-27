@@ -71,12 +71,19 @@ class DemoTest extends TestCase
         $user = new UserModel();
         $order->startTrans();
         $order->startTrans();
-        $order->reconnection();
-        $order->reconnection();
+//        $order->reconnection();
         $insert = $order->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
         var_dump($insert, $order->getLastInsertId());
-        $insert = $user->renew()->insert(['user_id' => 2, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
-        var_dump($insert, $user->getLastInsertId());
+//        $order->reconnection();
+/*        $insert = $user->renew()->insert(['user_id' => 2, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
+        var_dump($insert, $user->getLastInsertId());*/
+        $insert = $order->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
+        var_dump($insert, $order->getLastInsertId());
+//        $order->reconnection();
+        /*        $insert = $user->renew()->insert(['user_id' => 2, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
+                var_dump($insert, $user->getLastInsertId());*/
+        $insert = $order->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
+        var_dump($insert, $order->getLastInsertId());
         $user->commit();
         $user->commit();
     }
