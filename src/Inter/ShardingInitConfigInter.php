@@ -27,13 +27,14 @@ abstract class ShardingInitConfigInter
     public static function init()
     {
         $shardingInitName = 'shardingInitConfigInter'.static::class;
-        $shardingRuleConfig = ShardingPdoContext::getValue($shardingInitName);
-        if(empty($shardingRuleConfig)){
-            $obj = new static();
-            $shardingRuleConfig = $obj->getShardingRuleConfiguration();
-            ShardingPdoContext::setValue($shardingInitName, $shardingRuleConfig);
+        $map = ShardingPdoContext::getValue($shardingInitName.'_pdo');
+        $obj = new static();
+        if(empty($map)){
+            $map = $obj->getDataSourceMap();
+            ShardingPdoContext::setValue($shardingInitName.'_pdo', $map);
         }
-        $shardingPdo = ShardingDataSourceFactory::createDataSource($obj->getDataSourceMap(), $shardingRuleConfig, $obj->getExecXaSqlLogFilePath());
+        $shardingRuleConfig = $obj->getShardingRuleConfiguration();
+        $shardingPdo = ShardingDataSourceFactory::createDataSource($map, $shardingRuleConfig, $obj->getExecXaSqlLogFilePath());
         return $shardingPdo;
     }
 
