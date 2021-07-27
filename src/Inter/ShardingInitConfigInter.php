@@ -9,6 +9,7 @@
  */
 namespace PhpShardingPdo\Inter;
 
+use PhpShardingPdo\Core\ShardingPdoContext;
 use  PhpShardingPdo\Core\ShardingRuleConfiguration;
 use  PhpShardingPdo\Core\ShardingDataSourceFactory;
 
@@ -25,8 +26,13 @@ abstract class ShardingInitConfigInter
      */
     public static function init()
     {
-        $obj = new static();
-        $shardingRuleConfig = $obj->getShardingRuleConfiguration();
+        $shardingInitName = 'shardingInitConfigInter'.static::class;
+        $shardingRuleConfig = ShardingPdoContext::getValue($shardingInitName);
+        if(empty($shardingRuleConfig)){
+            $obj = new static();
+            $shardingRuleConfig = $obj->getShardingRuleConfiguration();
+            ShardingPdoContext::setValue($shardingInitName, $shardingRuleConfig);
+        }
         $shardingPdo = ShardingDataSourceFactory::createDataSource($obj->getDataSourceMap(), $shardingRuleConfig, $obj->getExecXaSqlLogFilePath());
         return $shardingPdo;
     }
