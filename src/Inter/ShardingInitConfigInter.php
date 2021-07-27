@@ -21,21 +21,47 @@ use  PhpShardingPdo\Core\ShardingDataSourceFactory;
  */
 abstract class ShardingInitConfigInter
 {
+    public static $shardingInitConfigInterName = 'shardingInitConfigInter';
     /*
      * @return \PhpShardingPdo\Core\ShardingPdo
      */
     public static function init()
     {
-        $shardingInitName = 'shardingInitConfigInter'.static::class;
-        $map = ShardingPdoContext::getValue($shardingInitName.'_pdo');
+        $shardingInitName = self::$shardingInitConfigInterName.static::class;
+        $databasePdoInstanceMapName =  $shardingInitName.'_pdo';
+        $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
         $obj = new static();
         if(empty($map)){
             $map = $obj->getDataSourceMap();
-            ShardingPdoContext::setValue($shardingInitName.'_pdo', $map);
+            ShardingPdoContext::setValue($databasePdoInstanceMapName, $map);
         }
         $shardingRuleConfig = $obj->getShardingRuleConfiguration();
-        $shardingPdo = ShardingDataSourceFactory::createDataSource($map, $shardingRuleConfig, $obj->getExecXaSqlLogFilePath());
+        $shardingPdo = ShardingDataSourceFactory::createDataSource($databasePdoInstanceMapName, $shardingRuleConfig, $obj->getExecXaSqlLogFilePath());
         return $shardingPdo;
+    }
+
+
+    public static function reconnection(callable $errorCallback = null){
+        $shardingInitName = self::$shardingInitConfigInterName.static::class;
+        $databasePdoInstanceMapName =  $shardingInitName.'_pdo';
+        $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
+        if(!empty($map)){
+            try{
+                /**
+                 * @var \PDO $db
+                 */
+                foreach ($map as $db){
+                    //让php先回收已断开长连接资源
+                    $db->setAttribute(\PDO::ATTR_PERSISTENT, false);
+                    $db = null;
+                }
+            }catch (\Exception $e){
+                //回收失败
+               !empty($errorCallback) && $errorCallback($e);
+            }
+            ShardingPdoContext::setValue($databasePdoInstanceMapName, false);
+        }
+        return static::init();
     }
 
 

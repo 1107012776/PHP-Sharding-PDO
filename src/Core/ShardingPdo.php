@@ -29,9 +29,9 @@ class ShardingPdo
      */
     private $_shardingRuleConfiguration;
     private $_table_name_index = [];
-    private $_databasePdoInstanceMap = [];
     private $_tableRuleList = [];
     private $_table_name = '';
+    private $_configDatabasePdoInstanceMapName = '';
 
 
     //以下需要初始化值
@@ -77,16 +77,25 @@ class ShardingPdo
     private $_current_exec_db = ''; //具体执行的库
 
     /**
-     * @param array $databasePdoInstanceMap
+     * @param string $configDatabasePdoInstanceMapName
      * @param ShardingRuleConfiguration $config
      * @param string $exeSqlXaUniqidFilePath  //xa提交失败日志记录
      */
-    public function __construct(array $databasePdoInstanceMap, ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
+    public function __construct($configDatabasePdoInstanceMapName,ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
     {
         $this->initTrans();
+        $this->_configDatabasePdoInstanceMapName = $configDatabasePdoInstanceMapName;
         ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePath, $exeSqlXaUniqidFilePath);
-        $this->_databasePdoInstanceMap = $databasePdoInstanceMap;
         $this->_shardingRuleConfiguration = $config;
+    }
+
+    /**
+     * 获取$databasePdoInstanceMap
+     * @return array
+     */
+    private function _databasePdoInstanceMap(){
+        $databasePdoInstanceMap = ShardingPdoContext::getValue($this->_configDatabasePdoInstanceMapName);
+        return $databasePdoInstanceMap;
     }
 
     public function table($tableName = '', $config = [])
@@ -381,7 +390,8 @@ class ShardingPdo
             return null;  //返回这个代表没有规则，则需要全部db扫描了
         }
         $index = $tableShardingStrategyConfig->getFix() . $number;
-        return $this->_databasePdoInstanceMap[$index];
+        $map = $this->_databasePdoInstanceMap();
+        return isset($map[$index]) ? $map[$index]:false;
     }
 
     /**

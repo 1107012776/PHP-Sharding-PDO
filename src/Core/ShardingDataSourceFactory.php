@@ -22,15 +22,16 @@ class ShardingDataSourceFactory
     private static $_shardingPdo = 'shardingDataSourceFactory_shardingPdo';
 
     /**
-     * @param array $databasePdoInstanceMap
+     * @param $databasePdoInstanceMapName
      * @param ShardingRuleConfiguration $config
+     * @param $exeSqlXaUniqidFilePath
      * @return ShardingPdo $share
      */
-    public static function createDataSource(array $databasePdoInstanceMap, ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
+    public static function createDataSource($databasePdoInstanceMapName, ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
     {
         $_shardingPdo = ShardingPdoContext::getValue(self::$_shardingPdo);
         if (empty($_shardingPdo)) {
-            $_shardingPdo = new ShardingPdo($databasePdoInstanceMap, $config, $exeSqlXaUniqidFilePath);
+            $_shardingPdo = new ShardingPdo($databasePdoInstanceMapName, $config, $exeSqlXaUniqidFilePath);
             ShardingPdoContext::setValue(self::$_shardingPdo, $_shardingPdo);
         }
         return clone $_shardingPdo;

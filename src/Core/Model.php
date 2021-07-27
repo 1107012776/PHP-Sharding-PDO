@@ -201,6 +201,19 @@ class Model
         }
     }
 
+    /**
+     * 重新连接
+     */
+    public function  reconnection(callable $errorCallback = null){
+        /**
+         * @var ShardingInitConfigInter $configClass
+         */
+        $configClass = $this->shardingInitConfigClass;
+        $this->dao = $configClass::reconnection($errorCallback);
+        $this->dao->table($this->tableName, $this->tableNameIndexConfig);
+        return $this;
+    }
+
     public function __clone()
     {
         // TODO: Implement __clone() method.
