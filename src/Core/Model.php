@@ -183,6 +183,20 @@ class Model
         return $this->dao->rollback();
     }
 
+
+    /**
+     * 在分布式里面，数据库的自增ID机制的主要原理是：
+     * 数据库自增ID和mysql数据库的replace_into()函数实现的。
+     * 这里的replace数据库自增ID和mysql数据库的replace_into()函数实现的。
+     * 这里的replace into跟insert功能类似，不同点在于：replace into首先尝试插入数据列表中，
+     * 如果发现表中已经有此行数据（根据主键或唯一索引判断）则先删除，再插入。否则直接插入新数据
+     * @param $data
+     * @return boolean|int
+     */
+    public function replaceInto($data){
+        return $this->dao->replaceInto($data);
+    }
+
     /**
      * 初始化分库分表数据源类
      * @return \pdo\sharding\ShardingPdo

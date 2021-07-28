@@ -24,6 +24,7 @@ class ShardingPdo
     use \PhpShardingPdo\Components\UpdateShardingTrait;
     use \PhpShardingPdo\Components\DeleteShardingTrait;
     use \PhpShardingPdo\Components\TransactionShardingTrait;
+    use \PhpShardingPdo\Components\ReplaceIntoShardingTrait;
     /**
      * @var ShardingRuleConfiguration
      */
@@ -255,6 +256,22 @@ class ShardingPdo
     }
 
     /**
+     * 在分布式里面，数据库的自增ID机制的主要原理是：
+     * 数据库自增ID和mysql数据库的replace_into()函数实现的。
+     * 这里的replace数据库自增ID和mysql数据库的replace_into()函数实现的。
+     * 这里的replace into跟insert功能类似，不同点在于：replace into首先尝试插入数据列表中，
+     * 如果发现表中已经有此行数据（根据主键或唯一索引判断）则先删除，再插入。否则直接插入新数据
+     * @param $data
+     * @return boolean|int
+     */
+    public function replaceInto($data){
+        $this->_insert_data = $data;
+        $this->_current_exec_db = $this->_getQpDb();
+        $this->_current_exec_table = $this->_getQpTableName();
+        return $this->_replaceIntoSharding();
+    }
+
+    /**
      * 删除数据
      * @return int|boolean
      */
@@ -354,6 +371,7 @@ class ShardingPdo
      */
     private function _getQpDb()
     {
+        $map = $this->_databasePdoInstanceMap();
         if (empty($this->_tableRuleList)) {
             $tableRuleList = $this->_shardingRuleConfiguration->getTableRuleList();
             /**
@@ -367,6 +385,10 @@ class ShardingPdo
             }
         }
         if (empty($this->_tableRuleList[0])) {
+            if(count($map) == 1){  //只有一个数据库，那就是当前
+                $mapValues = array_values($map);
+                return $mapValues[0];
+            }
             return null;  //返回这个代表没有规则，则需要全部db扫描了
         }
         $tableRule = $this->_tableRuleList[0];
@@ -387,10 +409,14 @@ class ShardingPdo
             }
         }
         if ($number === null) {
+            if(count($map) == 1){  //只有一个数据库，那就是当前
+                $mapValues = array_values($map);
+                return $mapValues[0];
+            }
             return null;  //返回这个代表没有规则，则需要全部db扫描了
         }
         $index = $tableShardingStrategyConfig->getFix() . $number;
-        $map = $this->_databasePdoInstanceMap();
+
         return isset($map[$index]) ? $map[$index]:false;
     }
 
