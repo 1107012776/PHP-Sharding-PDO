@@ -18,6 +18,15 @@ namespace PhpShardingPdo\Components;
  */
 trait ReplaceIntoShardingTrait
 {
+    private $_sqlErrors = [];
+
+    /**
+     * 错误信息
+     * @return array
+     */
+    public function sqlErrors(){
+        return $this->_sqlErrors;
+    }
     /**
      * 插入应该是必须选中具体库，具体表的，不然很危险，导致插入到多个库多张表，数据很乱
      * @return bool|int
@@ -62,6 +71,9 @@ trait ReplaceIntoShardingTrait
                 $this->_addExeSql($sql, $bindParams);
                 $rowsCount += $statement->rowCount();
                 $this->_last_insert_id = $this->_current_exec_db->lastInsertId();
+                if(empty($res)){
+                    $this->_sqlErrors[] = $statement->errorInfo();
+                }
                 return $res;
             }
             return false; //必须找到具体的库才能插入，否者直接false

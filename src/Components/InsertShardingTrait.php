@@ -67,6 +67,9 @@ trait InsertShardingTrait
                 $this->_addExeSql($sql, $bindParams);
                 $rowsCount += $statement->rowCount();
                 $this->_last_insert_id = $this->_current_exec_db->lastInsertId();
+                if(empty($res)){
+                    $this->_sqlErrors[] = $statement->errorInfo();
+                }
                 return $res;
             }
             return false; //必须找到具体的库才能插入，否者直接false

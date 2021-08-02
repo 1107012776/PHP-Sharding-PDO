@@ -46,6 +46,9 @@ trait DeleteShardingTrait
                      */
                     $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
                     $res[$key] = $statement->execute($this->_condition_bind);
+                    if(empty($res[$key])){
+                        $this->_sqlErrors[] = $statement->errorInfo();
+                    }
                 }
             };
             if (!empty($sqlArr)) {  //扫描多张表
@@ -73,6 +76,9 @@ trait DeleteShardingTrait
                  */
                 $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
                 $res = $statement->execute($this->_condition_bind);
+                if(empty($res)){
+                    $this->_sqlErrors[] = $statement->errorInfo();
+                }
             }
             /**
              * @var \PDOStatement $s

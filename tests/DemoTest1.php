@@ -168,13 +168,14 @@ class DemoTest1 extends TestCase
      */
     public function testDelete()
     {
-        $order = new OrderModel();
-        $order->startTrans();
-        $order->startTrans();
-        $res = $order->renew()->where(['id' => 9])->delete();
+        $model = new ArticleModel();
+
+        $model->startTrans();
+        $model->startTrans();
+        $res = $model->renew()->where(['id' => 160])->delete();
         var_dump($res);  //影响行数
-        $order->commit();
-        $order->commit();
+        $model->commit();
+        $model->commit();
     }
 
 }
