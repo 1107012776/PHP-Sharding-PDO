@@ -65,6 +65,7 @@ class ShardingPdo
         $this->_insert_data = [];
         $this->_update_data = [];
         $this->_last_insert_id = 0;  //最后插入的id
+        $this->_sqlErrors = [];  //错误信息
         return $this;
     }
 

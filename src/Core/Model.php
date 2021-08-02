@@ -197,6 +197,15 @@ class Model
         return $this->dao->replaceInto($data);
     }
 
+
+    /**
+     * 获取sql执行的错误信息
+     * @return array
+     */
+    public function sqlErrors(){
+        return $this->dao->sqlErrors();
+    }
+
     /**
      * 初始化分库分表数据源类
      * @return \pdo\sharding\ShardingPdo
