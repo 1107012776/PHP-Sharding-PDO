@@ -208,7 +208,7 @@ class Model
 
     /**
      * 初始化分库分表数据源类
-     * @return \pdo\sharding\ShardingPdo
+     * @return \PhpShardingPdo\Core\ShardingPdo
      * @throws \Exception $e
      */
     protected function shardingInitConfig()
