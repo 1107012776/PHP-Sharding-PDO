@@ -4,10 +4,10 @@ PHP与MySQL分库分表的类库插件，需要依赖PDO，PHP分库分表
 composer require lys/php-sharding-pdo
 
 ### 说明
-已支持协程，使用协程必须开启   \Swoole\Runtime::enableCoroutine(); 
+已支持协程，使用协程必须在主进程开启   \Swoole\Runtime::enableCoroutine(); 
 
 ### 注意
-\Swoole\Runtime::enableCoroutine();  //协程模式必须开启这个东西，否者会出现死锁
+\Swoole\Runtime::enableCoroutine();  //协程模式必须在主进程开启这个东西，否者会出现死锁
 
 #### 示例
 ##### 1.我们需要配置一下基本的分块规则配置类
