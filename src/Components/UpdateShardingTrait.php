@@ -58,6 +58,9 @@ trait UpdateShardingTrait
                 $res = $statement->execute($bindParams);
                 $this->_addExeSql($sql, $bindParams);
                 $rowsCount += $statement->rowCount();
+                if(empty($res)){
+                    $this->_sqlErrors[] = $statement->errorInfo();
+                }
                 return $res;
             }
             /**
