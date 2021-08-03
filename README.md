@@ -42,9 +42,7 @@ class ShardingInitConfig extends ShardingInitConfigInter
     }
 
     protected function getShardingRuleConfiguration()
-    {
-        //\Swoole\Runtime::enableCoroutine();  //协程模式必须开启这个东西，否者会出现死锁
-        
+    {   
         //t_order表规则创建
         $tableRule = new ShardingTableRuleConfig();
 
