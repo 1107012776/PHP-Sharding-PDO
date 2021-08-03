@@ -7,7 +7,7 @@ composer require lys/php-sharding-pdo
 已支持协程，使用协程必须开启   \Swoole\Runtime::enableCoroutine(); 
 
 ### 注意
-协程模式还在测试中
+\Swoole\Runtime::enableCoroutine();  //协程模式必须开启这个东西，否者会出现死锁
 
 #### 示例
 ##### 1.我们需要配置一下基本的分块规则配置类
@@ -43,7 +43,7 @@ class ShardingInitConfig extends ShardingInitConfigInter
 
     protected function getShardingRuleConfiguration()
     {
-        // TODO: Implement getShardingRuleConfiguration() method.
+        //\Swoole\Runtime::enableCoroutine();  //协程模式必须开启这个东西，否者会出现死锁
         
         //t_order表规则创建
         $tableRule = new ShardingTableRuleConfig();
