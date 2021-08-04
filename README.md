@@ -7,7 +7,11 @@ composer require lys/php-sharding-pdo
 已支持协程，使用协程必须在主进程开启   \Swoole\Runtime::enableCoroutine(); 
 
 ### 注意
-\Swoole\Runtime::enableCoroutine();  //协程模式必须在主进程开启这个东西，否者会出现死锁
+##### 协程模式必须在主进程开启这个东西，否者会出现死锁
+\Swoole\Runtime::enableCoroutine(); 
+##### 协程中不能使用pdo长链接，在高并发的情况下，会出现如下异常
+PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to another coroutine#2, reading of the same socket in coroutine#4 at the same time is not allowed
+
 
 #### 示例
 ##### 1.我们需要配置一下基本的分块规则配置类
