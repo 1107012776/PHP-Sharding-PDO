@@ -34,15 +34,16 @@ class DemoTest1 extends TestCase
     public function testArticle()
     {
         $countModelList = new ArticleModel();
-        $condition = ['del_flag' => 0,'cate_id' => 3];
-        $page = 1;
+        $condition = ['del_flag' => 0];
+        $page = 4;
         $limit = 10;
-        $list = $countModelList->where($condition)->limit($page-1,$limit)->order('id desc')->findAll();
+        var_dump(($page-1)*$limit);
+        $list = $countModelList->where($condition)->limit(($page-1)*$limit,$limit)->order('id desc')->findAll();
         var_dump(array_column($list,'id'));
-        $countModelList = new ArticleModel();
+//        $countModelList = new ArticleModel();
 
-        $count = $countModelList->where($condition)->order('id desc')->count();
-        var_dump($count);
+//        $count = $countModelList->where($condition)->order('id desc')->count();
+//        var_dump($count);
 
     }
 
