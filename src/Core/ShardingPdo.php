@@ -152,7 +152,7 @@ class ShardingPdo
         } else {
             $this->offset = doubleval($offset);  //偏移量必须单独处理，否者分页存在问题
             $this->offset_limit = doubleval($page_count);
-            $this->_limit_str = '';
+            $this->_limit_str = doubleval($offset) . ',' . doubleval($page_count);
         }
         return $this;
     }
