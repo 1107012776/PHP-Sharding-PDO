@@ -44,7 +44,7 @@ trait DeleteShardingTrait
                      * @var \PDOStatement $statement
                      * @var \PDO $db
                      */
-                    $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                    $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                     $res[$key] = $statement->execute($this->_condition_bind);
                     if(empty($res[$key])){
                         $this->_sqlErrors[] = $statement->errorInfo();
@@ -74,7 +74,7 @@ trait DeleteShardingTrait
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($this->_condition_bind);
                 if(empty($res)){
                     $this->_sqlErrors[] = $statement->errorInfo();

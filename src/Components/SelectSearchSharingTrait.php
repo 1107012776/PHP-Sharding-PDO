@@ -21,7 +21,9 @@ use \PhpShardingPdo\Core\StatementShardingPdo;
 trait SelectSearchSharingTrait
 {
 
+     private $fetch_style = \PDO::FETCH_ASSOC;
 
+     private $attr_cursor = \PDO::CURSOR_FWDONLY;
     /**
      * 存在limit的时候查询
      * @param $statementArr
@@ -40,7 +42,7 @@ trait SelectSearchSharingTrait
             foreach ($statementArr as $index => $s) {
                 $statementCurrentRowObjArr[] = new StatementShardingPdo($s);
             }
-            while ($limit > 0) {
+            while ($limit > 0) {   //limit获取值核心方法
                 StatementShardingPdo::reSort($statementCurrentRowObjArr, $orderArr);
                 /**
                  * @var StatementShardingPdo $que
@@ -55,6 +57,10 @@ trait SelectSearchSharingTrait
                     $statementCurrentRowObjArr = array_values($statementCurrentRowObjArr);
                     continue;
                 }
+                $this->offset--;
+                if($this->offset >= 0){  //这边的偏移性能比较差，最后在条件上面加一个范围查询的比如 id > 110000 之类的降低偏移的压力
+                    continue;
+                }
                 $limit--;
                 array_push($result, $tmp);
             }
@@ -64,7 +70,7 @@ trait SelectSearchSharingTrait
              */
             foreach ($statementArr as $index => $s) {
                 while ($limit > 0) {
-                    $tmp = $s->fetch(\PDO::FETCH_ASSOC);
+                    $tmp = $s->fetch($this->fetch_style);
                     if (empty($tmp)) {
                         break;
                     }
@@ -81,6 +87,9 @@ trait SelectSearchSharingTrait
     {
         $result = [];
         $sqlArr = [];
+        if(!empty($this->offset)){  //存在偏移的时候，需要特殊处理
+            $this->_limit_str = '';
+        }
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {  //全部扫描
             $sql = 'select ' . $this->_field_str . ' from ' . $this->_table_name . $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {
@@ -98,7 +107,7 @@ trait SelectSearchSharingTrait
                      * @var \PDOStatement $statement
                      * @var \PDO $db
                      */
-                    $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                    $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                     $res[$key] = $statement->execute($this->_condition_bind);
                 }
             };
@@ -119,7 +128,7 @@ trait SelectSearchSharingTrait
                  * @var \PDOStatement $s
                  */
                 foreach ($statementArr as $s) {
-                    $tmp = $s->fetchAll(\PDO::FETCH_ASSOC);
+                    $tmp = $s->fetchAll($this->fetch_style);
                     !empty($tmp) && $result = array_merge($result, $tmp);
                 }
             }
@@ -129,7 +138,7 @@ trait SelectSearchSharingTrait
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($this->_condition_bind);
             }
             if (count($statementArr) > 1) {
@@ -140,12 +149,12 @@ trait SelectSearchSharingTrait
                      * @var \PDOStatement $s
                      */
                     foreach ($statementArr as $s) {
-                        $tmp = $s->fetchAll(\PDO::FETCH_ASSOC);
+                        $tmp = $s->fetchAll($this->fetch_style);
                         !empty($tmp) && $result = array_merge($result, $tmp);
                     }
                 }
             } else {
-                $tmp = $statement->fetchAll(\PDO::FETCH_ASSOC);
+                $tmp = $statement->fetchAll($this->fetch_style);
                 !empty($tmp) && $result = array_merge($result, $tmp);
             }
         }
