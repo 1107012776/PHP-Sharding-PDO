@@ -54,7 +54,7 @@ trait UpdateShardingTrait
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($bindParams);
                 $this->_addExeSql($sql, $bindParams);
                 $rowsCount += $statement->rowCount();
@@ -71,7 +71,7 @@ trait UpdateShardingTrait
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res[$key] = $statement->execute($bindParams);
                 $this->_addExeSql($sql, $bindParams);
                 $rowsCount += $statement->rowCount();

@@ -21,7 +21,9 @@ use \PhpShardingPdo\Core\StatementShardingPdo;
 trait SelectSearchSharingTrait
 {
 
+     private $fetch_style = \PDO::FETCH_ASSOC;
 
+     private $attr_cursor = \PDO::CURSOR_FWDONLY;
     /**
      * 存在limit的时候查询
      * @param $statementArr
@@ -40,7 +42,7 @@ trait SelectSearchSharingTrait
             foreach ($statementArr as $index => $s) {
                 $statementCurrentRowObjArr[] = new StatementShardingPdo($s);
             }
-            while ($limit > 0) {
+            while ($limit > 0) {   //limit获取值核心方法
                 StatementShardingPdo::reSort($statementCurrentRowObjArr, $orderArr);
                 /**
                  * @var StatementShardingPdo $que
@@ -64,7 +66,7 @@ trait SelectSearchSharingTrait
              */
             foreach ($statementArr as $index => $s) {
                 while ($limit > 0) {
-                    $tmp = $s->fetch(\PDO::FETCH_ASSOC);
+                    $tmp = $s->fetch($this->fetch_style);
                     if (empty($tmp)) {
                         break;
                     }
@@ -98,7 +100,7 @@ trait SelectSearchSharingTrait
                      * @var \PDOStatement $statement
                      * @var \PDO $db
                      */
-                    $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                    $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                     $res[$key] = $statement->execute($this->_condition_bind);
                 }
             };
@@ -119,7 +121,7 @@ trait SelectSearchSharingTrait
                  * @var \PDOStatement $s
                  */
                 foreach ($statementArr as $s) {
-                    $tmp = $s->fetchAll(\PDO::FETCH_ASSOC);
+                    $tmp = $s->fetchAll($this->fetch_style);
                     !empty($tmp) && $result = array_merge($result, $tmp);
                 }
             }
@@ -129,7 +131,7 @@ trait SelectSearchSharingTrait
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($this->_condition_bind);
             }
             if (count($statementArr) > 1) {
@@ -140,12 +142,12 @@ trait SelectSearchSharingTrait
                      * @var \PDOStatement $s
                      */
                     foreach ($statementArr as $s) {
-                        $tmp = $s->fetchAll(\PDO::FETCH_ASSOC);
+                        $tmp = $s->fetchAll($this->fetch_style);
                         !empty($tmp) && $result = array_merge($result, $tmp);
                     }
                 }
             } else {
-                $tmp = $statement->fetchAll(\PDO::FETCH_ASSOC);
+                $tmp = $statement->fetchAll($this->fetch_style);
                 !empty($tmp) && $result = array_merge($result, $tmp);
             }
         }

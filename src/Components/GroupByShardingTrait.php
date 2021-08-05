@@ -42,7 +42,7 @@ trait  GroupByShardingTrait
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res[$key] = $statement->execute($this->_condition_bind);
             }
             return $res;
@@ -55,7 +55,7 @@ trait  GroupByShardingTrait
         }
         if (count($statementArr) <= 1) {   //一个分表查询
             //只有一个表，这个简单直接来就行，没有什么其他的问题
-            $tmp = $statementArr[0]->fetchAll(\PDO::FETCH_ASSOC);
+            $tmp = $statementArr[0]->fetchAll($this->fetch_style);
             !empty($tmp) && $result = array_merge($result, $tmp);
             return $result;
         }
@@ -78,7 +78,7 @@ trait  GroupByShardingTrait
              * @var \PDOStatement $s
              */
             foreach ($statementArr as $s) {
-                $tmp = $s->fetchAll(\PDO::FETCH_ASSOC);
+                $tmp = $s->fetchAll($this->fetch_style);
                 !empty($tmp) && $result = array_merge($result, $tmp);
             }
             //默认给group by 字段进行一个排序

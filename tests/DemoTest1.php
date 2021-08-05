@@ -40,10 +40,7 @@ class DemoTest1 extends TestCase
         var_dump(($page-1)*$limit);
         $list = $countModelList->where($condition)->limit(($page-1)*$limit,$limit)->order('id desc')->findAll();
         var_dump(array_column($list,'id'));
-//        $countModelList = new ArticleModel();
 
-//        $count = $countModelList->where($condition)->order('id desc')->count();
-//        var_dump($count);
 
     }
 
