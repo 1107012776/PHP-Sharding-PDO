@@ -22,8 +22,6 @@ class StatementShardingPdo
     private $_statement;
     private $_queue;
     private $_fetch_style = \PDO::FETCH_ASSOC;
-    private $_cursor_orientation = \PDO::FETCH_ORI_ABS;
-    private $_offset = 0;
 
     public function __construct(\PDOStatement $statement)
     {
