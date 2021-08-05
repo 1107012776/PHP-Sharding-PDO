@@ -48,6 +48,7 @@ class ShardingPdo
     private $_update_data = [];
     private $_last_insert_id = 0;  //最后插入的id
     private $offset = 0; //偏移量
+    private $offset_limit = 0; //偏移之后返回数
 
     /**
      * 重置数据
@@ -68,7 +69,9 @@ class ShardingPdo
         $this->_last_insert_id = 0;  //最后插入的id
         $this->_sqlErrors = [];  //错误信息
         $this->offset = 0;
-        $this->fetch_style = $this->fetch_style;
+        $this->offset_limit = 0;
+        $this->fetch_style = \PDO::FETCH_ASSOC;
+        $this->attr_cursor = \PDO::CURSOR_FWDONLY;
         return $this;
     }
 
@@ -148,7 +151,8 @@ class ShardingPdo
             $this->_limit_str = doubleval($offset);
         } else {
             $this->offset = doubleval($offset);  //偏移量必须单独处理，否者分页存在问题
-            $this->_limit_str = doubleval($page_count);
+            $this->offset_limit = doubleval($page_count);
+            $this->_limit_str = '';
         }
         return $this;
     }
@@ -360,6 +364,9 @@ class ShardingPdo
      */
     private function _getLimitReCount()
     {
+        if(!empty($this->offset_limit)){
+            return $this->offset_limit;
+        }
         if (empty($this->_limit_str)) {
             return false;
         }

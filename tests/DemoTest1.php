@@ -37,7 +37,6 @@ class DemoTest1 extends TestCase
         $condition = ['del_flag' => 0];
         $page = 4;
         $limit = 10;
-        var_dump(($page-1)*$limit);
         $list = $countModelList->where($condition)->limit(($page-1)*$limit,$limit)->order('id desc')->findAll();
         var_dump(array_column($list,'id'));
 

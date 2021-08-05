@@ -16,12 +16,14 @@ namespace PhpShardingPdo\Core;
  */
 class StatementShardingPdo
 {
-
     /**
      * @var \PDOStatement
      */
     private $_statement;
     private $_queue;
+    private $_fetch_style = \PDO::FETCH_ASSOC;
+    private $_cursor_orientation = \PDO::FETCH_ORI_ABS;
+    private $_offset = 0;
 
     public function __construct(\PDOStatement $statement)
     {
@@ -40,8 +42,8 @@ class StatementShardingPdo
 
     public function getNextFetch()
     {
-        $tmp = $this->_statement->fetch(\PDO::FETCH_ASSOC);
-        $this->_queue[] = $tmp;
+        $tmp = $this->_statement->fetch($this->_fetch_style);
+        $this->_queue[] = $tmp;  //取完去对比之后则塞入这个队列，用于后面的取出
         return $tmp;
     }
 

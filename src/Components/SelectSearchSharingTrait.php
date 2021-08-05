@@ -57,6 +57,10 @@ trait SelectSearchSharingTrait
                     $statementCurrentRowObjArr = array_values($statementCurrentRowObjArr);
                     continue;
                 }
+                $this->offset--;
+                if($this->offset >= 0){
+                    continue;
+                }
                 $limit--;
                 array_push($result, $tmp);
             }
