@@ -45,7 +45,7 @@ class DemoTest1 extends TestCase
 
 
     /**
-     * php vendor/bin/phpunit tests/DemoTest.php --filter testSelect
+     * php vendor/bin/phpunit tests/DemoTest.php --filter testClone
      * @throws
      */
     public function testClone()
