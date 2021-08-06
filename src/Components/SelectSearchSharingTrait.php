@@ -87,7 +87,12 @@ trait SelectSearchSharingTrait
     {
         $result = [];
         $sqlArr = [];
-        if(!empty($this->offset)){  //存在偏移的时候，需要特殊处理
+        if(!empty($this->offset)  //存在偏移的时候，需要特殊处理
+            && (
+                empty($this->_current_exec_db)  //没有找到具体库
+               || empty($this->_current_exec_table)  //没有找到具体表
+            )
+        ){
             $this->_limit_str = '';
         }
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {  //全部扫描
