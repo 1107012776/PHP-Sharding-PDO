@@ -56,8 +56,10 @@ class DemoTest1 extends TestCase
         $limit = 1;
         $countModelList->where($condition)->limit(($page-1)*$limit,$limit)->order('id desc');
         $cloneModel = clone $countModelList;
+        $cloneModel->limit(($page-1)*2,2);
         $list = $cloneModel->findAll();
-        var_dump(array_column($list,'id'));
+        $list1 = $countModelList->findAll();
+        var_dump(array_column($list,'id'),array_column($list1,'id'));
 
 
     }
