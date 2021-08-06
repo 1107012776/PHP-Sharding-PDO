@@ -43,6 +43,25 @@ class DemoTest1 extends TestCase
 
     }
 
+
+    /**
+     * php vendor/bin/phpunit tests/DemoTest.php --filter testSelect
+     * @throws
+     */
+    public function testClone()
+    {
+        $countModelList = new ArticleModel();
+        $condition = ['del_flag' => 0];
+        $page = 4;
+        $limit = 1;
+        $countModelList->where($condition)->limit(($page-1)*$limit,$limit)->order('id desc');
+        $cloneModel = clone $countModelList;
+        $list = $cloneModel->findAll();
+        var_dump(array_column($list,'id'));
+
+
+    }
+
     public function testAdmin()
     {
         $model = new ArticleModel();

@@ -205,6 +205,7 @@ class ShardingPdo
      */
     public function find()
     {
+        $this->clearSqlErrors();
         $this->limit(1);
         $search = $this->_search();
         return empty($search) ? false : $search[0];
@@ -216,6 +217,7 @@ class ShardingPdo
      */
     public function findAll()
     {
+        $this->clearSqlErrors();
         return $this->_search();
     }
 
@@ -226,6 +228,7 @@ class ShardingPdo
      */
     public function count()
     {
+        $this->clearSqlErrors();
         $old = $this->_field_str;
         $this->_field_str = 'count(*) as num';
         $list = $this->_search();
@@ -247,6 +250,7 @@ class ShardingPdo
      */
     public function update($data)
     {
+        $this->clearSqlErrors();
         $this->_pare();
         $this->_update_data = $data;
         return $this->_updateSharding();
@@ -258,6 +262,7 @@ class ShardingPdo
      */
     public function insert($data)
     {
+        $this->clearSqlErrors();
         $this->_insert_data = $data;
         $this->_current_exec_db = $this->_getQpDb();
         $this->_current_exec_table = $this->_getQpTableName();
@@ -274,6 +279,7 @@ class ShardingPdo
      * @return boolean|int
      */
     public function replaceInto($data){
+        $this->clearSqlErrors();
         $this->_insert_data = $data;
         $this->_current_exec_db = $this->_getQpDb();
         $this->_current_exec_table = $this->_getQpTableName();
@@ -286,6 +292,7 @@ class ShardingPdo
      */
     public function delete()
     {
+        $this->clearSqlErrors();
         $this->_pare();
         return $this->_deleteSharding();
     }

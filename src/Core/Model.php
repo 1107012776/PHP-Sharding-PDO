@@ -239,7 +239,6 @@ class Model
 
     public function __clone()
     {
-        // TODO: Implement __clone() method.
-        $this->renew();
+        $this->dao = clone $this->dao;
     }
 }

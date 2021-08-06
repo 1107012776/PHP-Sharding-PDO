@@ -27,6 +27,15 @@ trait ReplaceIntoShardingTrait
     public function sqlErrors(){
         return $this->_sqlErrors;
     }
+
+    /**
+     * 清理错误信息
+     * @return boolean
+     */
+    public function clearSqlErrors(){
+         $this->_sqlErrors = [];
+         return true;
+    }
     /**
      * 插入应该是必须选中具体库，具体表的，不然很危险，导致插入到多个库多张表，数据很乱
      * @return bool|int
