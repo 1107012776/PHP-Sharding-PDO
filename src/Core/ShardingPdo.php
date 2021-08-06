@@ -311,23 +311,23 @@ class ShardingPdo
                 switch ($val[0]) {
                     case 'like':
                         $this->_condition_str .= ' and ' . $key . ' like ' . $zwKey;
-                        $this->_condition_bind[$zwKey] = $val;
+                        $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     case 'gt':
                         $this->_condition_str .= ' and ' . $key . ' > ' . $zwKey;
-                        $this->_condition_bind[$zwKey] = $val;
+                        $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     case 'egt':
                         $this->_condition_str .= ' and ' . $key . ' >= ' . $zwKey;
-                        $this->_condition_bind[$zwKey] = $val;
+                        $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     case 'elt':
                         $this->_condition_str .= ' and ' . $key . ' <= ' . $zwKey;
-                        $this->_condition_bind[$zwKey] = $val;
+                        $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     case 'lt':
                         $this->_condition_str .= ' and ' . $key . ' < ' . $zwKey;
-                        $this->_condition_bind[$zwKey] = $val;
+                        $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     case 'in':
                         $zwKeyIn = '';
