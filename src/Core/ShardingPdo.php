@@ -148,11 +148,11 @@ class ShardingPdo
     public function limit($offset = 0, $page_count = null)
     {
         if (empty($page_count)) {
-            $this->_limit_str = doubleval($offset);
+            $this->_limit_str = sprintf("%.0f",$offset);
         } else {
-            $this->offset = doubleval($offset);  //偏移量必须单独处理，否者分页存在问题
-            $this->offset_limit = doubleval($page_count);
-            $this->_limit_str = doubleval($offset) . ',' . doubleval($page_count);
+            $this->offset = sprintf("%.0f",$offset);  //偏移量必须单独处理，否者分页存在问题
+            $this->offset_limit = sprintf("%.0f",$page_count);
+            $this->_limit_str = sprintf("%.0f",$offset) . ',' . sprintf("%.0f",$page_count);
         }
         return $this;
     }
