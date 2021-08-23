@@ -82,6 +82,7 @@ abstract class ShardingInitConfigInter
             }catch (\Exception $e){
                 //回收失败
                 !empty($errorCallback) && $errorCallback($e);
+                return false;
             }
         }
         return true;
