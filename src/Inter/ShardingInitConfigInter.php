@@ -63,6 +63,29 @@ abstract class ShardingInitConfigInter
         }
         return static::init();
     }
+    
+    
+   public static function close(callable $errorCallback = null){
+        $shardingInitName = self::$shardingInitConfigInterName.static::class;
+        $databasePdoInstanceMapName =  $shardingInitName.'_pdo';
+        $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
+        if(!empty($map)){
+            try{
+                /**
+                 * @var \PDO $db
+                 */
+                foreach ($map as &$db){
+                    //让php先回收已断开长连接资源
+                    $db->setAttribute(\PDO::ATTR_PERSISTENT, false);
+                    $db = null;
+                }
+            }catch (\Exception $e){
+                //回收失败
+                !empty($errorCallback) && $errorCallback($e);
+            }
+        }
+        return true;
+    }
 
 
     /**
