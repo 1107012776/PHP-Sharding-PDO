@@ -217,8 +217,8 @@ var_dump($newObj === $order);  //输出false
 <?php
 $order = new \PhpShardingPdo\Test\OrderModel();
 $user = new \PhpShardingPdo\Test\UserModel();
-$order->startTrans();
-$order->startTrans();
+$order->startTrans(); 
+$order->startTrans(); //事务嵌套
 $insert = $order->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
 var_dump($insert, $order->getLastInsertId());
 $insert = $user->renew()->insert(['user_id' => 2, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
@@ -232,7 +232,7 @@ $user->commit();
 ```php
 <?php
 $order = new PhpShardingPdo\Test\OrderModel();
-$order->startTrans(); //事务嵌套
+$order->startTrans(); 
 $res = $order->renew()->where(['id' => 3])->update(['create_time' => date('Y-m-d H:i:s')]);
 var_dump($res);  //影响行数
 $order->commit();
