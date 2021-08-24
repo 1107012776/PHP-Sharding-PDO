@@ -210,6 +210,14 @@ $res = $order->renew()->field('order_id,sum(id),create_time,user_id')->group('or
 var_dump($res);
 $newObj = clone $order->renew();
 var_dump($newObj === $order);  //输出false
+
+//count 查询
+$count = $order->renew()->count();
+var_dump($count);
+
+$count = $order->renew()->where(['id' => ['gt', 100000]])->count('id');   //索引覆盖型查询
+var_dump($count);
+
 ```
 
 ###### 插入
