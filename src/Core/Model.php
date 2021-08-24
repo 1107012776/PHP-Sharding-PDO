@@ -135,9 +135,9 @@ class Model
      * 查找所有数据的条数
      * @return int
      */
-    public function count()
+    public function count($field_count = '')
     {
-        return $this->dao->count();
+        return $this->dao->count($field_count);
     }
 
 

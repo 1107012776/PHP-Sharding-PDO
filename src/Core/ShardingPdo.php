@@ -226,11 +226,12 @@ class ShardingPdo
      * 查找所有数据的条数
      * @return int
      */
-    public function count()
+    public function count($field_count = '')
     {
         $this->clearSqlErrors();
         $old = $this->_field_str;
-        $this->_field_str = 'count(*) as num';
+        empty($field_count) && $field_count = '*';
+        $this->_field_str = 'count('.$field_count.') as num';
         $list = $this->_search();
         $this->_field_str = $old;
         $count = 0;
