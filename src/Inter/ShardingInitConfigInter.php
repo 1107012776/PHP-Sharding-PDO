@@ -84,6 +84,7 @@ abstract class ShardingInitConfigInter
                 !empty($errorCallback) && $errorCallback($e);
                 return false;
             }
+            ShardingPdoContext::setValue($databasePdoInstanceMapName, false);
         }
         return true;
     }
