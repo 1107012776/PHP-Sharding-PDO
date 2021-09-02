@@ -51,7 +51,7 @@ class InlineShardingStrategyConfiguration
      * @return bool
      */
     public function isCustomizeRule(){
-       return !empty($ruleCallback);
+       return !empty($this->_ruleCustomizeCallback);
     }
 
     /**
