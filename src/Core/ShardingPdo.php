@@ -417,7 +417,7 @@ class ShardingPdo
         if($tableShardingStrategyConfig->isCustomizeRule()){  //是否自定义规则
             $number = $tableShardingStrategyConfig->getCustomizeNum($this->_condition);  //自定义规则
             $index = $tableShardingStrategyConfig->getFix() . $number;
-            return isset($map[$index]) ? $map[$index]:false;
+            return isset($map[$index]) ? $map[$index]:null;
         }
         $name = $tableShardingStrategyConfig->getName();
         if (!empty($this->_condition)) {
@@ -470,7 +470,7 @@ class ShardingPdo
         $number = null;
         if($tableShardingStrategyConfig->isCustomizeRule()){  //是否自定义规则
             $number = $tableShardingStrategyConfig->getCustomizeNum($this->_condition);  //自定义规则
-            if($number === null){
+            if(!is_numeric($number)){
                 return null;
             }
             return $tableShardingStrategyConfig->getFix() . $number;
