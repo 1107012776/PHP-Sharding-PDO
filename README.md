@@ -66,6 +66,24 @@ class ShardingInitConfig extends ShardingInitConfigInter
                     'order_id',  //字段名
                     2
                 ]]));
+        
+ /*     
+        //自定义规则的写法如下   
+        $tableRule->setDatabaseShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('db', [
+                ],function ($condition){  //自定义规则
+                     $user_id = $condition['user_id'];
+                     $num = $user_id % 2;
+                     return $num;
+                }));
+        $tableRule->setTableShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('t_order_', [
+              ],function ($condition){
+                     $order_id = $condition['order_id'];
+                     $num = $order_id % 2;
+                     return $num;                                   
+              }));*/
+                
 
 
         //t_user表规则创建
