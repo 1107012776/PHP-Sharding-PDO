@@ -60,7 +60,8 @@ class InlineShardingStrategyConfiguration
      * @return bool
      */
     public function getCustomizeNum($condition){
-        if(!empty($ruleCallback)){
+        if(!empty($this->_ruleCustomizeCallback)){
+            $ruleCallback = $this->_ruleCustomizeCallback;
             return $ruleCallback($condition);
         }
         return false;
