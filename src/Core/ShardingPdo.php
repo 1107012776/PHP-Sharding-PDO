@@ -413,8 +413,13 @@ class ShardingPdo
         }
         $tableRule = $this->_tableRuleList[0];
         $tableShardingStrategyConfig = $tableRule->getDatabaseShardingStrategyConfig();
-        $name = $tableShardingStrategyConfig->getName();
         $number = null;
+        if($tableShardingStrategyConfig->isCustomizeRule()){  //是否自定义规则
+            $number = $tableShardingStrategyConfig->getCustomizeNum($this->_condition);  //自定义规则
+            $index = $tableShardingStrategyConfig->getFix() . $number;
+            return isset($map[$index]) ? $map[$index]:false;
+        }
+        $name = $tableShardingStrategyConfig->getName();
         if (!empty($this->_condition)) {
             foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
@@ -463,8 +468,12 @@ class ShardingPdo
         }
         $tableRule = $this->_tableRuleList[0];
         $tableShardingStrategyConfig = $tableRule->getTableShardingStrategyConfig();
-        $name = $tableShardingStrategyConfig->getName();
         $number = null;
+        if($tableShardingStrategyConfig->isCustomizeRule()){  //是否自定义规则
+            $number = $tableShardingStrategyConfig->getCustomizeNum($this->_condition);  //自定义规则
+            return $tableShardingStrategyConfig->getFix() . $number;
+        }
+        $name = $tableShardingStrategyConfig->getName();
         if (!empty($this->_condition)) {
             foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
