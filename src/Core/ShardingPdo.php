@@ -416,6 +416,9 @@ class ShardingPdo
         $number = null;
         if($tableShardingStrategyConfig->isCustomizeRule()){  //是否自定义规则
             $number = $tableShardingStrategyConfig->getCustomizeNum($this->_condition);  //自定义规则
+            if(!is_numeric($number)){
+                return null;  //返回这个代表没有规则，则需要全部db扫描了
+            }
             $index = $tableShardingStrategyConfig->getFix() . $number;
             return isset($map[$index]) ? $map[$index]:null;
         }

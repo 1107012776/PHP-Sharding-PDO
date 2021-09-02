@@ -64,7 +64,7 @@ class InlineShardingStrategyConfiguration
             $ruleCallback = $this->_ruleCustomizeCallback;
             return $ruleCallback($condition);
         }
-        return false;
+        return null;
     }
 
     /**
