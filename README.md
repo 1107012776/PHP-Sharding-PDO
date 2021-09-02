@@ -12,6 +12,7 @@ composer require lys/php-sharding-pdo
 ###### （2）协程中不能使用pdo长链接，在高并发的情况下，会出现如下异常
 PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to another coroutine#2, reading of the same socket in coroutine#4 at the same time is not allowed
 
+##### （3）Replace into自增主键，并发量大的时候可能出现返回false和死锁的，所以不适合高并发项目的使用，高并发，请使用雪花算法等一些自增主键方案
 
 #### 示例
 ##### 1.我们需要配置一下基本的分块规则配置类
