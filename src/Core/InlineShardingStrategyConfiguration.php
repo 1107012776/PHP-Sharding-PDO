@@ -18,6 +18,7 @@ class InlineShardingStrategyConfiguration
 {
     private $_fix = '';
     private $_rule = '';
+    private $_ruleCustomizeCallback = null;
 
     /**
      * $rule = [
@@ -31,16 +32,39 @@ class InlineShardingStrategyConfiguration
      * InlineShardingStrategyConfiguration constructor.
      * @param string $fix //名称前缀
      * @param array $rule //规则算法
+     * @param callable $ruleCustomizeCallback //规则自定义算法，设定自定义算法之后，默认系统规则算法失效
      */
-    public function __construct($fix = '', $rule = [])
+    public function __construct($fix = '', $rule = [], callable $ruleCustomizeCallback = null)
     {
         $this->_fix = $fix;
         $this->_rule = $rule;
+        $this->_ruleCustomizeCallback = $ruleCustomizeCallback;
     }
 
     public function getFix()
     {
         return $this->_fix;
+    }
+
+    /**
+     * 是否自定义规则
+     * @return bool
+     */
+    public function isCustomizeRule(){
+       return !empty($this->_ruleCustomizeCallback);
+    }
+
+    /**
+     * 获取自定义规则返回的
+     * @param $condition
+     * @return bool
+     */
+    public function getCustomizeNum($condition){
+        if(!empty($this->_ruleCustomizeCallback)){
+            $ruleCallback = $this->_ruleCustomizeCallback;
+            return $ruleCallback($condition);
+        }
+        return false;
     }
 
     /**

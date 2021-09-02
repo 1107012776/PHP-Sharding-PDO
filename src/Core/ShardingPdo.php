@@ -413,8 +413,13 @@ class ShardingPdo
         }
         $tableRule = $this->_tableRuleList[0];
         $tableShardingStrategyConfig = $tableRule->getDatabaseShardingStrategyConfig();
-        $name = $tableShardingStrategyConfig->getName();
         $number = null;
+        if($tableShardingStrategyConfig->isCustomizeRule()){  //是否自定义规则
+            $number = $tableShardingStrategyConfig->getCustomizeNum($this->_condition);  //自定义规则
+            $index = $tableShardingStrategyConfig->getFix() . $number;
+            return isset($map[$index]) ? $map[$index]:null;
+        }
+        $name = $tableShardingStrategyConfig->getName();
         if (!empty($this->_condition)) {
             foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
@@ -436,8 +441,7 @@ class ShardingPdo
             return null;  //返回这个代表没有规则，则需要全部db扫描了
         }
         $index = $tableShardingStrategyConfig->getFix() . $number;
-
-        return isset($map[$index]) ? $map[$index]:false;
+        return isset($map[$index]) ? $map[$index]:null;
     }
 
     /**
@@ -463,8 +467,15 @@ class ShardingPdo
         }
         $tableRule = $this->_tableRuleList[0];
         $tableShardingStrategyConfig = $tableRule->getTableShardingStrategyConfig();
-        $name = $tableShardingStrategyConfig->getName();
         $number = null;
+        if($tableShardingStrategyConfig->isCustomizeRule()){  //是否自定义规则
+            $number = $tableShardingStrategyConfig->getCustomizeNum($this->_condition);  //自定义规则
+            if(!is_numeric($number)){
+                return null;
+            }
+            return $tableShardingStrategyConfig->getFix() . $number;
+        }
+        $name = $tableShardingStrategyConfig->getName();
         if (!empty($this->_condition)) {
             foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
