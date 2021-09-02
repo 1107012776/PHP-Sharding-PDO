@@ -57,7 +57,7 @@ class InlineShardingStrategyConfiguration
     /**
      * 获取自定义规则返回的
      * @param $condition
-     * @return bool
+     * @return null|int
      */
     public function getCustomizeNum($condition){
         if(!empty($this->_ruleCustomizeCallback)){
