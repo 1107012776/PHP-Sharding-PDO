@@ -478,7 +478,7 @@ class ShardingPdo
         if($tableShardingStrategyConfig->isCustomizeRule()){  //是否自定义规则
             $customizeCondition = !empty($this->_condition) ? $this->_condition:$this->_insert_data;
             if(empty($customizeCondition)){  //自定义，却找不到条件
-                return null;  //返回这个代表没有规则，则需要全部db扫描了
+                return null;  //返回这个代表没有规则，则需要全部表扫描了
             }
             $number = $tableShardingStrategyConfig->getCustomizeNum($customizeCondition);  //自定义规则
             if(!is_numeric($number)){
