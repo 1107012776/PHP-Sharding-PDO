@@ -115,6 +115,20 @@ class ShardingPdoContext
         return array_shift($context[__CLASS__][$name]);
     }
 
+
+    /**
+     * 释放当前上下文，这边,这边释放的是单例上下文，如在常驻内存的情况下，或者workerman框架下
+     * @return boolean
+     */
+    public static function nonCoroutineContextRelease(){
+        if (self::getCid() > -1) {
+            return false;  //协程模式不能释放该上下文
+        } else {
+            self::$_self = null;
+            return true;
+        }
+    }
+
     /*************************          受保护的方法            *************************/
 
     protected function _getValue($name)
