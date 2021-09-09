@@ -15,8 +15,8 @@ PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to ano
 
 ###### （3）Replace into自增主键，并发量大的时候可能出现返回false和死锁的，所以不适合高并发项目的使用，高并发，请使用雪花算法等一些分布式主键方案
 
-###### （4）非协程情况下，并且常驻内存，如workerman框架请使用如下代码释放上下文，上下文管理为单例，所以需要该方法释放单例实例，一般是在一个请求结束，或者一个任务结束，方法如下:
-\PhpShardingPdo\Core\ShardingPdoContext::nonCoroutineContextFreed();
+###### （4）非协程情况下，并且常驻内存，如workerman框架请使用如下代码释放上下文，上下文管理为单例，所以需要该方法释放单例实例，一般是在一个请求结束，或者一个任务结束，释放完上下文，请重新new Model实例才行，因为释放上下文，清理了上下文中的PDO实例，方法如下:
+\PhpShardingPdo\Core\ShardingPdoContext::nonCoroutineContextFreed();  
 
 #### 示例
 ##### 1.我们需要配置一下基本的分块规则配置类
