@@ -55,7 +55,7 @@ class StatementShardingPdo
 
 
     /**
-     * 二维数组降序排序
+     * 二维数组排序
      * @param $arr
      * @param $field //依据这个key来排序
      * @return array
@@ -128,7 +128,7 @@ class StatementShardingPdo
     }
 
     /**
-     * Group二维数组降序排序
+     * Group二维数组排序
      * @param $arr
      * @param $field //依据这个key来排序
      * @return array
