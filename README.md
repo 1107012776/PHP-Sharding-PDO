@@ -18,8 +18,8 @@ PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to ano
 ###### （4）非协程情况下，并且常驻内存，如workerman框架请使用如下代码释放上下文，上下文管理为单例，所以需要该方法释放单例实例，一般是在一个请求结束，或者一个任务结束，释放完上下文，请重新new Model实例才行，因为释放上下文，清理了上下文中的PDO实例，方法如下:
 ```php
 <?php
-
-\PhpShardingPdo\Core\ShardingPdoContext::nonCoroutineContextFreed();  //上下文本身应该在一次请求结束，就要重置，本身里面的值就有实效性，比如PDO实例会超时断连
+//上下文本身应该在一次请求结束，就要重置，本身里面的值就有实效性，比如PDO实例会超时断连
+\PhpShardingPdo\Core\ShardingPdoContext::nonCoroutineContextFreed();  
 
 ```
 
