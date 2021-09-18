@@ -333,11 +333,20 @@ class ShardingPdo
                     case 'in':
                         $zwKeyIn = '';
                         foreach ($val[1] as $k => $v) {
-                            $zwKeyIn .= ',' . $zwKey . $k;
+                            $zwKeyIn .= ',' . $zwKey .'_in_'. $k;
                             $this->_condition_bind[$zwKey . $k] = $v;
                         }
                         trim($zwKeyIn, ',');
                         $this->_condition_str .= ' and ' . $key . ' in (' . $zwKeyIn . ')';
+                        break;
+                    case 'notIn':
+                        $zwKeyIn = '';
+                        foreach ($val[1] as $k => $v) {
+                            $zwKeyIn .= ',' . $zwKey .'_notIn_'. $k;
+                            $this->_condition_bind[$zwKey . $k] = $v;
+                        }
+                        trim($zwKeyIn, ',');
+                        $this->_condition_str .= ' and ' . $key . ' not in (' . $zwKeyIn . ')';
                         break;
                 }
             } else {

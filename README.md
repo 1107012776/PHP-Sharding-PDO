@@ -16,7 +16,12 @@ PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to ano
 ###### （3）Replace into自增主键，并发量大的时候可能出现返回false和死锁的，所以不适合高并发项目的使用，高并发，请使用雪花算法等一些分布式主键方案
 
 ###### （4）非协程情况下，并且常驻内存，如workerman框架请使用如下代码释放上下文，上下文管理为单例，所以需要该方法释放单例实例，一般是在一个请求结束，或者一个任务结束，释放完上下文，请重新new Model实例才行，因为释放上下文，清理了上下文中的PDO实例，方法如下:
-\PhpShardingPdo\Core\ShardingPdoContext::nonCoroutineContextFreed();  
+```php
+<?php
+
+\PhpShardingPdo\Core\ShardingPdoContext::nonCoroutineContextFreed();  //上下文本身应该在一次请求结束，就要重置，本身里面的值就有实效性，比如PDO实例会超时断连
+
+```
 
 #### 示例
 ##### 1.我们需要配置一下基本的分块规则配置类
@@ -240,6 +245,20 @@ var_dump($count);
 
 $count = $order->renew()->where(['id' => ['gt', 100000]])->count('id');   //索引覆盖型查询
 var_dump($count);
+
+//in 查询
+$list = $order->renew()->where(['id' => ['in', [1,2,3]]])->findAll();  
+var_dump($list);
+
+
+//not in 查询
+$list = $order->renew()->where(['id' => ['notIn', [1,2,3]]])->findAll();  
+var_dump($list);
+
+//gt大于  egt大于等于  lt小于  elt小于等于
+$list = $order->renew()->where(['id' => ['gt', 1]])->findAll();  
+var_dump($list);
+
 
 ```
 
