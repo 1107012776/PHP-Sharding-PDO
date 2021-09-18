@@ -259,7 +259,11 @@ var_dump($list);
 $list = $order->renew()->where(['id' => ['gt', 1]])->findAll();  
 var_dump($list);
 
-
+//neq 不等于  可以是数组，也可以单个
+$list = $order->renew()->where(['id' => ['neq', [1,2,3]]])->findAll();  
+var_dump($list);
+$list = $order->renew()->where(['id' => ['neq', 1]])->findAll();  
+var_dump($list);
 ```
 
 ###### 插入

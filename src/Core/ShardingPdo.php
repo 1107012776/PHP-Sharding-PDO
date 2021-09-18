@@ -310,6 +310,19 @@ class ShardingPdo
             $zwKey = ":$key";  //占位符
             if (is_array($val)) {
                 switch ($val[0]) {
+                    case 'neq':
+                        if(!is_array($val[1])){
+                            $zwKey .= '_neq_0';
+                            $this->_condition_str .= ' and ' . $key . ' != ' . $zwKey;
+                            $this->_condition_bind[$zwKey] = $val[1];
+                            break;
+                        }
+                        foreach ($val[1] as $k => $v) {   //多个不等于
+                            $zwKeyNeq = $zwKey . '_neq_' . $k;
+                            $this->_condition_str .= ' and ' . $key . ' != ' . $zwKeyNeq;
+                            $this->_condition_bind[$zwKeyNeq] = $v;
+                        }
+                        break;
                     case 'like':
                         $this->_condition_str .= ' and ' . $key . ' like ' . $zwKey;
                         $this->_condition_bind[$zwKey] = $val[1];
