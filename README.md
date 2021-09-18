@@ -259,6 +259,10 @@ var_dump($list);
 $list = $order->renew()->where(['id' => ['gt', 1]])->findAll();  
 var_dump($list);
 
+//between 两者之间 相当于  id >= 100 and id <= 10000
+$list = $order->renew()->where(['id' => ['between', [100, 10000]]])->findAll();  
+var_dump($list);
+
 //neq 不等于  可以是数组，也可以单个
 $list = $order->renew()->where(['id' => ['neq', [1,2,3]]])->findAll();  
 var_dump($list);
