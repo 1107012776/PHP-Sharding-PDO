@@ -307,7 +307,7 @@ class ShardingPdo
     private function _pare()
     {
         foreach ($this->_condition as $key => $val) {
-            $zwKey = ":$key";  //占位符
+            $zwKey = ':'.$key;  //占位符
             if (is_array($val)) {
                 switch ($val[0]) {
                     case 'neq':
@@ -360,6 +360,14 @@ class ShardingPdo
                         }
                         trim($zwKeyIn, ',');
                         $this->_condition_str .= ' and ' . $key . ' not in (' . $zwKeyIn . ')';
+                        break;
+                    case 'between':
+                        $zwKeyMin = $zwKey.'_between_min';
+                        $zwKeyMax = $zwKey.'_between_max';
+                        $this->_condition_str .= ' and ' . $key . ' <= ' . $zwKeyMax;
+                        $this->_condition_str .= ' and ' . $key . ' >= ' . $zwKeyMin;
+                        $this->_condition_bind[$zwKeyMin] = min($val[1]);
+                        $this->_condition_bind[$zwKeyMax] = max($val[1]);
                         break;
                 }
             } else {
