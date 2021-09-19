@@ -369,6 +369,14 @@ class ShardingPdo
                         $this->_condition_bind[$zwKeyMin] = min($val[1]);
                         $this->_condition_bind[$zwKeyMax] = max($val[1]);
                         break;
+                    case 'notBetween':
+                        $zwKeyMin = $zwKey.'_notBetween_min';
+                        $zwKeyMax = $zwKey.'_notBetween_max';
+                        $this->_condition_str .= ' and ' . $key . ' > ' . $zwKeyMax;
+                        $this->_condition_str .= ' and ' . $key . ' < ' . $zwKeyMin;
+                        $this->_condition_bind[$zwKeyMin] = min($val[1]);
+                        $this->_condition_bind[$zwKeyMax] = max($val[1]);
+                        break;
                 }
             } else {
                 $this->_condition_str .= ' and ' . $key . ' = ' . $zwKey;
