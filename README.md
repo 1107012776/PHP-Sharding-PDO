@@ -238,35 +238,26 @@ $res = $order->renew()->field('order_id,sum(id),create_time,user_id')->group('or
 var_dump($res);
 $newObj = clone $order->renew();
 var_dump($newObj === $order);  //输出false
-
 //count 查询
 $count = $order->renew()->count();
 var_dump($count);
-
 $count = $order->renew()->where(['id' => ['gt', 100000]])->count('id');   //索引覆盖型查询
 var_dump($count);
-
 //in 查询
 $list = $order->renew()->where(['id' => ['in', [1,2,3]]])->findAll();  
 var_dump($list);
-
-
 //not in 查询
 $list = $order->renew()->where(['id' => ['notIn', [1,2,3]]])->findAll();  
 var_dump($list);
-
 //gt大于  egt大于等于  lt小于  elt小于等于
 $list = $order->renew()->where(['id' => ['gt', 1]])->findAll(); 
 var_dump($list);
-
 //between 两者之间 相当于  id >= 100 and id <= 10000
 $list = $order->renew()->where(['id' => ['between', [100, 10000]]])->findAll();  
 var_dump($list);
-
 //not between  不在两者之间 相当于  id < 100 and id > 10000
 $list = $order->renew()->where(['id' => ['notBetween', [100, 10000]]])->findAll();  
 var_dump($list);
-
 //neq 不等于  可以是数组，也可以单个
 $list = $order->renew()->where(['id' => ['neq', [1,2,3]]])->findAll();  
 var_dump($list);
@@ -297,6 +288,12 @@ $order = new PhpShardingPdo\Test\OrderModel();
 $order->startTrans(); 
 $res = $order->renew()->where(['id' => 3])->update(['create_time' => date('Y-m-d H:i:s')]);
 var_dump($res);  //影响行数
+//decr 自减
+$res = $order->renew()->where(['id' => 3])->decr('money', 150);
+var_dump($res); //影响行数
+//incr 自增
+$res = $order->renew()->where(['id' => 3])->incr('money', 100);
+var_dump($res); //影响行数
 $order->commit();
 ```
 
