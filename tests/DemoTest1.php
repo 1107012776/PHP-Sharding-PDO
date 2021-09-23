@@ -132,6 +132,28 @@ class DemoTest1 extends TestCase
         var_dump($order->find());
     }
 
+    /**
+     * php vendor/bin/phpunit tests/DemoTest.php --filter testSelect
+     * @throws
+     */
+    public function testIncr()
+    {
+        $order = new OrderModel();
+        /*$res = $order->where(['user_id' => 2, 'order_id' => 2])->find();
+        var_dump($res);
+        $res = $order->renew()->where(['user_id' => 2, 'order_id' => 1])->find();
+        var_dump($res);*/
+
+        $res = $order->renew()->where(['id' => 3])->limit(1)->findAll();
+        var_dump($res);
+        //$dd = clone $order;
+        $res = $order->renew()->where(['id' => 3])->limit(1)->decr('order_id');
+        var_dump($res);
+        $res = $order->renew()->where(['id' => 3])->limit(1)->findAll();
+        var_dump($res);
+    }
+
+
     public function testGroupBy()
     {
         $order = new OrderModel();
