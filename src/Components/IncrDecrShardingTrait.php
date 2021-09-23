@@ -21,10 +21,10 @@ trait IncrDecrShardingTrait
     private $_incrOrDecrColumnStr = '';
     public function incr($field, $number)
     {
+        $this->clearSqlErrors();
         if(empty($field) || empty($number)){
             return false;
         }
-        $this->clearSqlErrors();
         $this->_pare();
         $this->_incrOrDecrColumnStr = $field.' = '.$field.' + '.intval($number);
         return $this->_updateSharding();
@@ -32,10 +32,10 @@ trait IncrDecrShardingTrait
 
     public function decr($field, $number)
     {
+        $this->clearSqlErrors();
         if(empty($field) || empty($number)){
             return false;
         }
-        $this->clearSqlErrors();
         $this->_pare();
         $this->_incrOrDecrColumnStr = $field.' = '.$field.' - '.intval($number);
         return $this->_updateSharding();
