@@ -37,7 +37,7 @@ trait IncrDecrShardingTrait
         }
         $this->clearSqlErrors();
         $this->_pare();
-        $this->_incrOrDecrColumnStr = $field.' = '.$field.' + '.intval($number);
+        $this->_incrOrDecrColumnStr = $field.' = '.$field.' - '.intval($number);
         return $this->_updateSharding();
     }
 }
