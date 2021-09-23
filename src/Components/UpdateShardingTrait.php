@@ -27,11 +27,15 @@ trait UpdateShardingTrait
         $sql = 'update  ###TABLENAME### set ';
         $column_str = '';
         $bindParams = [];
-        foreach ($this->_update_data as $k => $v) {
-            $column_str .= ',' . $k . ' = ' . ':update_' . $k;
-            $bindParams[':update_' . $k] = $v;
+        if(empty($this->_incrOrDecrColumnStr)){
+            foreach ($this->_update_data as $k => $v) {
+                $column_str .= ',' . $k . ' = ' . ':update_' . $k;
+                $bindParams[':update_' . $k] = $v;
+            }
+            !empty($column_str) && $column_str = substr($column_str, 1, strlen($column_str)-1);
+        }else{
+            $column_str = $this->_incrOrDecrColumnStr;
         }
-        !empty($column_str) && $column_str = substr($column_str, 1, strlen($column_str)-1);
         if (empty($column_str)) {
             return false;
         }

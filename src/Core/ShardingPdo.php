@@ -25,6 +25,7 @@ class ShardingPdo
     use \PhpShardingPdo\Components\DeleteShardingTrait;
     use \PhpShardingPdo\Components\TransactionShardingTrait;
     use \PhpShardingPdo\Components\ReplaceIntoShardingTrait;
+    use \PhpShardingPdo\Components\IncrDecrShardingTrait;
     /**
      * @var ShardingRuleConfiguration
      */
@@ -72,6 +73,7 @@ class ShardingPdo
         $this->offset_limit = 0;
         $this->fetch_style = \PDO::FETCH_ASSOC;
         $this->attr_cursor = \PDO::CURSOR_FWDONLY;
+        $this->_incrOrDecrColumnStr = '';
         return $this;
     }
 

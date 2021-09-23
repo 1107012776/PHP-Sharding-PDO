@@ -140,6 +140,29 @@ class Model
         return $this->dao->count($field_count);
     }
 
+    /**
+     * 自增
+     * @param string $field
+     * @param int $number
+     * @return boolean|int
+     */
+    public function incr($field = '', $number = 1)
+    {
+        return $this->dao->incr($field, $number);
+    }
+
+
+    /**
+     * 自减
+     * @param string $field
+     * @param int $number
+     * @return boolean|int
+     */
+    public function decr($field = '', $number = 1)
+    {
+        return $this->dao->decr($field, $number);
+    }
+
 
 
     /**
