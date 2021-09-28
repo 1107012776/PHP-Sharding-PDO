@@ -84,7 +84,7 @@ class ShardingPdoContext
 
     public static function getCid()
     {
-        if(!class_exists('\Swoole\Coroutine')){
+        if (!class_exists('\Swoole\Coroutine')) {
             return -1;
         }
         return \Swoole\Coroutine::getCid();
@@ -117,10 +117,11 @@ class ShardingPdoContext
 
 
     /**
-     * 释放当前上下文，这边,这边释放的是单例上下文，如在常驻内存的情况下，或者workerman框架下 
+     * 释放当前上下文，这边,这边释放的是单例上下文，如在常驻内存的情况下，或者workerman框架下
      * @return boolean
      */
-    public static function nonCoroutineContextFreed(){
+    public static function nonCoroutineContextFreed()
+    {
         if (self::getCid() > -1) {
             return false;  //协程模式不能释放该上下文
         } else {

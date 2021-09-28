@@ -250,7 +250,8 @@ class Model
     /**
      * 重新连接
      */
-    public function  reconnection(callable $errorCallback = null){
+    public function  reconnection(callable $errorCallback = null)
+    {
         /**
          * @var ShardingInitConfigInter $configClass
          */

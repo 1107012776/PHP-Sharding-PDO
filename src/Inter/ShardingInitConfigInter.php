@@ -41,7 +41,8 @@ abstract class ShardingInitConfigInter
     }
 
 
-    public static function reconnection(callable $errorCallback = null){
+    public static function reconnection(callable $errorCallback = null)
+    {
         $shardingInitName = self::$shardingInitConfigInterName.static::class;
         $databasePdoInstanceMapName =  $shardingInitName.'_pdo';
         $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
@@ -65,7 +66,8 @@ abstract class ShardingInitConfigInter
     }
     
     
-   public static function close(callable $errorCallback = null){
+   public static function close(callable $errorCallback = null)
+   {
         $shardingInitName = self::$shardingInitConfigInterName.static::class;
         $databasePdoInstanceMapName =  $shardingInitName.'_pdo';
         $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
