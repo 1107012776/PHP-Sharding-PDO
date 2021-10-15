@@ -263,6 +263,9 @@ $list = $order->renew()->where(['id' => ['neq', [1,2,3]]])->findAll();
 var_dump($list);
 $list = $order->renew()->where(['id' => ['neq', 1]])->findAll();  
 var_dump($list);
+//like 查询
+$list = $order->renew()->where(['article_title' => ['like','php-sharding%'],'type' => 1])->findAll();  
+var_dump($list);
 ```
 
 ###### 插入
