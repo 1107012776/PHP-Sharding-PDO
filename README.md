@@ -264,7 +264,7 @@ var_dump($list);
 $list = $order->renew()->where(['id' => ['neq', 1]])->findAll();  
 var_dump($list);
 //like 查询
-$list = $order->renew()->where(['company_name' => ['like','php-sharding%'],'type' => 1])->findAll();  
+$list = $order->renew()->where(['company_name' => ['like','某网络科技%'],'type' => 1])->findAll();  
 var_dump($list);
 ```
 
