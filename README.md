@@ -19,7 +19,7 @@ PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to ano
 ```php
 <?php
 //上下文本身应该在一次请求结束，就要重置，本身里面的值就有时效性，比如PDO实例会超时断连
-\PhpShardingPdo\Core\ShardingPdoContext::nonCoroutineContextFreed();  
+\PhpShardingPdo\Core\ShardingPdoContext::contextFreed();  
 
 ```
 

@@ -120,11 +120,13 @@ class ShardingPdoContext
      * 释放当前上下文，这边,这边释放的是单例上下文，如在常驻内存的情况下，或者workerman框架下
      * @return boolean
      */
-    public static function nonCoroutineContextFreed()
+    public static function contextFreed()
     {
         if (self::getCid() > -1) {
-            return false;  //协程模式不能释放该上下文
-        } else {
+            $context = ShardingPdoContext::getContext();
+            $context[__CLASS__] = [];
+            return true;  //释放php-sharding-pdo协程上下文
+        } else { //释放非协程上下文
             self::$_self = null;
             return true;
         }
