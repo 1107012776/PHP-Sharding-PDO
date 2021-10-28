@@ -153,7 +153,7 @@ trait TransactionShardingTrait
         $objHash = md5(spl_object_hash($this));  //加上这个避免串事务
         $_exeSqlXaUniqidFilePath = ShardingPdoContext::getValue(self::$_exeSqlXaUniqidFilePath);
         $filePath = str_replace('.log',ShardingPdoContext::getCid().'-'.$objHash.'-'.date('Y-m-d_H_i_s').'.log',$_exeSqlXaUniqidFilePath);
-        ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);  //清空旧的残留预提交
+        ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
         ShardingPdoContext::array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
         file_put_contents($filePath, $log.PHP_EOL.'END'.PHP_EOL, FILE_APPEND);
     }
