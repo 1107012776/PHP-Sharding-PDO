@@ -115,6 +115,13 @@ class ShardingPdoContext
         return array_shift($context[__CLASS__][$name]);
     }
 
+    /**
+     * 兼容旧版本（释放上下文）
+     * @return bool
+     */
+    public static function nonCoroutineContextFreed(){
+        return static::contextFreed();
+    }
 
     /**
      * 释放当前php-sharding-pdo上下文
