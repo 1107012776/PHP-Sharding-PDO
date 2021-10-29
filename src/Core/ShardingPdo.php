@@ -561,8 +561,10 @@ class ShardingPdo
      * @return $order =>
      * [
      *    [
-     *        'id'=>'asc',
-     *        'create_time'=>'desc'
+     *        'id','asc',
+     *    ],
+     *    [
+     *       'create_time','desc'
      *    ]
      * ]
      */
