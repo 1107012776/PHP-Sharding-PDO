@@ -31,10 +31,10 @@ trait DeleteShardingTrait
             $sql = 'delete ' . ' from ' . $this->_table_name . $this->_condition_str .$this->_order_str . $this->_limit_str;
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {
             foreach ($this->_table_name_index as $tableName) {
-                $sqlArr[] = 'delete ' . ' from ' . $tableName . $this->_condition_str .  $this->_order_str . $this->_limit_str;
+                $sqlArr[] = 'delete ' . ' from ' .'`'. $tableName .'`'. $this->_condition_str .  $this->_order_str . $this->_limit_str;
             }
         } else {
-            $sql = 'delete ' . ' from ' . $this->_current_exec_table . $this->_condition_str . $this->_order_str . $this->_limit_str;
+            $sql = 'delete ' . ' from ' .'`'. $this->_current_exec_table .'`'. $this->_condition_str . $this->_order_str . $this->_limit_str;
         }
         $statementArr = [];
         if (empty($this->_current_exec_db)) {  //没有找到数据库

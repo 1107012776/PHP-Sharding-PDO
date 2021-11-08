@@ -31,7 +31,7 @@ trait InsertShardingTrait
     {
         $this->_last_insert_id = 0;  //初始化_last_insert_id
         $sqlArr = [];
-        $sql = 'insert into ###TABLENAME### (';
+        $sql = 'insert into `###TABLENAME###` (';
         $column_str = '';
         $value_str = '';
         $bindParams = [];
