@@ -494,14 +494,14 @@ class ShardingPdo
             return isset($map[$index]) ? $map[$index] : null;
         }
         $name = $tableShardingStrategyConfig->getName();
-        if (!empty($this->_condition)) {
-            foreach ($this->_condition as $key => $val) {
+        if (!empty($this->_insert_data)) {  //优先insert的
+            foreach ($this->_insert_data as $key => $val) {
                 if ($key == $name && !is_array($val)) {
                     $number = $tableShardingStrategyConfig->getNum($val);
                 }
             }
-        } elseif (!empty($this->_insert_data)) {
-            foreach ($this->_insert_data as $key => $val) {
+        } elseif (!empty($this->_condition)) {
+            foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
                     $number = $tableShardingStrategyConfig->getNum($val);
                 }
