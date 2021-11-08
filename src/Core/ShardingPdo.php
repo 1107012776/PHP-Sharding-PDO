@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Core;
 
 /**
@@ -89,9 +90,9 @@ class ShardingPdo
     /**
      * @param string $configDatabasePdoInstanceMapName
      * @param ShardingRuleConfiguration $config
-     * @param string $exeSqlXaUniqidFilePath  //xa提交失败日志记录
+     * @param string $exeSqlXaUniqidFilePath //xa提交失败日志记录
      */
-    public function __construct($configDatabasePdoInstanceMapName,ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
+    public function __construct($configDatabasePdoInstanceMapName, ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
     {
         $this->initTrans();
         $this->_configDatabasePdoInstanceMapName = $configDatabasePdoInstanceMapName;
@@ -103,7 +104,8 @@ class ShardingPdo
      * 获取$databasePdoInstanceMap
      * @return array
      */
-    private function _databasePdoInstanceMap(){
+    private function _databasePdoInstanceMap()
+    {
         $databasePdoInstanceMap = ShardingPdoContext::getValue($this->_configDatabasePdoInstanceMapName);
         return $databasePdoInstanceMap;
     }
@@ -150,11 +152,11 @@ class ShardingPdo
     public function limit($offset = 0, $page_count = null)
     {
         if (empty($page_count)) {
-            $this->_limit_str = sprintf("%.0f",$offset);
+            $this->_limit_str = sprintf("%.0f", $offset);
         } else {
-            $this->offset = sprintf("%.0f",$offset);  //偏移量必须单独处理，否者分页存在问题
-            $this->offset_limit = sprintf("%.0f",$page_count);
-            $this->_limit_str = sprintf("%.0f",$offset) . ',' . sprintf("%.0f",$page_count);
+            $this->offset = sprintf("%.0f", $offset);  //偏移量必须单独处理，否者分页存在问题
+            $this->offset_limit = sprintf("%.0f", $page_count);
+            $this->_limit_str = sprintf("%.0f", $offset) . ',' . sprintf("%.0f", $page_count);
         }
         return $this;
     }
@@ -233,14 +235,14 @@ class ShardingPdo
         $this->clearSqlErrors();
         $old = $this->_field_str;
         empty($field_count) && $field_count = '*';
-        $this->_field_str = 'count('.$field_count.') as num';
+        $this->_field_str = 'count(' . $field_count . ') as num';
         $list = $this->_search();
         $this->_field_str = $old;
         $count = 0;
-        if(empty($list)){
+        if (empty($list)) {
             return $count;
         }
-        foreach ($list as &$value){
+        foreach ($list as &$value) {
             $count += $value['num'];
         }
         return $count;
@@ -281,7 +283,8 @@ class ShardingPdo
      * @param $data
      * @return boolean|int
      */
-    public function replaceInto($data){
+    public function replaceInto($data)
+    {
         $this->clearSqlErrors();
         $this->_insert_data = $data;
         $this->_current_exec_db = $this->_getQpDb();
@@ -309,11 +312,11 @@ class ShardingPdo
     private function _pare()
     {
         foreach ($this->_condition as $key => $val) {
-            $zwKey = ':'.$key;  //占位符
+            $zwKey = ':' . $key;  //占位符
             if (is_array($val)) {
                 switch ($val[0]) {
                     case 'neq':
-                        if(!is_array($val[1])){
+                        if (!is_array($val[1])) {
                             $zwKey .= '_neq_0';
                             $this->_condition_str .= ' and ' . $key . ' != ' . $zwKey;
                             $this->_condition_bind[$zwKey] = $val[1];
@@ -326,29 +329,34 @@ class ShardingPdo
                         }
                         break;
                     case 'like':
+                        $zwKey .= '_0';
                         $this->_condition_str .= ' and ' . $key . ' like ' . $zwKey;
                         $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     case 'gt':
+                        $zwKey .= '_0';
                         $this->_condition_str .= ' and ' . $key . ' > ' . $zwKey;
                         $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     case 'egt':
+                        $zwKey .= '_0';
                         $this->_condition_str .= ' and ' . $key . ' >= ' . $zwKey;
                         $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     case 'elt':
+                        $zwKey .= '_0';
                         $this->_condition_str .= ' and ' . $key . ' <= ' . $zwKey;
                         $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     case 'lt':
+                        $zwKey .= '_0';
                         $this->_condition_str .= ' and ' . $key . ' < ' . $zwKey;
                         $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     case 'in':
                         $zwKeyIn = '';
                         foreach ($val[1] as $k => $v) {
-                            $zwKeyIn .= ',' . $zwKey .'_in_'. $k;
+                            $zwKeyIn .= ',' . $zwKey . '_in_' . $k;
                             $this->_condition_bind[$zwKey . $k] = $v;
                         }
                         trim($zwKeyIn, ',');
@@ -357,30 +365,49 @@ class ShardingPdo
                     case 'notIn':
                         $zwKeyIn = '';
                         foreach ($val[1] as $k => $v) {
-                            $zwKeyIn .= ',' . $zwKey .'_notIn_'. $k;
+                            $zwKeyIn .= ',' . $zwKey . '_notIn_' . $k;
                             $this->_condition_bind[$zwKey . $k] = $v;
                         }
                         trim($zwKeyIn, ',');
                         $this->_condition_str .= ' and ' . $key . ' not in (' . $zwKeyIn . ')';
                         break;
                     case 'between':
-                        $zwKeyMin = $zwKey.'_between_min';
-                        $zwKeyMax = $zwKey.'_between_max';
+                        $zwKeyMin = $zwKey . '_between_min_0';
+                        $zwKeyMax = $zwKey . '_between_max_0';
                         $this->_condition_str .= ' and ' . $key . ' <= ' . $zwKeyMax;
                         $this->_condition_str .= ' and ' . $key . ' >= ' . $zwKeyMin;
                         $this->_condition_bind[$zwKeyMin] = min($val[1]);
                         $this->_condition_bind[$zwKeyMax] = max($val[1]);
                         break;
                     case 'notBetween':
-                        $zwKeyMin = $zwKey.'_notBetween_min';
-                        $zwKeyMax = $zwKey.'_notBetween_max';
+                        $zwKeyMin = $zwKey . '_notBetween_min_0';
+                        $zwKeyMax = $zwKey . '_notBetween_max_0';
                         $this->_condition_str .= ' and ' . $key . ' > ' . $zwKeyMax;
                         $this->_condition_str .= ' and ' . $key . ' < ' . $zwKeyMin;
                         $this->_condition_bind[$zwKeyMin] = min($val[1]);
                         $this->_condition_bind[$zwKeyMax] = max($val[1]);
                         break;
+                    case 'is':
+                        $zwKeyIs = $zwKey . '_is_0';
+                        if ($val[1] === null) {
+                            $this->_condition_str .= ' and ' . $key . ' is NULL';
+                        } else {
+                            $this->_condition_str .= ' and ' . $key . ' is ' . $zwKeyIs;
+                            $this->_condition_bind[$zwKeyIs] = $val[1];
+                        }
+                        break;
+                    case 'isNot':
+                        $zwKeyIs = $zwKey . '_isNot_0';
+                        if ($val[1] === null) {
+                            $this->_condition_str .= ' and ' . $key . ' is not NULL';
+                        } else {
+                            $this->_condition_str .= ' and ' . $key . ' is not ' . $zwKeyIs;
+                            $this->_condition_bind[$zwKeyIs] = $val[1];
+                        }
+                        break;
                 }
             } else {
+                $zwKey .= '_0';
                 $this->_condition_str .= ' and ' . $key . ' = ' . $zwKey;
                 $this->_condition_bind[$zwKey] = $val;
             }
@@ -412,7 +439,7 @@ class ShardingPdo
      */
     private function _getLimitReCount()
     {
-        if(!empty($this->offset_limit)){
+        if (!empty($this->offset_limit)) {
             return $this->offset_limit;
         }
         if (empty($this->_limit_str)) {
@@ -445,7 +472,7 @@ class ShardingPdo
             }
         }
         if (empty($this->_tableRuleList[0])) {
-            if(count($map) == 1){  //只有一个数据库，那就是当前
+            if (count($map) == 1) {  //只有一个数据库，那就是当前
                 $mapValues = array_values($map);
                 return $mapValues[0];
             }
@@ -454,17 +481,17 @@ class ShardingPdo
         $tableRule = $this->_tableRuleList[0];
         $tableShardingStrategyConfig = $tableRule->getDatabaseShardingStrategyConfig();
         $number = null;
-        if($tableShardingStrategyConfig->isCustomizeRule()){  //是否自定义规则
-            $customizeCondition = !empty($this->_condition) ? $this->_condition:$this->_insert_data;
-            if(empty($customizeCondition)){  //自定义，却找不到条件
+        if ($tableShardingStrategyConfig->isCustomizeRule()) {  //是否自定义规则
+            $customizeCondition = !empty($this->_condition) ? $this->_condition : $this->_insert_data;
+            if (empty($customizeCondition)) {  //自定义，却找不到条件
                 return null;  //返回这个代表没有规则，则需要全部db扫描了
             }
             $number = $tableShardingStrategyConfig->getCustomizeNum($customizeCondition);  //自定义规则
-            if(!is_numeric($number)){
+            if (!is_numeric($number)) {
                 return null;  //返回这个代表没有规则，则需要全部db扫描了
             }
             $index = $tableShardingStrategyConfig->getFix() . $number;
-            return isset($map[$index]) ? $map[$index]:null;
+            return isset($map[$index]) ? $map[$index] : null;
         }
         $name = $tableShardingStrategyConfig->getName();
         if (!empty($this->_condition)) {
@@ -481,14 +508,14 @@ class ShardingPdo
             }
         }
         if ($number === null) {
-            if(count($map) == 1){  //只有一个数据库，那就是当前
+            if (count($map) == 1) {  //只有一个数据库，那就是当前
                 $mapValues = array_values($map);
                 return $mapValues[0];
             }
             return null;  //返回这个代表没有规则，则需要全部db扫描了
         }
         $index = $tableShardingStrategyConfig->getFix() . $number;
-        return isset($map[$index]) ? $map[$index]:null;
+        return isset($map[$index]) ? $map[$index] : null;
     }
 
     /**
@@ -515,13 +542,13 @@ class ShardingPdo
         $tableRule = $this->_tableRuleList[0];
         $tableShardingStrategyConfig = $tableRule->getTableShardingStrategyConfig();
         $number = null;
-        if($tableShardingStrategyConfig->isCustomizeRule()){  //是否自定义规则
-            $customizeCondition = !empty($this->_condition) ? $this->_condition:$this->_insert_data;
-            if(empty($customizeCondition)){  //自定义，却找不到条件
+        if ($tableShardingStrategyConfig->isCustomizeRule()) {  //是否自定义规则
+            $customizeCondition = !empty($this->_condition) ? $this->_condition : $this->_insert_data;
+            if (empty($customizeCondition)) {  //自定义，却找不到条件
                 return null;  //返回这个代表没有规则，则需要全部表扫描了
             }
             $number = $tableShardingStrategyConfig->getCustomizeNum($customizeCondition);  //自定义规则
-            if(!is_numeric($number)){
+            if (!is_numeric($number)) {
                 return null;
             }
             return $tableShardingStrategyConfig->getFix() . $number;
@@ -603,13 +630,13 @@ class ShardingPdo
             $this->_field_str .= ',' . $groupField[0];
         }
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {  //全部扫描
-            $sql = 'select ' . $this->_field_str . ' from ' .'`'. $this->_table_name .'`'. $this->_condition_str . $this->_group_str . $this->_order_str;
+            $sql = 'select ' . $this->_field_str . ' from ' . '`' . $this->_table_name . '`' . $this->_condition_str . $this->_group_str . $this->_order_str;
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {
             foreach ($this->_table_name_index as $tableName) {
-                $sqlArr[] = 'select ' . $this->_field_str . ' from ' .'`'. $tableName .'`'. $this->_condition_str . $this->_group_str . $this->_order_str;
+                $sqlArr[] = 'select ' . $this->_field_str . ' from ' . '`' . $tableName . '`' . $this->_condition_str . $this->_group_str . $this->_order_str;
             }
         } else {
-            $sql = 'select ' . $this->_field_str . ' from ' .'`'. $this->_current_exec_table .'`'. $this->_condition_str . $this->_group_str . $this->_order_str;
+            $sql = 'select ' . $this->_field_str . ' from ' . '`' . $this->_current_exec_table . '`' . $this->_condition_str . $this->_group_str . $this->_order_str;
         }
         empty($sql) && $sql = '';
         return $this->_groupShardingSearch($sqlArr, $sql);

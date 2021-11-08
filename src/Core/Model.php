@@ -42,6 +42,7 @@ class Model
         }
         $this->dao = $this->shardingInitConfig();
         $this->dao->table($this->tableName, $this->tableNameIndexConfig);
+        method_exists($this,'getSoftDeleteCondition') && $this->dao->where($this->getSoftDeleteCondition());
     }
 
     public function where($param)
