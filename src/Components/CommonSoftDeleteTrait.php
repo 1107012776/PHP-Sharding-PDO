@@ -9,7 +9,11 @@
  */
 
 namespace PhpShardingPdo\Components;
-
+/**
+ * 软删除
+ * Class CommonSoftDeleteTrait
+ * @package PhpShardingPdo\Components
+ */
 class CommonSoftDeleteTrait
 {
     protected $softDeleteKey = 'del_flag';  //默认软删除键
