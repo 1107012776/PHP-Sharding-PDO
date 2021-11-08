@@ -44,7 +44,7 @@ trait ReplaceIntoShardingTrait
     {
         $this->_last_insert_id = 0;  //初始化_last_insert_id
         $sqlArr = [];
-        $sql = 'replace into ###TABLENAME### (';
+        $sql = 'replace into `###TABLENAME###` (';
         $column_str = '';
         $value_str = '';
         $bindParams = [];

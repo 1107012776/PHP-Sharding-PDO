@@ -96,13 +96,13 @@ trait SelectSearchSharingTrait
             $this->_limit_str = ' limit '.strval($this->offset+$this->offset_limit);  //分布式分页，获取的个数
         }
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {  //全部扫描
-            $sql = 'select ' . $this->_field_str . ' from ' . $this->_table_name . $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
+            $sql = 'select ' . $this->_field_str . ' from ' .'`'. $this->_table_name .'`'. $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {
             foreach ($this->_table_name_index as $tableName) {
-                $sqlArr[] = 'select ' . $this->_field_str . ' from ' . $tableName . $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
+                $sqlArr[] = 'select ' . $this->_field_str . ' from ' .'`'. $tableName .'`'. $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
             }
         } else {
-            $sql = 'select ' . $this->_field_str . ' from ' . $this->_current_exec_table . $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
+            $sql = 'select ' . $this->_field_str . ' from ' .'`'. $this->_current_exec_table .'`'. $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
         }
         $statementArr = [];
         if (empty($this->_current_exec_db)) {  //没有找到数据库

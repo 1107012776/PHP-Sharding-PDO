@@ -24,7 +24,7 @@ trait UpdateShardingTrait
     public function _updateSharding()
     {
         $sqlArr = [];
-        $sql = 'update  ###TABLENAME### set ';
+        $sql = 'update  `###TABLENAME###` set ';
         $column_str = '';
         $bindParams = [];
         if(empty($this->_incrOrDecrColumnStr)){
