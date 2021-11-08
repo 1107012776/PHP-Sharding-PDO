@@ -543,7 +543,7 @@ class ShardingPdo
         $tableShardingStrategyConfig = $tableRule->getTableShardingStrategyConfig();
         $number = null;
         if ($tableShardingStrategyConfig->isCustomizeRule()) {  //是否自定义规则
-            $customizeCondition = !empty($this->_condition) ? $this->_condition : $this->_insert_data;
+            $customizeCondition = !empty($this->_insert_data) ? $this->_insert_data : $this->_condition;
             if (empty($customizeCondition)) {  //自定义，却找不到条件
                 return null;  //返回这个代表没有规则，则需要全部表扫描了
             }
@@ -554,14 +554,14 @@ class ShardingPdo
             return $tableShardingStrategyConfig->getFix() . $number;
         }
         $name = $tableShardingStrategyConfig->getName();
-        if (!empty($this->_condition)) {
-            foreach ($this->_condition as $key => $val) {
+        if (!empty($this->_insert_data)) {
+            foreach ($this->_insert_data as $key => $val) {
                 if ($key == $name && !is_array($val)) {
                     $number = $tableShardingStrategyConfig->getNum($val);
                 }
             }
-        } elseif (!empty($this->_insert_data)) {
-            foreach ($this->_insert_data as $key => $val) {
+        } elseif (!empty($this->_condition)) {
+            foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
                     $number = $tableShardingStrategyConfig->getNum($val);
                 }
