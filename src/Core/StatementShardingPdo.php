@@ -53,6 +53,11 @@ class StatementShardingPdo
         return $this->_queue[0];
     }
 
+    public function getIsEmpty()
+    {
+        return empty($this->_queue[0]);
+    }
+
 
     /**
      * 二维数组排序
@@ -71,11 +76,14 @@ class StatementShardingPdo
                  * @var StatementShardingPdo $a
                  */
                 $aRow = $a->getCurrentFetch();
+                if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
+                    return false;
+                }
                 /**
                  * @var StatementShardingPdo $b
                  */
                 $bRow = $b->getCurrentFetch();
-                if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
+                if (!isset($bRow[$key])) {  //排序字段不在返回值里面之后false无法排序
                     return false;
                 }
                 switch ($fh) {
@@ -145,10 +153,16 @@ class StatementShardingPdo
                      * @var StatementShardingPdo $a
                      */
                     $aRow = $a->getCurrentFetch();
+                    if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
+                        return false;
+                    }
                     /**
                      * @var StatementShardingPdo $b
                      */
                     $bRow = $b->getCurrentFetch();
+                    if (!isset($bRow[$key])) {  //排序字段不在返回值里面之后false无法排序
+                        return false;
+                    }
                 } else {
                     $aRow = $a;
                     $bRow = $b;
