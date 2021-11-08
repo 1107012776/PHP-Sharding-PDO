@@ -28,7 +28,7 @@ trait DeleteShardingTrait
         $result = [];
         $sqlArr = [];
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {  //全部扫描
-            $sql = 'delete ' . ' from ' . $this->_table_name . $this->_condition_str .$this->_order_str . $this->_limit_str;
+            $sql = 'delete ' . ' from ' .'`'. $this->_table_name .'`'. $this->_condition_str .$this->_order_str . $this->_limit_str;
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {
             foreach ($this->_table_name_index as $tableName) {
                 $sqlArr[] = 'delete ' . ' from ' .'`'. $tableName .'`'. $this->_condition_str .  $this->_order_str . $this->_limit_str;
