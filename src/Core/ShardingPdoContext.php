@@ -119,7 +119,8 @@ class ShardingPdoContext
      * 兼容旧版本（释放上下文）
      * @return bool
      */
-    public static function nonCoroutineContextFreed(){
+    public static function nonCoroutineContextFreed()
+    {
         return static::contextFreed();
     }
 

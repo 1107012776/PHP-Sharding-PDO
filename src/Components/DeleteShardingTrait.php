@@ -9,6 +9,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Components;
 /**
  * 插入sharding
@@ -28,13 +29,13 @@ trait DeleteShardingTrait
         $result = [];
         $sqlArr = [];
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {  //全部扫描
-            $sql = 'delete ' . ' from ' .'`'. $this->_table_name .'`'. $this->_condition_str .$this->_order_str . $this->_limit_str;
+            $sql = 'delete ' . ' from ' . '`' . $this->_table_name . '`' . $this->_condition_str . $this->_order_str . $this->_limit_str;
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {
             foreach ($this->_table_name_index as $tableName) {
-                $sqlArr[] = 'delete ' . ' from ' .'`'. $tableName .'`'. $this->_condition_str .  $this->_order_str . $this->_limit_str;
+                $sqlArr[] = 'delete ' . ' from ' . '`' . $tableName . '`' . $this->_condition_str . $this->_order_str . $this->_limit_str;
             }
         } else {
-            $sql = 'delete ' . ' from ' .'`'. $this->_current_exec_table .'`'. $this->_condition_str . $this->_order_str . $this->_limit_str;
+            $sql = 'delete ' . ' from ' . '`' . $this->_current_exec_table . '`' . $this->_condition_str . $this->_order_str . $this->_limit_str;
         }
         $statementArr = [];
         if (empty($this->_current_exec_db)) {  //没有找到数据库
@@ -46,7 +47,7 @@ trait DeleteShardingTrait
                      */
                     $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                     $res[$key] = $statement->execute($this->_condition_bind);
-                    if(empty($res[$key])){
+                    if (empty($res[$key])) {
                         $this->_sqlErrors[] = $statement->errorInfo();
                     }
                 }
@@ -62,11 +63,11 @@ trait DeleteShardingTrait
                 return false;
             }
             /**
-            * @var \PDOStatement $s
-            */
+             * @var \PDOStatement $s
+             */
             foreach ($statementArr as $s) {
-                    $tmp = $s->rowCount();
-                    !empty($tmp) && $result[] = $tmp;
+                $tmp = $s->rowCount();
+                !empty($tmp) && $result[] = $tmp;
             }
         } else {  //找到了具体的数据库
             empty($sqlArr) && $sqlArr = [$sql];
@@ -76,7 +77,7 @@ trait DeleteShardingTrait
                  */
                 $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($this->_condition_bind);
-                if(empty($res)){
+                if (empty($res)) {
                     $this->_sqlErrors[] = $statement->errorInfo();
                 }
             }

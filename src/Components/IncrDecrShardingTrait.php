@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Components;
 /**
  * sharding
@@ -19,25 +20,26 @@ namespace PhpShardingPdo\Components;
 trait IncrDecrShardingTrait
 {
     private $_incrOrDecrColumnStr = '';
+
     public function incr($field, $number)
     {
         $this->clearSqlErrors();
-        if(empty($field) || empty($number)){
+        if (empty($field) || empty($number)) {
             return false;
         }
         $this->_pare();
-        $this->_incrOrDecrColumnStr = $field.' = '.$field.' + '.intval($number);
+        $this->_incrOrDecrColumnStr = $field . ' = ' . $field . ' + ' . intval($number);
         return $this->_updateSharding();
     }
 
     public function decr($field, $number)
     {
         $this->clearSqlErrors();
-        if(empty($field) || empty($number)){
+        if (empty($field) || empty($number)) {
             return false;
         }
         $this->_pare();
-        $this->_incrOrDecrColumnStr = $field.' = '.$field.' - '.intval($number);
+        $this->_incrOrDecrColumnStr = $field . ' = ' . $field . ' - ' . intval($number);
         return $this->_updateSharding();
     }
 }

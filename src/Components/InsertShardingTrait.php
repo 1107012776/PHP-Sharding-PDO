@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Components;
 /**
  * 插入sharding
@@ -67,7 +68,7 @@ trait InsertShardingTrait
                 $this->_addExeSql($sql, $bindParams);
                 $rowsCount += $statement->rowCount();
                 $this->_last_insert_id = $this->_current_exec_db->lastInsertId();
-                if(empty($res)){
+                if (empty($res)) {
                     $this->_sqlErrors[] = $statement->errorInfo();
                 }
                 return $res;

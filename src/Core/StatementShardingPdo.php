@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Core;
 /**
  * Created by PhpStorm.
@@ -72,10 +73,10 @@ class StatementShardingPdo
         /**
          * @var StatementShardingPdo $value
          */
-        foreach ($arr as $index => $value){
-            if(is_object($value)){
+        foreach ($arr as $index => $value) {
+            if (is_object($value)) {
                 $v = $value->getCurrentFetch();
-                if(empty($v)){
+                if (empty($v)) {
                     unset($arr[$index]);
                 }
             }
@@ -159,10 +160,10 @@ class StatementShardingPdo
         /**
          * @var StatementShardingPdo $value
          */
-        foreach ($arr as $index => $value){
-            if(is_object($value)){
+        foreach ($arr as $index => $value) {
+            if (is_object($value)) {
                 $v = $value->getCurrentFetch();
-                if(empty($v)){
+                if (empty($v)) {
                     unset($arr[$index]);
                 }
             }

@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Test;
 
 use  \PhpShardingPdo\Core\ShardingTableRuleConfig;
@@ -123,7 +124,8 @@ class ShardingInitNewConfig extends ShardingInitConfigInter
      * 获取sql执行xa日志路径，当xa提交失败的时候会出现该日志
      * @return string
      */
-    protected  function getExecXaSqlLogFilePath(){
+    protected function getExecXaSqlLogFilePath()
+    {
         return './execXaSqlLogFilePath.log';
     }
 }
