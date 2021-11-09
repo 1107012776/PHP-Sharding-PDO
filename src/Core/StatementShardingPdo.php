@@ -69,6 +69,17 @@ class StatementShardingPdo
     {
         $key = $field[0][0];
         $fh = $field[0][1];
+        /**
+         * @var StatementShardingPdo $value
+         */
+        foreach ($arr as $index => $value){
+            if(is_object($value)){
+                $v = $value->getCurrentFetch();
+                if(empty($v)){
+                    unset($arr[$index]);
+                }
+            }
+        }
         $ss = function ($key, $fh, $field) {
             return function ($a, $b) use ($key, $fh, $field) {
                 $leng = count($field);
@@ -76,13 +87,13 @@ class StatementShardingPdo
                  * @var StatementShardingPdo $a
                  */
                 $aRow = $a->getCurrentFetch();
-                if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
-                    return false;
-                }
                 /**
                  * @var StatementShardingPdo $b
                  */
                 $bRow = $b->getCurrentFetch();
+                if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
+                    return false;
+                }
                 if (!isset($bRow[$key])) {  //排序字段不在返回值里面之后false无法排序
                     return false;
                 }
@@ -153,13 +164,13 @@ class StatementShardingPdo
                      * @var StatementShardingPdo $a
                      */
                     $aRow = $a->getCurrentFetch();
-                    if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
-                        return false;
-                    }
                     /**
                      * @var StatementShardingPdo $b
                      */
                     $bRow = $b->getCurrentFetch();
+                    if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
+                        return false;
+                    }
                     if (!isset($bRow[$key])) {  //排序字段不在返回值里面之后false无法排序
                         return false;
                     }
