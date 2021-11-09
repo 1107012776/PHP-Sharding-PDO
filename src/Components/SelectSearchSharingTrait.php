@@ -44,6 +44,9 @@ trait SelectSearchSharingTrait
             }
             while ($limit > 0) {   //limit获取值核心方法
                 StatementShardingPdo::reSort($statementCurrentRowObjArr, $orderArr);
+                if(empty($statementCurrentRowObjArr)){
+                    break;
+                }
                 /**
                  * @var StatementShardingPdo $que
                  */

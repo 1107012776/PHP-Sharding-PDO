@@ -42,6 +42,7 @@ class Model
         }
         $this->dao = $this->shardingInitConfig();
         $this->dao->table($this->tableName, $this->tableNameIndexConfig);
+        $this->_init();
     }
 
     public function where($param)
@@ -53,6 +54,7 @@ class Model
     public function renew()
     {
         $this->dao->renew();
+        $this->_init();
         return $this;
     }
 
@@ -264,5 +266,13 @@ class Model
     public function __clone()
     {
         $this->dao = clone $this->dao;
+    }
+
+
+    /**
+     * Model初始化必要的参数
+     */
+    protected function _init(){
+        method_exists($this,'getSoftDeleteCondition') && $this->dao->where($this->getSoftDeleteCondition());
     }
 }

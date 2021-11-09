@@ -53,6 +53,11 @@ class StatementShardingPdo
         return $this->_queue[0];
     }
 
+    public function getIsEmpty()
+    {
+        return empty($this->_queue[0]);
+    }
+
 
     /**
      * 二维数组排序
@@ -64,6 +69,17 @@ class StatementShardingPdo
     {
         $key = $field[0][0];
         $fh = $field[0][1];
+        /**
+         * @var StatementShardingPdo $value
+         */
+        foreach ($arr as $index => $value){
+            if(is_object($value)){
+                $v = $value->getCurrentFetch();
+                if(empty($v)){
+                    unset($arr[$index]);
+                }
+            }
+        }
         $ss = function ($key, $fh, $field) {
             return function ($a, $b) use ($key, $fh, $field) {
                 $leng = count($field);
@@ -76,6 +92,9 @@ class StatementShardingPdo
                  */
                 $bRow = $b->getCurrentFetch();
                 if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
+                    return false;
+                }
+                if (!isset($bRow[$key])) {  //排序字段不在返回值里面之后false无法排序
                     return false;
                 }
                 switch ($fh) {
@@ -137,6 +156,17 @@ class StatementShardingPdo
     {
         $key = $field[0][0];
         $fh = $field[0][1];
+        /**
+         * @var StatementShardingPdo $value
+         */
+        foreach ($arr as $index => $value){
+            if(is_object($value)){
+                $v = $value->getCurrentFetch();
+                if(empty($v)){
+                    unset($arr[$index]);
+                }
+            }
+        }
         $ss = function ($key, $fh, $field) {
             return function ($a, $b) use ($key, $fh, $field) {
                 $leng = count($field);
@@ -149,6 +179,12 @@ class StatementShardingPdo
                      * @var StatementShardingPdo $b
                      */
                     $bRow = $b->getCurrentFetch();
+                    if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
+                        return false;
+                    }
+                    if (!isset($bRow[$key])) {  //排序字段不在返回值里面之后false无法排序
+                        return false;
+                    }
                 } else {
                     $aRow = $a;
                     $bRow = $b;
