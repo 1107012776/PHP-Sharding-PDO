@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Core;
 /**
  * 分库分表规则类

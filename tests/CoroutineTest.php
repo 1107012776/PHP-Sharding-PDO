@@ -7,16 +7,17 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Test;
 
 use PHPUnit\Framework\TestCase;
 use Swoole\Coroutine;
 
-$file_load_path = __DIR__.'/../../../autoload.php';
+$file_load_path = __DIR__ . '/../../../autoload.php';
 if (file_exists($file_load_path)) {
     include $file_load_path;
 } else {
-    $vendor = __DIR__.'/../vendor/autoload.php';
+    $vendor = __DIR__ . '/../vendor/autoload.php';
     include $vendor;
 }
 
@@ -33,11 +34,13 @@ class CoroutineTest extends TestCase
         \Swoole\Runtime::enableCoroutine();
         date_default_timezone_set('Asia/Shanghai');
     }
+
     /**
      * php vendor/bin/phpunit tests/CoroutineTest.php --filter testObj
      * @throws
      */
-    public function testObj(){
+    public function testObj()
+    {
 
         go(function () {
 
@@ -47,7 +50,7 @@ class CoroutineTest extends TestCase
             $insert = $order->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
             var_dump($insert, $order->getLastInsertId());
             Coroutine::sleep(10);
-           $order->commit();
+            $order->commit();
         });
         go(function () {
             $order = new OrderModel();
@@ -85,7 +88,7 @@ class CoroutineTest extends TestCase
      */
     public function testSelect()
     {
-        go(function (){
+        go(function () {
             $order = new OrderModel();
             /*$res = $order->where(['user_id' => 2, 'order_id' => 2])->find();
             var_dump($res);

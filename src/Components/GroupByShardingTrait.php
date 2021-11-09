@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Components;
 
 use PhpShardingPdo\Core\StatementShardingPdo;
@@ -189,7 +190,7 @@ trait  GroupByShardingTrait
         }
         while (!empty($statementCurrentRowObjArr)) {
             StatementShardingPdo::reGroupSort($statementCurrentRowObjArr, $orderField);
-            if(empty($statementCurrentRowObjArr)){
+            if (empty($statementCurrentRowObjArr)) {
                 break;
             }
             /**

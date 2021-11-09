@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Core;
 
 use PhpShardingPdo\Inter\ShardingInitConfigInter;
@@ -166,7 +167,6 @@ class Model
     }
 
 
-
     /**
      * 获取最后插入的id,有可能是插入失败，返回0
      * @return int
@@ -218,7 +218,8 @@ class Model
      * @param $data
      * @return boolean|int
      */
-    public function replaceInto($data){
+    public function replaceInto($data)
+    {
         return $this->dao->replaceInto($data);
     }
 
@@ -227,7 +228,8 @@ class Model
      * 获取sql执行的错误信息
      * @return array
      */
-    public function sqlErrors(){
+    public function sqlErrors()
+    {
         return $this->dao->sqlErrors();
     }
 
@@ -252,7 +254,7 @@ class Model
     /**
      * 重新连接
      */
-    public function  reconnection(callable $errorCallback = null)
+    public function reconnection(callable $errorCallback = null)
     {
         /**
          * @var ShardingInitConfigInter $configClass
@@ -272,7 +274,8 @@ class Model
     /**
      * Model初始化必要的参数
      */
-    protected function _init(){
-        method_exists($this,'getSoftDeleteCondition') && $this->dao->where($this->getSoftDeleteCondition());
+    protected function _init()
+    {
+        method_exists($this, 'getSoftDeleteCondition') && $this->dao->where($this->getSoftDeleteCondition());
     }
 }

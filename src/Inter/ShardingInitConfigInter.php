@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Inter;
 
 use PhpShardingPdo\Core\ShardingPdoContext;
@@ -22,16 +23,17 @@ use  PhpShardingPdo\Core\ShardingDataSourceFactory;
 abstract class ShardingInitConfigInter
 {
     public static $shardingInitConfigInterName = 'shardingInitConfigInter';
+
     /*
      * @return \PhpShardingPdo\Core\ShardingPdo
      */
     public static function init()
     {
-        $shardingInitName = self::$shardingInitConfigInterName.static::class;
-        $databasePdoInstanceMapName =  $shardingInitName.'_pdo';
+        $shardingInitName = self::$shardingInitConfigInterName . static::class;
+        $databasePdoInstanceMapName = $shardingInitName . '_pdo';
         $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
         $obj = new static();
-        if(empty($map)){
+        if (empty($map)) {
             $map = $obj->getDataSourceMap();
             ShardingPdoContext::setValue($databasePdoInstanceMapName, $map);
         }
@@ -43,45 +45,45 @@ abstract class ShardingInitConfigInter
 
     public static function reconnection(callable $errorCallback = null)
     {
-        $shardingInitName = self::$shardingInitConfigInterName.static::class;
-        $databasePdoInstanceMapName =  $shardingInitName.'_pdo';
+        $shardingInitName = self::$shardingInitConfigInterName . static::class;
+        $databasePdoInstanceMapName = $shardingInitName . '_pdo';
         $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
-        if(!empty($map)){
-            try{
+        if (!empty($map)) {
+            try {
                 /**
                  * @var \PDO $db
                  */
-                foreach ($map as &$db){
+                foreach ($map as &$db) {
                     //让php先回收已断开长连接资源
                     $db->setAttribute(\PDO::ATTR_PERSISTENT, false);
                     $db = null;
                 }
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 //回收失败
-               !empty($errorCallback) && $errorCallback($e);
+                !empty($errorCallback) && $errorCallback($e);
             }
             ShardingPdoContext::setValue($databasePdoInstanceMapName, false);
         }
         return static::init();
     }
-    
-    
-   public static function close(callable $errorCallback = null)
-   {
-        $shardingInitName = self::$shardingInitConfigInterName.static::class;
-        $databasePdoInstanceMapName =  $shardingInitName.'_pdo';
+
+
+    public static function close(callable $errorCallback = null)
+    {
+        $shardingInitName = self::$shardingInitConfigInterName . static::class;
+        $databasePdoInstanceMapName = $shardingInitName . '_pdo';
         $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
-        if(!empty($map)){
-            try{
+        if (!empty($map)) {
+            try {
                 /**
                  * @var \PDO $db
                  */
-                foreach ($map as &$db){
+                foreach ($map as &$db) {
                     //让php先回收已断开长连接资源
                     $db->setAttribute(\PDO::ATTR_PERSISTENT, false);
                     $db = null;
                 }
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 //回收失败
                 !empty($errorCallback) && $errorCallback($e);
                 return false;
