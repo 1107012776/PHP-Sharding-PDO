@@ -179,18 +179,14 @@ class StatementShardingPdo
                      * @var StatementShardingPdo $b
                      */
                     $bRow = $b->getCurrentFetch();
-                    if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
-                        return false;
-                    }
-                    if (!isset($bRow[$key])) {  //排序字段不在返回值里面之后false无法排序
-                        return false;
-                    }
                 } else {
                     $aRow = $a;
                     $bRow = $b;
                 }
-
                 if (!isset($aRow[$key])) {  //排序字段不在返回值里面之后false无法排序
+                    return false;
+                }
+                if (!isset($bRow[$key])) {  //排序字段不在返回值里面之后false无法排序
                     return false;
                 }
                 switch ($fh) {
