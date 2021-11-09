@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Core;
 /**
  * 返回数据dao实例DataSource
@@ -29,10 +30,10 @@ class ShardingDataSourceFactory
      */
     public static function createDataSource($databasePdoInstanceMapName, ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
     {
-        $_shardingPdo = ShardingPdoContext::getValue(self::$_shardingPdo.$databasePdoInstanceMapName);
+        $_shardingPdo = ShardingPdoContext::getValue(self::$_shardingPdo . $databasePdoInstanceMapName);
         if (empty($_shardingPdo)) {
             $_shardingPdo = new ShardingPdo($databasePdoInstanceMapName, $config, $exeSqlXaUniqidFilePath);
-            ShardingPdoContext::setValue(self::$_shardingPdo.$databasePdoInstanceMapName, $_shardingPdo);
+            ShardingPdoContext::setValue(self::$_shardingPdo . $databasePdoInstanceMapName, $_shardingPdo);
         }
         return clone $_shardingPdo;
     }

@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Core;
 /**
  * Created by PhpStorm.
@@ -35,13 +36,13 @@ class StatementShardingPdo
             $this->_queue = array_values($this->_queue);
             return $tmp;
         }
-        return $this->getNextFetch();
+        return $this->getNextFetch(false);
     }
 
-    public function getNextFetch()
+    public function getNextFetch($isPushQueue = true)
     {
         $tmp = $this->_statement->fetch($this->_fetch_style);
-        $this->_queue[] = $tmp;  //取完去对比之后则塞入这个队列，用于后面的取出
+        $isPushQueue && $this->_queue[] = $tmp;  //取完去对比之后则塞入这个队列，用于后面的取出
         return $tmp;
     }
 
@@ -72,10 +73,10 @@ class StatementShardingPdo
         /**
          * @var StatementShardingPdo $value
          */
-        foreach ($arr as $index => $value){
-            if(is_object($value)){
+        foreach ($arr as $index => $value) {
+            if (is_object($value)) {
                 $v = $value->getCurrentFetch();
-                if(empty($v)){
+                if (empty($v)) {
                     unset($arr[$index]);
                 }
             }
@@ -159,10 +160,10 @@ class StatementShardingPdo
         /**
          * @var StatementShardingPdo $value
          */
-        foreach ($arr as $index => $value){
-            if(is_object($value)){
+        foreach ($arr as $index => $value) {
+            if (is_object($value)) {
                 $v = $value->getCurrentFetch();
-                if(empty($v)){
+                if (empty($v)) {
                     unset($arr[$index]);
                 }
             }

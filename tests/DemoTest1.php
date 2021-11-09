@@ -7,16 +7,17 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Test;
 
 
 use PHPUnit\Framework\TestCase;
 
-$file_load_path = __DIR__.'/../../../autoload.php';
+$file_load_path = __DIR__ . '/../../../autoload.php';
 if (file_exists($file_load_path)) {
     include $file_load_path;
 } else {
-    $vendor = __DIR__.'/../vendor/autoload.php';
+    $vendor = __DIR__ . '/../vendor/autoload.php';
     include $vendor;
 }
 
@@ -37,8 +38,8 @@ class DemoTest1 extends TestCase
         $condition = ['del_flag' => 0];
         $page = 4;
         $limit = 10;
-        $list = $countModelList->where($condition)->limit(($page-1)*$limit,$limit)->order('id desc')->findAll();
-        var_dump(array_column($list,'id'));
+        $list = $countModelList->where($condition)->limit(($page - 1) * $limit, $limit)->order('id desc')->findAll();
+        var_dump(array_column($list, 'id'));
 
 
     }
@@ -54,12 +55,12 @@ class DemoTest1 extends TestCase
         $condition = ['del_flag' => 0];
         $page = 4;
         $limit = 1;
-        $countModelList->where($condition)->limit(($page-1)*$limit,$limit)->order('id desc');
+        $countModelList->where($condition)->limit(($page - 1) * $limit, $limit)->order('id desc');
         $cloneModel = clone $countModelList;
-        $cloneModel->limit(($page-1)*2,2);
+        $cloneModel->limit(($page - 1) * 2, 2);
         $list = $cloneModel->findAll();
         $list1 = $countModelList->findAll();
-        var_dump(array_column($list,'id'),array_column($list1,'id'));
+        var_dump(array_column($list, 'id'), array_column($list1, 'id'));
 
 
     }
@@ -80,7 +81,7 @@ class DemoTest1 extends TestCase
 
         $data['cate_id'] = 3;
         $data['update_time'] = $data['create_time'] = date('Y-m-d H:i:s');
-        $res =$model->insert($data);
+        $res = $model->insert($data);
         var_dump($res);
 
     }
@@ -105,10 +106,10 @@ class DemoTest1 extends TestCase
         $auModel = new AutoDistributedModel();
         $data1 = ['stub' => 'b'];
         $res = $auModel->replaceInto($data1);
-        var_dump($res,$auModel->getLastInsertId());
+        var_dump($res, $auModel->getLastInsertId());
         $data['id'] = $auModel->getLastInsertId();
-        $res =$model->insert($data);
-        var_dump($res,$model->getLastInsertId());
+        $res = $model->insert($data);
+        var_dump($res, $model->getLastInsertId());
 
     }
 

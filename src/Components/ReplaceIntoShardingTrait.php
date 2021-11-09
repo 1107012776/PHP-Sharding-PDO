@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Components;
 /**
  * 插入sharding
@@ -24,7 +25,8 @@ trait ReplaceIntoShardingTrait
      * 错误信息
      * @return array
      */
-    public function sqlErrors(){
+    public function sqlErrors()
+    {
         return $this->_sqlErrors;
     }
 
@@ -32,10 +34,12 @@ trait ReplaceIntoShardingTrait
      * 清理错误信息
      * @return boolean
      */
-    public function clearSqlErrors(){
-         $this->_sqlErrors = [];
-         return true;
+    public function clearSqlErrors()
+    {
+        $this->_sqlErrors = [];
+        return true;
     }
+
     /**
      * 插入应该是必须选中具体库，具体表的，不然很危险，导致插入到多个库多张表，数据很乱
      * @return bool|int
@@ -80,7 +84,7 @@ trait ReplaceIntoShardingTrait
                 $this->_addExeSql($sql, $bindParams);
                 $rowsCount += $statement->rowCount();
                 $this->_last_insert_id = $this->_current_exec_db->lastInsertId();
-                if(empty($res)){
+                if (empty($res)) {
                     $this->_sqlErrors[] = $statement->errorInfo();
                 }
                 return $res;

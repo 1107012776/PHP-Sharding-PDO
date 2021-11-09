@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Components;
 
 use \PhpShardingPdo\Core\StatementShardingPdo;
@@ -21,9 +22,10 @@ use \PhpShardingPdo\Core\StatementShardingPdo;
 trait SelectSearchSharingTrait
 {
 
-     private $fetch_style = \PDO::FETCH_ASSOC;
+    private $fetch_style = \PDO::FETCH_ASSOC;
 
-     private $attr_cursor = \PDO::CURSOR_FWDONLY;
+    private $attr_cursor = \PDO::CURSOR_FWDONLY;
+
     /**
      * 存在limit的时候查询
      * @param $statementArr
@@ -44,7 +46,7 @@ trait SelectSearchSharingTrait
             }
             while ($limit > 0) {   //limit获取值核心方法
                 StatementShardingPdo::reSort($statementCurrentRowObjArr, $orderArr);
-                if(empty($statementCurrentRowObjArr)){
+                if (empty($statementCurrentRowObjArr)) {
                     break;
                 }
                 /**
@@ -61,7 +63,7 @@ trait SelectSearchSharingTrait
                     continue;
                 }
                 $this->offset--;
-                if($this->offset >= 0){  //这边的偏移性能比较差，最后在条件上面加一个范围查询的比如 id > 110000 之类的降低偏移的压力
+                if ($this->offset >= 0) {  //这边的偏移性能比较差，最后在条件上面加一个范围查询的比如 id > 110000 之类的降低偏移的压力
                     continue;
                 }
                 $limit--;
@@ -90,22 +92,22 @@ trait SelectSearchSharingTrait
     {
         $result = [];
         $sqlArr = [];
-        if(!empty($this->offset)  //存在偏移的时候，需要特殊处理
+        if (!empty($this->offset)  //存在偏移的时候，需要特殊处理
             && (
                 empty($this->_current_exec_db)  //没有找到具体库
-               || empty($this->_current_exec_table)  //没有找到具体表
+                || empty($this->_current_exec_table)  //没有找到具体表
             )
-        ){
-            $this->_limit_str = ' limit '.strval($this->offset+$this->offset_limit);  //分布式分页，获取的个数
+        ) {
+            $this->_limit_str = ' limit ' . strval($this->offset + $this->offset_limit);  //分布式分页，获取的个数
         }
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {  //全部扫描
-            $sql = 'select ' . $this->_field_str . ' from ' .'`'. $this->_table_name .'`'. $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
+            $sql = 'select ' . $this->_field_str . ' from ' . '`' . $this->_table_name . '`' . $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {
             foreach ($this->_table_name_index as $tableName) {
-                $sqlArr[] = 'select ' . $this->_field_str . ' from ' .'`'. $tableName .'`'. $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
+                $sqlArr[] = 'select ' . $this->_field_str . ' from ' . '`' . $tableName . '`' . $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
             }
         } else {
-            $sql = 'select ' . $this->_field_str . ' from ' .'`'. $this->_current_exec_table .'`'. $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
+            $sql = 'select ' . $this->_field_str . ' from ' . '`' . $this->_current_exec_table . '`' . $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
         }
         $statementArr = [];
         if (empty($this->_current_exec_db)) {  //没有找到数据库

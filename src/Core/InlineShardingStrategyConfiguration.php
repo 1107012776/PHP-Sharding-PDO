@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Core;
 /**
  * 分库分表字段规则
@@ -50,8 +51,9 @@ class InlineShardingStrategyConfiguration
      * 是否自定义规则
      * @return bool
      */
-    public function isCustomizeRule(){
-       return !empty($this->_ruleCustomizeCallback);
+    public function isCustomizeRule()
+    {
+        return !empty($this->_ruleCustomizeCallback);
     }
 
     /**
@@ -59,8 +61,9 @@ class InlineShardingStrategyConfiguration
      * @param $condition
      * @return null|int
      */
-    public function getCustomizeNum($condition){
-        if(!empty($this->_ruleCustomizeCallback)){
+    public function getCustomizeNum($condition)
+    {
+        if (!empty($this->_ruleCustomizeCallback)) {
             $ruleCallback = $this->_ruleCustomizeCallback;
             return $ruleCallback($condition);
         }

@@ -7,6 +7,7 @@
  * @copyright Copyright &copy; 2019-2021
  * @license https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
  */
+
 namespace PhpShardingPdo\Components;
 /**
  * 插入sharding
@@ -27,13 +28,13 @@ trait UpdateShardingTrait
         $sql = 'update  `###TABLENAME###` set ';
         $column_str = '';
         $bindParams = [];
-        if(empty($this->_incrOrDecrColumnStr)){
+        if (empty($this->_incrOrDecrColumnStr)) {
             foreach ($this->_update_data as $k => $v) {
                 $column_str .= ',' . $k . ' = ' . ':update_' . $k;
                 $bindParams[':update_' . $k] = $v;
             }
-            !empty($column_str) && $column_str = substr($column_str, 1, strlen($column_str)-1);
-        }else{
+            !empty($column_str) && $column_str = substr($column_str, 1, strlen($column_str) - 1);
+        } else {
             $column_str = $this->_incrOrDecrColumnStr;
         }
         if (empty($column_str)) {
@@ -62,7 +63,7 @@ trait UpdateShardingTrait
                 $res = $statement->execute($bindParams);
                 $this->_addExeSql($sql, $bindParams);
                 $rowsCount += $statement->rowCount();
-                if(empty($res)){
+                if (empty($res)) {
                     $this->_sqlErrors[] = $statement->errorInfo();
                 }
                 return $res;
@@ -79,7 +80,7 @@ trait UpdateShardingTrait
                 $res[$key] = $statement->execute($bindParams);
                 $this->_addExeSql($sql, $bindParams);
                 $rowsCount += $statement->rowCount();
-                if(empty($res[$key])){
+                if (empty($res[$key])) {
                     $this->_sqlErrors[] = $statement->errorInfo();
                 }
             }
