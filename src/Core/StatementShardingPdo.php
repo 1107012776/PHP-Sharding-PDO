@@ -156,6 +156,17 @@ class StatementShardingPdo
     {
         $key = $field[0][0];
         $fh = $field[0][1];
+        /**
+         * @var StatementShardingPdo $value
+         */
+        foreach ($arr as $index => $value){
+            if(is_object($value)){
+                $v = $value->getCurrentFetch();
+                if(empty($v)){
+                    unset($arr[$index]);
+                }
+            }
+        }
         $ss = function ($key, $fh, $field) {
             return function ($a, $b) use ($key, $fh, $field) {
                 $leng = count($field);
