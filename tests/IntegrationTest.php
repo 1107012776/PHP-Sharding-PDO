@@ -12,6 +12,7 @@ namespace PhpShardingPdo\Test;
 
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Test\Migrate\Migrate;
+use PhpShardingPdo\Test\Model\AccountModel;
 use PHPUnit\Framework\TestCase;
 
 $file_load_path = __DIR__ . '/../../../autoload.php';
@@ -50,7 +51,52 @@ class IntegrationTest extends TestCase
      */
     public function testInsert()
     {
+        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $data = [
+            'article_descript' => '测试数据article_descript',
+            'article_img' => '/upload/2021110816311943244.jpg',
+            'article_keyword' => '测试数据article_keyword',
+            'article_title' => '测试数据article_title',
+            'author' => '学者',
+            'cate_id' => rand(1,3),
+            'content' => '<p>测试数据</p>\n',
+            'content_md' => '3123123',
+            'create_time' => "2021-11-08 16:31:20",
+            'id' => '534418034975179800',
+            'update_time' => "2021-11-08 16:31:20",
+            'user_id' => $this->testUserId(),
+        ];
+        $data['id'] = $this->testGetId();
+        $res = $model->insert($data);
+        $this->assertEquals(!empty($res), true);
+    }
 
+    public function testGetId(){
+        $autoModel = new AutoDistributedModel();
+        while (true){
+            $resReplaceInto = $autoModel->replaceInto(['stub' => 'b']);
+            if(empty($resReplaceInto)){
+                usleep(50);
+                continue;
+            }
+            break;
+        }
+        $this->assertEquals($autoModel->getLastInsertId() > 0,true);
+        return $autoModel->getLastInsertId();
+    }
+
+    public function testUserId(){
+        $model = new UserModel();
+        $accModel = new AccountModel();
+        $model->startTrans();
+        $data = [
+            'username' => date('YmdHis'),
+            'password' => date('YmdHis'),
+            'email' => '123@qq.com',
+            'nickname' => '学者',
+            'id' => $id,
+        ];
+        $res = $model->insert($data);
     }
 
 
