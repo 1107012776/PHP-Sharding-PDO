@@ -42,7 +42,23 @@ abstract class ShardingInitConfigInter
         return $shardingPdo;
     }
 
+    /**
+     * 获取构造的db Map数组
+     * @return array|boolean
+     */
+    public static function getDbMap(){
+        $shardingInitName = self::$shardingInitConfigInterName . static::class;
+        $databasePdoInstanceMapName = $shardingInitName . '_pdo';
+        $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
+        return $map;
+    }
 
+
+    /**
+     * 重新链接
+     * @param callable|null $errorCallback
+     * @return \PhpShardingPdo\Core\ShardingPdo
+     */
     public static function reconnection(callable $errorCallback = null)
     {
         $shardingInitName = self::$shardingInitConfigInterName . static::class;

@@ -10,9 +10,9 @@
 
 namespace PhpShardingPdo\Test;
 
-use PhpShardingPdo\Core\ShardingPdoContext;
+use PhpShardingPdo\Common\ConfigEnv;
+use PhpShardingPdo\Test\Migrate\Migrate;
 use PHPUnit\Framework\TestCase;
-use Swoole\Coroutine;
 
 $file_load_path = __DIR__ . '/../../../autoload.php';
 if (file_exists($file_load_path)) {
@@ -26,26 +26,16 @@ if (file_exists($file_load_path)) {
 /**
  * @method assertEquals($a, $b)
  */
-class NoCoroutineTest extends TestCase
+class IntegrationTest extends TestCase
 {
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        \Swoole\Runtime::enableCoroutine();
-        date_default_timezone_set('Asia/Shanghai');
-    }
-
     /**
-     * php vendor/bin/phpunit tests/NoCoroutineTest.php --filter testObj
-     * @throws
+     * 重新构建数据库
      */
-    public function testObj()
-    {
-
-        var_dump(ShardingPdoContext::getCid(), 1);
-
+    public function testBuild(){
+        ConfigEnv::loadFile('./Config/.env');
+        Migrate::build();
     }
+
 
 
 }
