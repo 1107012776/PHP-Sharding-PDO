@@ -16,7 +16,13 @@ class DatabaseCreate implements CreateInter
      * @var \PDO
      */
     private $conn;
-    public static $databaseNameMap = [];
+    public static $databaseNameMap = [
+        'phpShardingPdo1',
+        'phpShardingPdo2',
+        'phpShardingPdo3',
+        'phpShardingPdo4',
+    ];
+
     public function connect()
     {
         $servername = ConfigEnv::get('database.host', "localhost");
@@ -27,41 +33,40 @@ class DatabaseCreate implements CreateInter
             // 设置 PDO 错误模式为异常
             $this->conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
-            echo var_export($e->getTraceAsString(),true).PHP_EOL;
+            echo var_export($e->getTraceAsString(), true) . PHP_EOL;
         }
     }
 
-    public function build(){
+    public function build()
+    {
         $this->connect();
         $this->create();
     }
 
-    public function create(){
+    public function create()
+    {
         $database = 'phpShardingPdo';
         $i = 0;
-        $databaseName = $database.(++$i);
+        $databaseName = $database . (++$i);
         $sql = "drop database if exists {$databaseName};CREATE DATABASE {$databaseName} CHARACTER SET utf8mb4";
         // 使用 exec() ，因为没有结果返回
         $this->conn->exec($sql);
-        array_push(static::$databaseNameMap,$databaseName);
-        $databaseName = $database.(++$i);
+        $databaseName = $database . (++$i);
         $sql = "drop database if exists {$databaseName};CREATE DATABASE {$databaseName}  CHARACTER SET utf8mb4";
         // 使用 exec() ，因为没有结果返回
         $this->conn->exec($sql);
-        array_push(static::$databaseNameMap,$databaseName);
-        $databaseName = $database.(++$i);
+        $databaseName = $database . (++$i);
         $sql = "drop database if exists {$databaseName};CREATE DATABASE {$databaseName}  CHARACTER SET utf8mb4";
         // 使用 exec() ，因为没有结果返回
         $this->conn->exec($sql);
-        array_push(static::$databaseNameMap,$databaseName);
-        $databaseName = $database.(++$i);
+        $databaseName = $database . (++$i);
         $sql = "drop database if exists {$databaseName};CREATE DATABASE {$databaseName}  CHARACTER SET utf8mb4";
         // 使用 exec() ，因为没有结果返回
         $this->conn->exec($sql);
-        array_push(static::$databaseNameMap,$databaseName);
     }
 
-    public static function getConn($databaseName){
+    public static function getConn($databaseName)
+    {
         $servername = ConfigEnv::get('database.host', "localhost");
         $username = ConfigEnv::get('database.username', "root");
         $password = ConfigEnv::get('database.password', "");
