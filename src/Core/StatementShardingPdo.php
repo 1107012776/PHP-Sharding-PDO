@@ -141,6 +141,7 @@ class StatementShardingPdo
                         }
                         break;
                 }
+                return false;
             };
         };
         usort($arr, $sortFunc($key, $fh, $field));
@@ -233,6 +234,7 @@ class StatementShardingPdo
                         }
                         break;
                 }
+                return false;
             };
         };
         usort($arr, $sortFunc($key, $fh, $field));
