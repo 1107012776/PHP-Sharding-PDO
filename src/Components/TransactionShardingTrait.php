@@ -44,6 +44,9 @@ trait TransactionShardingTrait
      */
     public function startTrans()
     {
+        if (ShardingPdoContext::getValue(self::$_startTransCount) <= 0) {  //未开启事务
+            ShardingPdoContext::setValue(self::$_exeSqlArr, []);  //在事务开启前，清理旧的sql执行记录
+        }
         ShardingPdoContext::incrValue(self::$_startTransCount);
         return;
     }
