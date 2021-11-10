@@ -130,13 +130,14 @@ trait TransactionShardingTrait
      */
     private function _sqlAddslashes($value)
     {
-        if (!get_magic_quotes_gpc()) {  //函数在php中的作用是判断解析用户提示的数据，如包括有:post、get、cookie过来的数据增加转义字符“ ”，以确保这些数据不会引起程序，特别是数据库语句因为特殊字符引起的污染而出现致命的错误
+        if (!function_exists('get_magic_quotes_gpc')
+            || !get_magic_quotes_gpc()
+        ) {  //函数在php中的作用是判断解析用户提示的数据，如包括有:post、get、cookie过来的数据增加转义字符“ ”，以确保这些数据不会引起程序，特别是数据库语句因为特殊字符引起的污染而出现致命的错误
             // 进行过滤
             $value = addslashes($value);
         }
         $value = str_replace("_", "\_", $value);
         $value = str_replace("%", "\%", $value);
-        $value = nl2br($value);
         $value = htmlspecialchars($value);
         return $value;
     }
