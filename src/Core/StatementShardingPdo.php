@@ -81,7 +81,7 @@ class StatementShardingPdo
                 }
             }
         }
-        $ss = function ($key, $fh, $field) {
+        $sortFunc = function ($key, $fh, $field) {
             return function ($a, $b) use ($key, $fh, $field) {
                 $leng = count($field);
                 /**
@@ -143,7 +143,7 @@ class StatementShardingPdo
                 }
             };
         };
-        usort($arr, $ss($key, $fh, $field));
+        usort($arr, $sortFunc($key, $fh, $field));
         return $arr;
     }
 
@@ -168,7 +168,7 @@ class StatementShardingPdo
                 }
             }
         }
-        $ss = function ($key, $fh, $field) {
+        $sortFunc = function ($key, $fh, $field) {
             return function ($a, $b) use ($key, $fh, $field) {
                 $leng = count($field);
                 if (is_object($a)) {
@@ -235,7 +235,7 @@ class StatementShardingPdo
                 }
             };
         };
-        usort($arr, $ss($key, $fh, $field));
+        usort($arr, $sortFunc($key, $fh, $field));
         return $arr;
     }
 }
