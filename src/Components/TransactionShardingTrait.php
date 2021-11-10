@@ -149,7 +149,6 @@ trait TransactionShardingTrait
         if (empty(ShardingPdoContext::getValue(self::$_exeSqlXaUniqidFilePath))) { //为空则不记录xa提交日志
             return false;
         }
-        ShardingPdoContext::setValue(self::$_exeSqlArr, []);
         ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
         $log = 'START' . PHP_EOL;
         foreach (ShardingPdoContext::getValue(self::$_exeSqlArr) as $sql) {
@@ -161,6 +160,7 @@ trait TransactionShardingTrait
         $filePath = str_replace('.log', ShardingPdoContext::getCid() . '-' . $objHash . '-' . date('Y-m-d_H_i_s') . '.log', $_exeSqlXaUniqidFilePath);
         ShardingPdoContext::array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
         file_put_contents($filePath, $log . PHP_EOL . 'END' . PHP_EOL, FILE_APPEND);
+        ShardingPdoContext::setValue(self::$_exeSqlArr, []);
     }
 
 
