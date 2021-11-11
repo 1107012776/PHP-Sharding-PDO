@@ -487,7 +487,7 @@ class ShardingPdo
                 return null;  //返回这个代表没有规则，则需要全部db扫描了
             }
             $number = $tableShardingStrategyConfig->getCustomizeNum($customizeCondition);  //自定义规则
-            if (!is_numeric($number)) {
+            if ($number === null) {
                 return null;  //返回这个代表没有规则，则需要全部db扫描了
             }
             $index = $tableShardingStrategyConfig->getFix() . $number;
@@ -548,7 +548,7 @@ class ShardingPdo
                 return null;  //返回这个代表没有规则，则需要全部表扫描了
             }
             $number = $tableShardingStrategyConfig->getCustomizeNum($customizeCondition);  //自定义规则
-            if (!is_numeric($number)) {
+            if ($number === null) {
                 return null;
             }
             return $tableShardingStrategyConfig->getFix() . $number;
