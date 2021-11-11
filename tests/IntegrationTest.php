@@ -61,7 +61,6 @@ class IntegrationTest extends TestCase
             'content' => '<p>测试数据</p>\n',
             'content_md' => '3123123',
             'create_time' => "2021-11-08 16:31:20",
-            'id' => '534418034975179800',
             'update_time' => "2021-11-08 16:31:20",
             'user_id' => $this->testUserId(),
         ];
