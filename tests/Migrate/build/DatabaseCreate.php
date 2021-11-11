@@ -17,10 +17,10 @@ class DatabaseCreate implements CreateInter
      */
     private $conn;
     public static $databaseNameMap = [
-        'phpShardingPdo1',
-        'phpShardingPdo2',
-        'phpShardingPdo3',
-        'phpShardingPdo4',
+        'phpshardingpdo1',
+        'phpshardingpdo2',
+        'phpshardingpdo3',
+        'phpshardingpdo4',
     ];
 
     public function connect()
@@ -45,7 +45,7 @@ class DatabaseCreate implements CreateInter
 
     public function create()
     {
-        $database = 'phpShardingPdo';
+        $database = 'phpshardingpdo';
         $i = 0;
         $databaseName = $database . (++$i);
         $sql = "drop database if exists {$databaseName};CREATE DATABASE {$databaseName} CHARACTER SET utf8mb4";

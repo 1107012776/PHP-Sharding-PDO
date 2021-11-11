@@ -232,7 +232,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
 }
 
 ```
-##### 2.model创建
+##### 2.Model创建
 ```php
 <?php
 
