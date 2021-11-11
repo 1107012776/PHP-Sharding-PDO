@@ -22,18 +22,37 @@ PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to ano
 \PhpShardingPdo\Core\ShardingPdoContext::contextFreed();  
 
 ```
+#### 自动化测试
 
-#### 示例
+###### 先要配置tests/Config/.env ，测试环境数据库链接
+
+.env文件
+```
+[database]
+host=localhost
+username=root
+password=
+```
+###### 然后执行如下脚本
+
+php vendor/bin/phpunit tests/IntegrationTest.php --filter testExecStart
+
+
+
+#### 示例 （详细请看tests）
 ##### 1.我们需要配置一下基本的分块规则配置类
 ```php
 <?php
 
 namespace PhpShardingPdo\Test;
 
+
+use PhpShardingPdo\Common\ConfigEnv;
 use  \PhpShardingPdo\Core\ShardingTableRuleConfig;
 use  \PhpShardingPdo\Core\InlineShardingStrategyConfiguration;
 use  \PhpShardingPdo\Core\ShardingRuleConfiguration;
 use  \PhpShardingPdo\Inter\ShardingInitConfigInter;
+use PhpShardingPdo\Test\Migrate\build\DatabaseCreate;
 
 /**
  * Created by PhpStorm.
@@ -41,7 +60,7 @@ use  \PhpShardingPdo\Inter\ShardingInitConfigInter;
  * Date: 2019/7/24
  * Time: 18:48
  */
-class ShardingInitConfig extends ShardingInitConfigInter
+class ShardingInitConfig4 extends ShardingInitConfigInter
 {
     /**
      * 获取分库分表map各个数据的实例
@@ -51,170 +70,218 @@ class ShardingInitConfig extends ShardingInitConfigInter
     {
         return [
             'db0' => self::initDataResurce1(),
-            'db1' => self::initDataResurce2()
+            'db1' => self::initDataResurce2(),
+            'db2' => self::initDataResurce3(),
+            'db3' => self::initDataResurce4(),
         ];
     }
 
     protected function getShardingRuleConfiguration()
-    {   
-        //t_order表规则创建
+    {
+        //article
         $tableRule = new ShardingTableRuleConfig();
-
-        $tableRule->setLogicTable('t_order');
+        $tableRule->setLogicTable('article');
         $tableRule->setDatabaseShardingStrategyConfig(
             new InlineShardingStrategyConfiguration('db', [
                 'operator' => '%',
                 'data' => [    //具体的字段和相对运算符右边的数
                     'user_id',  //字段名
-                    2
+                    4
                 ]]));
         $tableRule->setTableShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('t_order_', [
+            new InlineShardingStrategyConfiguration('article_', [
                 'operator' => '%',
                 'data' => [    //具体的字段和相对运算符右边的数
-                    'order_id',  //字段名
-                    2
-                ]]));
-        
- /*     
-        //自定义规则的写法如下   
-        $tableRule->setDatabaseShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('db', [
-                ],function ($condition){  //自定义规则
-                     $user_id = $condition['user_id'];
-                     $num = $user_id % 2;
-                     return $num;
-                }));
-        $tableRule->setTableShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('t_order_', [
-              ],function ($condition){
-                     $order_id = $condition['order_id'];
-                     $num = $order_id % 2;
-                     return $num;                                   
-              }));*/
-                
-
-
-        //t_user表规则创建
-        $tableRuleUser = new ShardingTableRuleConfig();
-
-        $tableRuleUser->setLogicTable('t_user');
-        $tableRuleUser->setDatabaseShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('db', [
-                'operator' => '%',
-                'data' => [    //具体的字段和相对运算符右边的数
-                    'user_id',  //字段名
-                    2
-                ]]));
-        $tableRuleUser->setTableShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('t_user_', [
-                'operator' => '%',
-                'data' => [    //具体的字段和相对运算符右边的数
-                    'order_id',  //字段名
+                    'cate_id',  //字段名
                     2
                 ]]));
         $shardingRuleConfig = new ShardingRuleConfiguration();
         $shardingRuleConfig->add($tableRule);  //表1规则
-        $shardingRuleConfig->add($tableRuleUser);  //表2规则
+        //account
+        $tableRule = new ShardingTableRuleConfig();
+        $tableRule->setLogicTable('account');
+        $tableRule->setDatabaseShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
+                if (isset($condtion['username']) && !is_array($condtion['username'])) {
+                    return crc32($condtion['username']) % 4;
+                }
+                return null;
+            }));
+        $tableRule->setTableShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('account_', [], function ($condtion) {
+                return 0;
+            }));
+        $shardingRuleConfig->add($tableRule);  //表1规则
+        //user
+        $tableRule = new ShardingTableRuleConfig();
+        $tableRule->setLogicTable('user');
+        $tableRule->setDatabaseShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
+                if (isset($condtion['id']) && !is_array($condtion['id'])) {
+                    return $condtion['id'] % 4;
+                }
+                return null;
+            }));
+        $tableRule->setTableShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('user_', [], function ($condtion) {
+                return 0;
+            }));
+        $shardingRuleConfig->add($tableRule);  //表2规则
+
+
+        //user
+        $tableRule = new ShardingTableRuleConfig();
+        $tableRule->setLogicTable('auto_distributed');
+        $tableRule->setDatabaseShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
+                if (isset($condtion['stub']) && !is_array($condtion['stub'])) {
+                    return $condtion['stub'] % 4;
+                }
+                return null;
+            }));
+        $tableRule->setTableShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('auto_distributed', [], function ($condtion) {
+                return '';
+            }));
+        $shardingRuleConfig->add($tableRule);  //表3规则
+
+
         return $shardingRuleConfig;
     }
 
 
     protected static function initDataResurce1()
     {
-        $dbms = 'mysql';     //数据库类型
-        $host = 'localhost'; //数据库主机名
-        $dbName = 'shardingpdo1';    //使用的数据库
-        $user = 'root';      //数据库连接用户名
-        $pass = '123456';          //对应的密码
-        $dsn = "$dbms:host=$host;dbname=$dbName;port=3306;charset=utf8mb4";
+        $dbms = 'mysql';
+        $dbName = DatabaseCreate::$databaseNameMap[0];
+        $servername = ConfigEnv::get('database.host', "localhost");
+        $username = ConfigEnv::get('database.username', "root");
+        $password = ConfigEnv::get('database.password', "");
+        $dsn = "$dbms:host=$servername;dbname=$dbName;port=3306;charset=utf8mb4";
         try {
-            $dbh = new \PDO($dsn, $user, $pass); //初始化一个PDO对象
-            //默认这个不是长连接，如果需要数据库长连接，需要最后加一个参数：array(PDO::ATTR_PERSISTENT => true) 变成这样：
-            //$this->dbh = new PDO($dsn, $user, $pass, array(PDO::ATTR_PERSISTENT => true));
-            $dbh->query('set names utf8mb4;');
-            return $dbh;
+            return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            die ("1Error!: " . $e->getMessage() . "<br/>");
+            die();
         }
     }
 
     protected static function initDataResurce2()
     {
-        $dbms = 'mysql';     //数据库类型
-        $host = 'localhost'; //数据库主机名
-        $dbName = 'shardingpdo2';    //使用的数据库
-        $user = 'root';      //数据库连接用户名
-        $pass = '123456';          //对应的密码
-        $dsn = "$dbms:host=$host;dbname=$dbName;port=3306;charset=utf8mb4";
+        $dbms = 'mysql';
+        $dbName = DatabaseCreate::$databaseNameMap[1];
+        $servername = ConfigEnv::get('database.host', "localhost");
+        $username = ConfigEnv::get('database.username', "root");
+        $password = ConfigEnv::get('database.password', "");
+        $dsn = "$dbms:host=$servername;dbname=$dbName;port=3306;charset=utf8mb4";
         try {
-            $dbh = new \PDO($dsn, $user, $pass); //初始化一个PDO对象
-            //默认这个不是长连接，如果需要数据库长连接，需要最后加一个参数：array(PDO::ATTR_PERSISTENT => true) 变成这样：
-            //$this->dbh = new PDO($dsn, $user, $pass, array(PDO::ATTR_PERSISTENT => true));
-            $dbh->query('set names utf8mb4;');
-            return $dbh;
+            return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            die ("2Error!: " . $e->getMessage() . "<br/>");
+            die();
         }
+    }
+
+    protected static function initDataResurce3()
+    {
+        $dbms = 'mysql';
+        $dbName = DatabaseCreate::$databaseNameMap[2];
+        $servername = ConfigEnv::get('database.host', "localhost");
+        $username = ConfigEnv::get('database.username', "root");
+        $password = ConfigEnv::get('database.password', "");
+        $dsn = "$dbms:host=$servername;dbname=$dbName;port=3306;charset=utf8mb4";
+        try {
+            return self::connect($dsn, $username, $password);
+        } catch (\PDOException $e) {
+            die();
+        }
+    }
+
+
+    protected static function initDataResurce4()
+    {
+        $dbms = 'mysql';
+        $dbName = DatabaseCreate::$databaseNameMap[3];
+        $servername = ConfigEnv::get('database.host', "localhost");
+        $username = ConfigEnv::get('database.username', "root");
+        $password = ConfigEnv::get('database.password', "");
+        $dsn = "$dbms:host=$servername;dbname=$dbName;port=3306;charset=utf8mb4";
+        try {
+            return self::connect($dsn, $username, $password);
+        } catch (\PDOException $e) {
+            die();
+        }
+    }
+
+    protected static function connect($dsn, $user, $pass, $option = [])
+    {
+        //$dbh = new \PDO($dsn, $user, $pass); //初始化一个PDO对象
+        //默认这个不是长连接，如果需要数据库长连接，需要最后加一个参数：array(PDO::ATTR_PERSISTENT => true) 变成这样：
+//     $dbh = new \PDO($dsn, $user, $pass, array(\PDO :: ATTR_TIMEOUT => 30,\PDO::ATTR_PERSISTENT => true));
+        $dbh = new \PDO($dsn, $user, $pass, $option);
+        $dbh->query('set names utf8mb4;');
+        return $dbh;
     }
 
     /**
      * 获取sql执行xa日志路径，当xa提交失败的时候会出现该日志
      * @return string
      */
-    protected  function getExecXaSqlLogFilePath(){
+    protected function getExecXaSqlLogFilePath()
+    {
         return './execXaSqlLogFilePath.log';
     }
 }
+
 ```
-##### 2.model创建
+##### 2.Model创建
 ```php
 <?php
 
-namespace PhpShardingPdo\Test;
+namespace PhpShardingPdo\Test\Model;
 
+
+use PhpShardingPdo\Components\SoftDeleteTrait;
 use PhpShardingPdo\Core\Model;
+use PhpShardingPdo\Test\ShardingInitConfig4;
 
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/7/25
- * Time: 20:12
- */
-class OrderModel extends Model
+Class ArticleModel extends Model
 {
-    protected $tableName = 't_order';
+    use SoftDeleteTrait; //软删除需要配置这个
+    protected $tableName = 'article';
     protected $tableNameIndexConfig = [
         'index' => '0,1', //分表索引 index ,号分割
         //'range' => [1,2]  //范围
     ];
-    protected $shardingInitConfigClass = ShardingInitConfig::class;
+    protected $shardingInitConfigClass = ShardingInitConfig4::class;
+
 
 }
+
 ```
 
 ```php
 <?php
-
-namespace PhpShardingPdo\Test;
-
-use PhpShardingPdo\Core\Model;
-
 /**
  * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/7/25
- * Time: 20:12
+ * User: 11070
+ * Date: 2020/3/29
+ * Time: 21:28
  */
-class UserModel extends Model
+
+namespace PhpShardingPdo\Test\Model;
+
+
+use PhpShardingPdo\Core\Model;
+use PhpShardingPdo\Test\ShardingInitConfig4;
+
+Class UserModel extends Model
 {
-    protected $tableName = 't_user';
+    protected $tableName = 'user';
+
+    protected $shardingInitConfigClass = ShardingInitConfig4::class;
     protected $tableNameIndexConfig = [
-        'index' => '0,1', //分表索引 index ,号分割
+        'index' => '0', //分表索引 index ,号分割
         //'range' => [1,2]  //范围
     ];
-    protected $shardingInitConfigClass = ShardingInitConfig::class;
-
 }
 ```
 
@@ -222,63 +289,63 @@ class UserModel extends Model
 ###### 查询
 ```php
 <?php
-$order = new PhpShardingPdo\Test\OrderModel();
-$res = $order->where(['user_id' => 2, 'order_id' => 2])->find();
+$model = new \PhpShardingPdo\Test\Model\ArticleModel();
+$res = $model->where(['user_id' => 2, 'cate_id' => 1])->find();
 var_dump($res);
-$res = $order->renew()->where(['user_id' => 2, 'order_id' => 1])->find();
+$res = $model->renew()->where(['user_id' => 2, 'cate_id' => 1])->find();
 var_dump($res);
-$res = $order->renew()->where(['id' => 3])->findAll();
+$res = $model->renew()->where(['id' => 3])->findAll();
 var_dump($res);
 //order by
-$res = $order->renew()->order('order_id desc')->limit(100)->findAll();
+$res = $model->renew()->order('user_id desc')->limit(100)->findAll();
 var_dump($res);
-var_dump($order->find());
+var_dump($model->find());
 //group by
-$res = $order->renew()->field('order_id,sum(id),create_time,user_id')->group('order_id')->limit(100)->findAll();
+$res = $model->renew()->field('sum(id) as total,create_time,user_id')->group('user_id')->limit(100)->findAll();
 var_dump($res);
-$newObj = clone $order->renew();
-var_dump($newObj === $order);  //输出false
+$newObj = clone $model->renew();
+var_dump($newObj === $model);  //输出false
 //count 查询
-$count = $order->renew()->count();
+$count = $model->renew()->count();
 var_dump($count);
-$count = $order->renew()->where(['id' => ['gt', 100000]])->count('id');   //索引覆盖型查询
+$count = $model->renew()->where(['id' => ['gt', 100000]])->count('id');   //索引覆盖型查询
 var_dump($count);
 //in 查询
-$list = $order->renew()->where(['id' => ['in', [1,2,3]]])->findAll();  
+$list = $model->renew()->where(['id' => ['in', [1,2,3]]])->findAll();  
 var_dump($list);
 //not in 查询
-$list = $order->renew()->where(['id' => ['notIn', [1,2,3]]])->findAll();  
+$list = $model->renew()->where(['id' => ['notIn', [1,2,3]]])->findAll();  
 var_dump($list);
 //gt大于  egt大于等于  lt小于  elt小于等于
-$list = $order->renew()->where(['id' => ['gt', 1]])->findAll(); 
+$list = $model->renew()->where(['id' => ['gt', 1]])->findAll(); 
 var_dump($list);
 //between 两者之间 相当于  id >= 100 and id <= 10000
-$list = $order->renew()->where(['id' => ['between', [100, 10000]]])->findAll();  
+$list = $model->renew()->where(['id' => ['between', [100, 10000]]])->findAll();  
 var_dump($list);
 //not between  不在两者之间 相当于  id < 100 and id > 10000
-$list = $order->renew()->where(['id' => ['notBetween', [100, 10000]]])->findAll();  
+$list = $model->renew()->where(['id' => ['notBetween', [100, 10000]]])->findAll();  
 var_dump($list);
 //neq 不等于  可以是数组，也可以单个
-$list = $order->renew()->where(['id' => ['neq', [1,2,3]]])->findAll();  
+$list = $model->renew()->where(['id' => ['neq', [1,2,3]]])->findAll();  
 var_dump($list);
-$list = $order->renew()->where(['id' => ['neq', 1]])->findAll();  
+$list = $model->renew()->where(['id' => ['neq', 1]])->findAll();  
 var_dump($list);
 //like 查询
-$list = $order->renew()->where(['company_name' => ['like','某网络科技%'],'type' => 1])->findAll();  
+$list = $model->renew()->where(['article_title' => ['like','某网络科技%'],'type' => 1])->findAll();  
 var_dump($list);
 ```
 
 ###### 插入
 ```php
 <?php
-$order = new \PhpShardingPdo\Test\OrderModel();
-$user = new \PhpShardingPdo\Test\UserModel();
-$order->startTrans(); 
-$order->startTrans(); //事务嵌套
-$insert = $order->renew()->insert(['user_id' => 1, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
-var_dump($insert, $order->getLastInsertId());
-$insert = $user->renew()->insert(['user_id' => 2, 'order_id' => '1231', 'create_time' => date('Y-m-d H:i:s')]);
-var_dump($insert, $user->getLastInsertId());
+$model = new \PhpShardingPdo\Test\Model\ArticleModel();
+$user = new \PhpShardingPdo\Test\Model\UserModel();
+$model->startTrans(); 
+$model->startTrans(); //事务嵌套
+$res = $user->renew()->insert(['id' => 2,  'create_time' => date('Y-m-d H:i:s')]);
+$this->assertEquals(!empty($res), true);
+$res = $model->renew()->insert(['user_id' => $user->getLastInsertId(), 'article_title' => '某网络科技', 'create_time' => date('Y-m-d H:i:s')]);
+$this->assertEquals(!empty($res), true);
 $user->commit();
 $user->commit();
 ```
@@ -287,27 +354,32 @@ $user->commit();
 ###### 更新
 ```php
 <?php
-$order = new PhpShardingPdo\Test\OrderModel();
-$order->startTrans(); 
-$res = $order->renew()->where(['id' => 3])->update(['create_time' => date('Y-m-d H:i:s')]);
+$model = new \PhpShardingPdo\Test\Model\ArticleModel();
+$model->startTrans(); 
+$res = $model->renew()->where(['id' => 3])->update(['update_time' => date('Y-m-d H:i:s')]);
 var_dump($res);  //影响行数
 //decr 自减
-$res = $order->renew()->where(['id' => 3])->decr('money', 150);
+$res = $model->renew()->where(['id' => 3])->decr('is_choice', 1);
 var_dump($res); //影响行数
 //incr 自增
-$res = $order->renew()->where(['id' => 3])->incr('money', 100);
+$res = $model->renew()->where(['id' => 3])->incr('is_choice', 1);
 var_dump($res); //影响行数
-$order->commit();
+$model->commit();
 ```
 
 ###### 删除
 ```php
 <?php
-$order = new  PhpShardingPdo\Test\OrderModel();
-$order->startTrans();
-$res = $order->renew()->where(['id' => 9])->delete();
+$model = new \PhpShardingPdo\Test\Model\ArticleModel();
+$model->startTrans();
+$res = $model->renew()->where(['id' => 9])->delete();
 var_dump($res);  //影响行数
-$order->commit();
+$model->commit();
+//强制物理删除（如果有设置软删除的话）
+$model->startTrans();
+$res = $model->renew()->where(['id' => 10])->delete(true);
+var_dump($res);  //影响行数
+$model->commit();
 
 ```
 

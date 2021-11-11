@@ -48,6 +48,10 @@ class IntegrationTest extends TestCase
         $this->assertEquals($res, true);
     }
 
+    /**
+     * 一键启动测试
+     * php vendor/bin/phpunit tests/IntegrationTest.php --filter testExecStart
+     */
     public function testExecStart()
     {
         $this->testBuild();
