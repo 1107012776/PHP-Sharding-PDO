@@ -174,6 +174,14 @@ class IntegrationTest extends TestCase
             ->where(['article_title' => $this->article_title1])
             ->order('update_time desc')->findAll();
         $this->assertEquals(!empty($list), true);
+        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $list = $model->where([
+            'cate_id' => 1
+        ])
+            ->where(['article_title' => $this->article_title1])
+            ->limit(1)
+            ->order('update_time desc')->findAll();
+        $this->assertEquals(count($list) === 1, true);
     }
 
 
