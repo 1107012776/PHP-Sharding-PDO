@@ -48,10 +48,10 @@ namespace PhpShardingPdo\Test;
 
 
 use PhpShardingPdo\Common\ConfigEnv;
-use  \PhpShardingPdo\Core\ShardingTableRuleConfig;
-use  \PhpShardingPdo\Core\InlineShardingStrategyConfiguration;
-use  \PhpShardingPdo\Core\ShardingRuleConfiguration;
-use  \PhpShardingPdo\Inter\ShardingInitConfigInter;
+use PhpShardingPdo\Core\ShardingTableRuleConfig;
+use PhpShardingPdo\Core\InlineShardingStrategyConfiguration;
+use PhpShardingPdo\Core\ShardingRuleConfiguration;
+use PhpShardingPdo\Inter\ShardingInitConfigInter;
 use PhpShardingPdo\Test\Migrate\build\DatabaseCreate;
 
 /**
