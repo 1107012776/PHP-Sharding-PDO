@@ -167,6 +167,21 @@ class IntegrationTest extends TestCase
         ])->where(['article_title' => $this->article_title1])
             ->count();
         $this->assertEquals($count == 2, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['gt',1]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 2, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['between',[1,3]]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 4, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['notBetween',[1,3]]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 0, true);
     }
 
     public function testSelectOrderFindAll()
