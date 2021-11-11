@@ -148,12 +148,25 @@ class IntegrationTest extends TestCase
 
     public function testSelectGroupOrderFindAll(){
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
-        $list = $model->field('article_title,sum(is_choice) as choice')->where([
-
-        ])->order('article_title desc')->group('article_title')->findAll();
-        $this->assertEquals(!empty($list),true);
-        print_r($list);
+        $list = $model->field('article_title,sum(is_choice) as choice')
+            ->order('article_title desc')
+            ->group('article_title')->findAll();
+        $this->assertEquals(count($list) == 1,true);
     }
+
+
+    public function testSelectGroupOrderLimitFindAll(){
+        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $list = $model->field('article_title,sum(is_choice) as choice')
+            ->order('article_title desc')
+            ->group('article_title')
+            ->limit(0,1)
+            ->findAll();
+        print_r($list);
+        $this->assertEquals(count($list) == 1,true);
+    }
+
+
 
 
 }
