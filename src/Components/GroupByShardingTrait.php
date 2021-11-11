@@ -125,6 +125,9 @@ trait  GroupByShardingTrait
         }
         while (!empty($statementCurrentRowObjArr)) {
             StatementShardingPdo::reGroupSort($statementCurrentRowObjArr, $orderField);
+            if (empty($statementCurrentRowObjArr)) {
+                break;
+            }
             /**
              * @var StatementShardingPdo $que
              */

@@ -113,5 +113,47 @@ class IntegrationTest extends TestCase
         return $id;
     }
 
+    public function testSelectFind(){
+        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $info = $model->where([
+            'cate_id' => 1
+        ])->find();
+        $this->assertEquals(!empty($info),true);
+    }
+
+    public function testSelectFindAll(){
+        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $list = $model->where([
+            'cate_id' => 1
+        ])->findAll();
+        $this->assertEquals(!empty($list),true);
+    }
+
+    public function testSelectOrderFindAll(){
+        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $list = $model->where([
+            'cate_id' => 1
+        ])->order('update_time desc')->findAll();
+        $this->assertEquals(!empty($list),true);
+    }
+
+
+    public function testSelectGroupFindAll(){
+        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $list = $model->where([
+            'cate_id' => 1
+        ])->group('article_title')->findAll();
+        $this->assertEquals(!empty($list),true);
+    }
+
+    public function testSelectGroupOrderFindAll(){
+        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $list = $model->field('article_title,sum(is_choice) as is_choice')->where([
+            'cate_id' => 1
+        ])->order('article_title desc')->group('article_title')->findAll();
+        $this->assertEquals(!empty($list),true);
+        print_r($list);
+    }
+
 
 }
