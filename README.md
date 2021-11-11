@@ -22,6 +22,22 @@ PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to ano
 \PhpShardingPdo\Core\ShardingPdoContext::contextFreed();  
 
 ```
+#### 自动化测试
+
+###### 先要配置tests/Config/.env ，测试环境数据库链接
+
+.env文件
+```
+[database]
+host=localhost
+username=root
+password=
+```
+###### 然后执行如下脚本
+
+php vendor/bin/phpunit tests/IntegrationTest.php --filter testExecStart
+
+
 
 #### 示例
 ##### 1.我们需要配置一下基本的分块规则配置类
