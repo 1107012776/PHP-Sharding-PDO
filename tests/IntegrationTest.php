@@ -268,7 +268,7 @@ class IntegrationTest extends TestCase
 
     public function testLike()
     {
-        $title = '开发者是某网络科技的呀';
+        $title = '张三是某网络科技的呀';
         $id = $this->insert(3, $title);
         $model = new ArticleModel();
         $info = $model->renew()->where([
@@ -284,7 +284,7 @@ class IntegrationTest extends TestCase
             ],
         ])->delete(true);
         $this->assertEquals(!empty($res), true);
-        $title = '开发者是某网络科技的呀';
+        $title = '张三是某网络科技的呀';
         $id = $this->insert(3, $title);
         $model = new ArticleModel();
         $info = $model->renew()->where([
