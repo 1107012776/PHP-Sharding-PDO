@@ -19,10 +19,10 @@ use PhpShardingPdo\Common\ConfigEnv;
 
 $file_load_path = __DIR__ . '/../../../autoload.php';
 if (file_exists($file_load_path)) {
-    include $file_load_path;
+    require_once $file_load_path;
 } else {
     $vendor = __DIR__ . '/../vendor/autoload.php';
-    include $vendor;
+    require_once $vendor;
 }
 
 ConfigEnv::loadFile(dirname(__FILE__) . '/Config/.env');  //加载配置
