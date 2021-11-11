@@ -12,7 +12,6 @@ namespace PhpShardingPdo\Test;
 
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Test\Migrate\Migrate;
-use PhpShardingPdo\Test\Model\AccountModel;
 use PHPUnit\Framework\TestCase;
 
 $file_load_path = __DIR__ . '/../../../autoload.php';
@@ -66,15 +65,15 @@ class IntegrationTest extends TestCase
             'update_time' => "2021-11-08 16:31:20",
             'user_id' => $this->testUserId(),
         ];
-        $data['id'] = $this->testGetId();
+        $data['id'] = $this->testGetId(2);
         $res = $model->insert($data);
         $this->assertEquals(!empty($res), true);
     }
 
-    public function testGetId(){
-        $autoModel = new AutoDistributedModel();
+    public function testGetId($stub = 1){
+        $autoModel = new \PhpShardingPdo\Test\Model\AutoDistributedModel();
         while (true){
-            $resReplaceInto = $autoModel->replaceInto(['stub' => 'b']);
+            $resReplaceInto = $autoModel->replaceInto(['stub' => $stub]);
             if(empty($resReplaceInto)){
                 usleep(50);
                 continue;
@@ -86,17 +85,33 @@ class IntegrationTest extends TestCase
     }
 
     public function testUserId(){
-        $model = new UserModel();
-        $accModel = new AccountModel();
+        $model = new \PhpShardingPdo\Test\Model\UserModel();
         $model->startTrans();
+        $accountModel = new \PhpShardingPdo\Test\Model\AccountModel();
+        $username = 'test_'.date('YmdHis');
+        $id = $this->testGetId(1);
         $data = [
-            'username' => date('YmdHis'),
+            'username' => $username,
             'password' => date('YmdHis'),
-            'email' => '123@qq.com',
+            'email' => 'test@163.com',
             'nickname' => '学者',
             'id' => $id,
         ];
         $res = $model->insert($data);
+        if(empty($res)){
+            $model->rollback();
+        }
+        $this->assertEquals(!empty($res),true);
+        $res = $accountModel->insert([
+            'username' => $username,
+            'id' => $id
+        ]);
+        if(empty($res)){
+            $model->rollback();
+        }
+        $this->assertEquals(!empty($res),true);
+        $model->commit();
+        return $id;
     }
 
 

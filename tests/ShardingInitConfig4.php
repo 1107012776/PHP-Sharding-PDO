@@ -82,7 +82,29 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
             new InlineShardingStrategyConfiguration('user_', [], function ($condtion) {
                 return 0;
             }));
-        $shardingRuleConfig->add($tableRule);  //表1规则
+        $shardingRuleConfig->add($tableRule);  //表2规则
+
+
+
+        //user
+        $tableRule = new ShardingTableRuleConfig();
+        $tableRule->setLogicTable('auto_distributed');
+        $tableRule->setDatabaseShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
+                if (isset($condtion['stub']) && !is_array($condtion['stub'])) {
+                    return $condtion['stub'] % 4;
+                }
+                return null;
+            }));
+        $tableRule->setTableShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('auto_distributed', [], function ($condtion) {
+                return '';
+            }));
+        $shardingRuleConfig->add($tableRule);  //表3规则
+
+
+
+
 
         return $shardingRuleConfig;
     }
