@@ -85,7 +85,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $shardingRuleConfig->add($tableRule);  //表2规则
 
 
-        //user
+        //auto_distributed
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('auto_distributed');
         $tableRule->setDatabaseShardingStrategyConfig(

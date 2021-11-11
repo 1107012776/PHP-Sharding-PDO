@@ -27,11 +27,11 @@ PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to ano
 ###### 先要配置tests/Config/.env ，测试环境数据库链接
 
 .env文件
-```
+```php
 [database]
 host=localhost
 username=root
-password=
+password=testpassword
 ```
 ###### 然后执行如下脚本
 
@@ -39,7 +39,7 @@ php vendor/bin/phpunit tests/IntegrationTest.php --filter testExecStart
 
 
 
-#### 示例 （详细请看tests）
+#### 示例 （详细请看tests目录）
 ##### 1.我们需要配置一下基本的分块规则配置类
 ```php
 <?php
@@ -97,6 +97,21 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
                 ]]));
         $shardingRuleConfig = new ShardingRuleConfiguration();
         $shardingRuleConfig->add($tableRule);  //表1规则
+        
+       //自定义规则的写法如下   
+       /*   $tableRule->setDatabaseShardingStrategyConfig(
+              new InlineShardingStrategyConfiguration('db', [],function ($condition){  //自定义规则
+                             $user_id = $condition['user_id'];
+                             $num = $user_id % 4;
+                             return $num;
+                        }));
+            $tableRule->setTableShardingStrategyConfig(
+               new InlineShardingStrategyConfiguration('article_', [],function ($condition){
+                             $cate_id = $condition['cate_id'];
+                             $num = $cate_id % 2;
+                             return $num;                                   
+       }));*/
+                        
         //account
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('account');
@@ -129,7 +144,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $shardingRuleConfig->add($tableRule);  //表2规则
 
 
-        //user
+        //auto_distributed
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('auto_distributed');
         $tableRule->setDatabaseShardingStrategyConfig(
