@@ -25,7 +25,8 @@ if (file_exists($file_load_path)) {
     include $vendor;
 }
 
-ConfigEnv::loadFile(dirname(__FILE__).'/Config/.env');  //加载配置
+ConfigEnv::loadFile(dirname(__FILE__) . '/Config/.env');  //加载配置
+
 /**
  * @method assertEquals($a, $b)
  */
@@ -59,6 +60,7 @@ class IntegrationTest extends TestCase
         $this->testSelectGroupOrderFindAll();
         $this->testSelectGroupOrderLimitFindAll();
         $this->testUpdateDelete();
+        $this->testLike();
     }
 
     /**
@@ -115,7 +117,7 @@ class IntegrationTest extends TestCase
         $model = new \PhpShardingPdo\Test\Model\UserModel();
         $model->startTrans();
         $accountModel = new \PhpShardingPdo\Test\Model\AccountModel();
-        $username = 'test_' . date('YmdHis').uniqid();
+        $username = 'test_' . date('YmdHis') . uniqid();
         $id = $this->testGetId(1);
         $data = [
             'username' => $username,
@@ -127,6 +129,7 @@ class IntegrationTest extends TestCase
         $res = $model->insert($data);
         if (empty($res)) {
             $model->rollback();
+            var_dump($model->sqlErrors());
         }
         $this->assertEquals(!empty($res), true);
         $res = $accountModel->insert([
@@ -135,6 +138,7 @@ class IntegrationTest extends TestCase
         ]);
         if (empty($res)) {
             $model->rollback();
+            var_dump($accountModel->sqlErrors());
         }
         $this->assertEquals(!empty($res), true);
         $model->commit();
@@ -258,6 +262,43 @@ class IntegrationTest extends TestCase
         $res = $model->renew()->where([
             'article_title' => $this->article_title2
         ])->delete(true);
+        $this->assertEquals(!empty($res), true);
+    }
+
+
+    public function testLike()
+    {
+        $title = '开发者是某网络科技的呀';
+        $id = $this->insert(3, $title);
+        $model = new ArticleModel();
+        $info = $model->renew()->where([
+            'article_title' => [
+                'like','%某网络科技%'
+            ],
+        ])->find();
+        $this->assertEquals(!empty($info), true);
+        $this->assertEquals($info['id'] == $id, true);
+        $res = $model->renew()->where([
+            'article_title' => [
+                'like','%某网络科技%'
+            ],
+        ])->delete(true);
+        $this->assertEquals(!empty($res), true);
+        $title = '开发者是某网络科技的呀';
+        $id = $this->insert(3, $title);
+        $model = new ArticleModel();
+        $info = $model->renew()->where([
+            'article_title' => [
+                'like','%某网络科技%'
+            ],
+        ])->find();
+        $this->assertEquals(!empty($info), true);
+        $this->assertEquals($info['id'] == $id, true);
+        $res = $model->renew()->where([
+            'article_title' => [
+                'like','%某网络科技%'
+            ],
+        ])->delete();
         $this->assertEquals(!empty($res), true);
     }
 
