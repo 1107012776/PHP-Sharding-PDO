@@ -212,7 +212,8 @@ class IntegrationTest extends TestCase
         $this->assertEquals($list[0]['choice'] == 4, true);
     }
 
-    public function testUpdateDelete(){
+    public function testUpdateDelete()
+    {
         $id = $this->insert(3, $this->article_title2);
         $model = new ArticleModel();
         $info = $model->renew()->where([
@@ -220,7 +221,7 @@ class IntegrationTest extends TestCase
         ])->find();
         $this->assertEquals(!empty($info), true);
         //更新操作
-        $updateTime = date('Y-m-d H:i:s',time()+3600);
+        $updateTime = date('Y-m-d H:i:s', time() + 3600);
         $res = $model->renew()->where([
             'article_title' => $this->article_title2
         ])->update([
@@ -232,7 +233,7 @@ class IntegrationTest extends TestCase
         ])->find();
         $this->assertEquals(strtotime($info['update_time']) == strtotime($updateTime), true);
         //软删除
-        $res =  $model->renew()->where([
+        $res = $model->renew()->where([
             'article_title' => $this->article_title2
         ])->delete();
         $this->assertEquals(!empty($res), true);
@@ -246,7 +247,7 @@ class IntegrationTest extends TestCase
             'id' => $id
         ])->find();
         $this->assertEquals(!empty($info), true);
-        $res =  $model->renew()->where([
+        $res = $model->renew()->where([
             'article_title' => $this->article_title2
         ])->delete(true);
         $this->assertEquals(!empty($res), true);
