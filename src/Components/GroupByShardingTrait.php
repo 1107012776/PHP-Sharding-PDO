@@ -146,7 +146,7 @@ trait  GroupByShardingTrait
                 foreach ($this->_field as $v) {
                     if (strstr($v, 'sum(')) {
                         $v = strtolower($v);
-                        if(strstr($v,' as ')){
+                        if(strstr($v,' as ')){  //处理sum之后的别名数值累加
                             $vFieldArr = explode(' as ',$v);
                             $vFieldArr[1] = trim($vFieldArr[1]);
                             $result[count($result) - 1][$vFieldArr[1]] += $tmp[$vFieldArr[1]];
