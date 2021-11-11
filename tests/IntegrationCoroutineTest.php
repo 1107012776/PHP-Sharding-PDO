@@ -61,7 +61,7 @@ class IntegrationCoroutineTest extends IntegrationTest
             $this->testUpdateDelete();
             $this->testLike();
         });
-        \Swoole\Event::wait();
+        \Swoole\Event::wait(); //https://wiki.swoole.com/wiki/page/1081.html
     }
 
 }
