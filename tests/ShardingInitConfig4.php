@@ -85,7 +85,6 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $shardingRuleConfig->add($tableRule);  //表2规则
 
 
-
         //user
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('auto_distributed');
@@ -101,9 +100,6 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
                 return '';
             }));
         $shardingRuleConfig->add($tableRule);  //表3规则
-
-
-
 
 
         return $shardingRuleConfig;

@@ -46,7 +46,8 @@ abstract class ShardingInitConfigInter
      * 获取构造的db Map数组
      * @return array|boolean
      */
-    public static function getDbMap(){
+    public static function getDbMap()
+    {
         $shardingInitName = self::$shardingInitConfigInterName . static::class;
         $databasePdoInstanceMapName = $shardingInitName . '_pdo';
         $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);

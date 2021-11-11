@@ -1,6 +1,6 @@
 <?php
-namespace PhpShardingPdo\Test\Model;
 
+namespace PhpShardingPdo\Test\Model;
 
 
 use PhpShardingPdo\Components\SoftDeleteTrait;

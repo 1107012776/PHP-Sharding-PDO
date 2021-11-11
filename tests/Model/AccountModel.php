@@ -5,13 +5,15 @@
  * Date: 2021/9/20
  * Time: 12:47
  */
+
 namespace PhpShardingPdo\Test\Model;
 
 
 use PhpShardingPdo\Core\Model;
 use PhpShardingPdo\Test\ShardingInitConfig4;
 
-class AccountModel extends Model {
+class AccountModel extends Model
+{
     protected $tableName = 'account';
     protected $tableNameIndexConfig = [
         'index' => '0', //分表索引 index ,号分割

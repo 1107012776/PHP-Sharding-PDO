@@ -1,4 +1,5 @@
 <?php
+
 namespace PhpShardingPdo\Test\Model;
 
 

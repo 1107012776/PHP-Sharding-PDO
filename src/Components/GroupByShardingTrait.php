@@ -146,11 +146,11 @@ trait  GroupByShardingTrait
                 foreach ($this->_field as $v) {
                     if (strstr($v, 'sum(')) {
                         $v = strtolower($v);
-                        if(strstr($v,' as ')){  //处理sum之后的别名数值累加
-                            $vFieldArr = explode(' as ',$v);
+                        if (strstr($v, ' as ')) {  //处理sum之后的别名数值累加
+                            $vFieldArr = explode(' as ', $v);
                             $vFieldArr[1] = trim($vFieldArr[1]);
                             $result[count($result) - 1][$vFieldArr[1]] += $tmp[$vFieldArr[1]];
-                        }else{
+                        } else {
                             $result[count($result) - 1][$v] += $tmp[$v];
                         }
                         continue 2;
@@ -222,22 +222,22 @@ trait  GroupByShardingTrait
                 foreach ($this->_field as $v) {
                     if (strstr($v, 'sum(')) {
                         $v = strtolower($v);
-                        if(strstr($v,' as ')){  //处理sum之后的别名数值累加
-                            $vFieldArr = explode(' as ',$v);
+                        if (strstr($v, ' as ')) {  //处理sum之后的别名数值累加
+                            $vFieldArr = explode(' as ', $v);
                             $vFieldArr[1] = trim($vFieldArr[1]);
                             $result[count($result) - 1][$vFieldArr[1]] += $tmp[$vFieldArr[1]];
-                        }else{
+                        } else {
                             $result[count($result) - 1][$v] += $tmp[$v];
                         }
                         continue 2;
                     }
                 }
             } else {
-                if(!empty($offsetDataFlag[$tmp[$intersect[0]]])){
+                if (!empty($offsetDataFlag[$tmp[$intersect[0]]])) {
                     continue;
                 }
                 if ($this->offset > 0
-                && empty($offsetDataFlag[$tmp[$intersect[0]]])
+                    && empty($offsetDataFlag[$tmp[$intersect[0]]])
                 ) {
                     $this->offset--;
                     $offsetDataFlag[$tmp[$intersect[0]]] = 1;

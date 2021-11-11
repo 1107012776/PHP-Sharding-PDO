@@ -1,5 +1,7 @@
 <?php
+
 namespace PhpShardingPdo\Test\Migrate\Inter;
-interface CreateInter{
+interface CreateInter
+{
     public function build();
 }

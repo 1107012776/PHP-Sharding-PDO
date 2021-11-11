@@ -14,8 +14,8 @@ class TableCreate implements CreateInter
     public function build()
     {
         $sqlDir = dirname(__FILE__);
-        $contentDDL = file_get_contents($sqlDir.'/sql/sql.sql');
-        foreach (DatabaseCreate::$databaseNameMap as $name){
+        $contentDDL = file_get_contents($sqlDir . '/sql/sql.sql');
+        foreach (DatabaseCreate::$databaseNameMap as $name) {
             DatabaseCreate::getConn($name)->exec($contentDDL);
         }
     }
