@@ -301,7 +301,7 @@ $res = $model->renew()->order('user_id desc')->limit(100)->findAll();
 var_dump($res);
 var_dump($model->find());
 //group by
-$res = $model->renew()->field('sum(id),create_time,user_id')->group('user_id')->limit(100)->findAll();
+$res = $model->renew()->field('sum(id) as total,create_time,user_id')->group('user_id')->limit(100)->findAll();
 var_dump($res);
 $newObj = clone $model->renew();
 var_dump($newObj === $model);  //输出false
