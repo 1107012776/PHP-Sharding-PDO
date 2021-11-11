@@ -219,6 +219,7 @@ class IntegrationTest extends TestCase
             'id' => $id
         ])->find();
         $this->assertEquals(!empty($info), true);
+        //更新操作
         $updateTime = date('Y-m-d H:i:s',time()+3600);
         $res = $model->renew()->where([
             'article_title' => $this->article_title2
@@ -230,6 +231,7 @@ class IntegrationTest extends TestCase
             'id' => $id
         ])->find();
         $this->assertEquals(strtotime($info['update_time']) == strtotime($updateTime), true);
+        //软删除
         $res =  $model->renew()->where([
             'article_title' => $this->article_title2
         ])->delete();
@@ -238,6 +240,16 @@ class IntegrationTest extends TestCase
             'id' => $id
         ])->find();
         $this->assertEquals(!empty($info), false);
+        $id = $this->insert(3, $this->article_title2);
+        //真实物理删除
+        $info = $model->renew()->where([
+            'id' => $id
+        ])->find();
+        $this->assertEquals(!empty($info), true);
+        $res =  $model->renew()->where([
+            'article_title' => $this->article_title2
+        ])->delete(true);
+        $this->assertEquals(!empty($res), true);
     }
 
 }
