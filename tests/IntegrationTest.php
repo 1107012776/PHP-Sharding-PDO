@@ -44,50 +44,69 @@ class IntegrationTest extends TestCase
         $this->assertEquals($res, true);
     }
 
+    public function testExecStart(){
+        $this->testBuild();
+        $this->testInsert();
+        $this->testSelectFind();
+        $this->testSelectFindAll();
+        $this->testSelectOrderFindAll();
+        $this->testSelectGroupFindAll();
+        $this->testSelectGroupOrderFindAll();
+        $this->testSelectGroupOrderLimitFindAll();
+    }
+
     /**
      * 插入测试
      * php vendor/bin/phpunit tests/IntegrationTest.php --filter testInsert
      */
     public function testInsert()
     {
-        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
-        $data = [
-            'article_descript' => '测试数据article_descript',
-            'article_img' => '/upload/2021110816311943244.jpg',
-            'article_keyword' => '测试数据article_keyword',
-            'article_title' => '测试数据article_title',
-            'author' => '学者',
-            'cate_id' => rand(1,3),
-            'content' => '<p>测试数据</p>\n',
-            'content_md' => '3123123',
-            'create_time' => "2021-11-08 16:31:20",
-            'update_time' => "2021-11-08 16:31:20",
-            'user_id' => $this->testUserId(),
-        ];
-        $data['id'] = $this->testGetId(2);
-        $res = $model->insert($data);
-        $this->assertEquals(!empty($res), true);
+        $func = function($cate_id){
+            $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+            $data = [
+                'article_descript' => '测试数据article_descript',
+                'article_img' => '/upload/2021110816311943244.jpg',
+                'article_keyword' => '测试数据article_keyword',
+                'article_title' => '测试数据article_title',
+                'author' => '学者',
+                'cate_id' => $cate_id,
+                'content' => '<p>测试数据</p>\n',
+                'content_md' => '3123123',
+                'create_time' => "2021-11-08 16:31:20",
+                'update_time' => "2021-11-08 16:31:20",
+                'user_id' => $this->testUserId(),
+            ];
+            $data['id'] = $this->testGetId(2);
+            $res = $model->renew()->insert($data);
+            $this->assertEquals(!empty($res), true);
+        };
+        $func(1);
+        $func(1);
+        $func(2);
+        $func(3);
     }
 
-    public function testGetId($stub = 1){
+    public function testGetId($stub = 1)
+    {
         $autoModel = new \PhpShardingPdo\Test\Model\AutoDistributedModel();
-        while (true){
+        while (true) {
             $resReplaceInto = $autoModel->replaceInto(['stub' => $stub]);
-            if(empty($resReplaceInto)){
+            if (empty($resReplaceInto)) {
                 usleep(50);
                 continue;
             }
             break;
         }
-        $this->assertEquals($autoModel->getLastInsertId() > 0,true);
+        $this->assertEquals($autoModel->getLastInsertId() > 0, true);
         return $autoModel->getLastInsertId();
     }
 
-    public function testUserId(){
+    public function testUserId()
+    {
         $model = new \PhpShardingPdo\Test\Model\UserModel();
         $model->startTrans();
         $accountModel = new \PhpShardingPdo\Test\Model\AccountModel();
-        $username = 'test_'.date('YmdHis');
+        $username = 'test_' . date('YmdHis');
         $id = $this->testGetId(1);
         $data = [
             'username' => $username,
@@ -97,76 +116,80 @@ class IntegrationTest extends TestCase
             'id' => $id,
         ];
         $res = $model->insert($data);
-        if(empty($res)){
+        if (empty($res)) {
             $model->rollback();
         }
-        $this->assertEquals(!empty($res),true);
+        $this->assertEquals(!empty($res), true);
         $res = $accountModel->insert([
             'username' => $username,
             'id' => $id
         ]);
-        if(empty($res)){
+        if (empty($res)) {
             $model->rollback();
         }
-        $this->assertEquals(!empty($res),true);
+        $this->assertEquals(!empty($res), true);
         $model->commit();
         return $id;
     }
 
-    public function testSelectFind(){
+    public function testSelectFind()
+    {
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
         $info = $model->where([
             'cate_id' => 1
         ])->find();
-        $this->assertEquals(!empty($info),true);
+        $this->assertEquals(!empty($info), true);
     }
 
-    public function testSelectFindAll(){
+    public function testSelectFindAll()
+    {
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
         $list = $model->where([
             'cate_id' => 1
         ])->findAll();
-        $this->assertEquals(!empty($list),true);
+        $this->assertEquals(!empty($list), true);
     }
 
-    public function testSelectOrderFindAll(){
+    public function testSelectOrderFindAll()
+    {
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
         $list = $model->where([
             'cate_id' => 1
         ])->order('update_time desc')->findAll();
-        $this->assertEquals(!empty($list),true);
+        $this->assertEquals(!empty($list), true);
     }
 
 
-    public function testSelectGroupFindAll(){
+    public function testSelectGroupFindAll()
+    {
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
         $list = $model->where([
             'cate_id' => 1
         ])->group('article_title')->findAll();
-        $this->assertEquals(!empty($list),true);
+        $this->assertEquals(!empty($list), true);
     }
 
-    public function testSelectGroupOrderFindAll(){
+    public function testSelectGroupOrderFindAll()
+    {
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
         $list = $model->field('article_title,sum(is_choice) as choice')
             ->order('article_title desc')
             ->group('article_title')->findAll();
-        $this->assertEquals(count($list) == 1,true);
+        $this->assertEquals(count($list) == 1, true);
     }
 
 
-    public function testSelectGroupOrderLimitFindAll(){
+    public function testSelectGroupOrderLimitFindAll()
+    {
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
         $list = $model->field('article_title,sum(is_choice) as choice')
             ->order('article_title desc')
             ->group('article_title')
-            ->limit(0,1)
+            ->limit(0, 1)
             ->findAll();
-        print_r($list);
-        $this->assertEquals(count($list) == 1,true);
+        $this->assertEquals(count($list) == 1, true);
+        $this->assertEquals($list[0]['choice'] == 4, true);
     }
-
-
 
 
 }

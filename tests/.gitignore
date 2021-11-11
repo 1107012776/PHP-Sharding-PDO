@@ -7,6 +7,6 @@
 *.sln
 vendor
 composer.lock
-Config
 Private
 Bak
+.env
