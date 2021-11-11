@@ -9,7 +9,6 @@ use PhpShardingPdo\Test\ShardingInitConfig4;
 
 Class ArticleModel extends Model
 {
-    use SoftDeleteTrait;
     protected $tableName = 'article';
     protected $tableNameIndexConfig = [
         'index' => '0,1', //分表索引 index ,号分割
