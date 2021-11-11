@@ -31,4 +31,17 @@ trait SoftDeleteTrait
                         ],*/
         ];
     }
+
+    /**
+     * 软删除设置的值
+     * @return array
+     */
+    protected function getSoftDeleteUpdate()
+    {
+        return [
+            $this->softDeleteKey => 1,
+            /*'delete_at' => date('Y-m-d H:i:s'),*/
+        ];
+    }
+
 }

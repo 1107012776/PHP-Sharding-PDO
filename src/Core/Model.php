@@ -126,10 +126,17 @@ class Model
     }
 
     /**
+     * @var boolean $isForcePhysicalDeletion //是否强制物理删除
      * @return boolean|int
      */
-    public function delete()
+    public function delete($isForcePhysicalDeletion = false)
     {
+        if (isset($this->softDeleteKey)
+            && empty($isForcePhysicalDeletion)
+            && method_exists($this, 'getSoftDeleteUpdate')
+        ) {
+            return $this->dao->update($this->getSoftDeleteUpdate());
+        }
         return $this->dao->delete();
     }
 

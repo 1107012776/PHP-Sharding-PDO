@@ -1,9 +1,11 @@
 <?php
 
-namespace PhpShardingPdo\Test;
+namespace PhpShardingPdo\Test\Model;
 
 
 use PhpShardingPdo\Core\Model;
+use PhpShardingPdo\Test\ShardingInitConfig4;
+
 
 /**
  * Class AutoDistributedModel
@@ -27,6 +29,6 @@ Class AutoDistributedModel extends Model
 {
     protected $tableName = 'auto_distributed';
 
-    protected $shardingInitConfigClass = ShardingInitConfig2::class;
+    protected $shardingInitConfigClass = ShardingInitConfig4::class;
 
 }
