@@ -145,8 +145,15 @@ trait  GroupByShardingTrait
                 !empty($result) && end($result)[$intersect[0]] == $tmp[$intersect[0]]) {  //存在sum则累积相加
                 foreach ($this->_field as $v) {
                     if (strstr($v, 'sum(')) {
-                        $result[count($result) - 1][$v] += $tmp[$v];
-                        continue;
+                        $v = strtolower($v);
+                        if(strstr($v,' as ')){
+                            $vFieldArr = explode(' as ',$v);
+                            $vFieldArr[1] = trim($vFieldArr[1]);
+                            $result[count($result) - 1][$vFieldArr[1]] += $tmp[$vFieldArr[1]];
+                        }else{
+                            $result[count($result) - 1][$v] += $tmp[$v];
+                        }
+                        continue 2;
                     }
                 }
             } else {
