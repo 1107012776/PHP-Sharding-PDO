@@ -162,7 +162,7 @@ class IntegrationTest extends TestCase
         $list = $model->where([
             'cate_id' => 1
         ])->findAll();
-        $this->assertEquals(!empty($list), true);
+        $this->assertEquals(count($list) == 2, true);
         $count = $model->renew()->where([
             'cate_id' => 1
         ])->where(['article_title' => $this->article_title1])
@@ -185,6 +185,36 @@ class IntegrationTest extends TestCase
         $this->assertEquals($count == 0, true);
         $count = $model->renew()->where([
             'cate_id' => ['neq',[1,3]]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 1, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['egt',1]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 4, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['elt',2]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 3, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['lt',2]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 2, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['gt',2]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 1, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['in',[1,2]]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 3, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['notIn',[1,2]]
         ])->where(['article_title' => $this->article_title1])
             ->count();
         $this->assertEquals($count == 1, true);
