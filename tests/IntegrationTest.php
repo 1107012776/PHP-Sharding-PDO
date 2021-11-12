@@ -13,6 +13,7 @@ ini_set("display_errors", "On");
 
 error_reporting(E_ALL); //显示所有错误信息
 ini_set('date.timezone', 'Asia/Shanghai');
+
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Test\Migrate\Migrate;
 use PhpShardingPdo\Test\Model\ArticleModel;
@@ -162,32 +163,72 @@ class IntegrationTest extends TestCase
         $list = $model->where([
             'cate_id' => 1
         ])->findAll();
-        $this->assertEquals(!empty($list), true);
+        $this->assertEquals(count($list) == 2, true);
         $count = $model->renew()->where([
             'cate_id' => 1
         ])->where(['article_title' => $this->article_title1])
             ->count();
         $this->assertEquals($count == 2, true);
         $count = $model->renew()->where([
-            'cate_id' => ['gt',1]
+            'cate_id' => ['gt', 1]
         ])->where(['article_title' => $this->article_title1])
             ->count();
         $this->assertEquals($count == 2, true);
         $count = $model->renew()->where([
-            'cate_id' => ['between',[1,3]]
+            'cate_id' => ['between', [1, 3]]
         ])->where(['article_title' => $this->article_title1])
             ->count();
         $this->assertEquals($count == 4, true);
         $count = $model->renew()->where([
-            'cate_id' => ['notBetween',[1,3]]
+            'cate_id' => ['notBetween', [1, 3]]
         ])->where(['article_title' => $this->article_title1])
             ->count();
         $this->assertEquals($count == 0, true);
         $count = $model->renew()->where([
-            'cate_id' => ['neq',[1,3]]
+            'cate_id' => ['neq', [1, 3]]
         ])->where(['article_title' => $this->article_title1])
             ->count();
         $this->assertEquals($count == 1, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['egt', 1]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 4, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['elt', 2]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 3, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['lt', 2]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 2, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['gt', 2]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 1, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['in', [1, 2]]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 3, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['notIn', [1, 2]]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 1, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['is', null]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 0, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['isNot', null]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 4, true);
     }
 
     public function testSelectOrderFindAll()
@@ -294,14 +335,14 @@ class IntegrationTest extends TestCase
         $model = new ArticleModel();
         $info = $model->renew()->where([
             'article_title' => [
-                'like','%某网络科技%'
+                'like', '%某网络科技%'
             ],
         ])->find();
         $this->assertEquals(!empty($info), true);
         $this->assertEquals($info['id'] == $id, true);
         $res = $model->renew()->where([
             'article_title' => [
-                'like','%某网络科技%'
+                'like', '%某网络科技%'
             ],
         ])->delete(true);
         $this->assertEquals(!empty($res), true);
@@ -310,14 +351,14 @@ class IntegrationTest extends TestCase
         $model = new ArticleModel();
         $info = $model->renew()->where([
             'article_title' => [
-                'like','%某网络科技%'
+                'like', '%某网络科技%'
             ],
         ])->find();
         $this->assertEquals(!empty($info), true);
         $this->assertEquals($info['id'] == $id, true);
         $res = $model->renew()->where([
             'article_title' => [
-                'like','%某网络科技%'
+                'like', '%某网络科技%'
             ],
         ])->delete();
         $this->assertEquals(!empty($res), true);
