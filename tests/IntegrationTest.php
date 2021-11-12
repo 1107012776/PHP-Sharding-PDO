@@ -155,6 +155,11 @@ class IntegrationTest extends TestCase
         ])->where(['article_title' => $this->article_title1])
             ->find();
         $this->assertEquals(!empty($info), true);
+        $count = $model->renew()->where([
+            'cate_id' => 1,
+        ])->limit(1)->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 2, true);
     }
 
     public function testSelectFindAll()

@@ -235,7 +235,7 @@ class ShardingPdo
         $this->clearSqlErrors();
         $old = $this->_field_str;
         empty($field_count) && $field_count = '*';
-        $this->_field_str = 'count(' . $field_count . ') as num';
+        $this->_field_str = 'count(' . $field_count . ') as total_count_num';
         $list = $this->_search();
         $this->_field_str = $old;
         $count = 0;
@@ -243,7 +243,7 @@ class ShardingPdo
             return $count;
         }
         foreach ($list as &$value) {
-            $count += $value['num'];
+            $count += $value['total_count_num'];
         }
         return $count;
     }

@@ -79,6 +79,11 @@ trait SelectSearchSharingTrait
                     if (empty($tmp)) {
                         break;
                     }
+                    if (isset($tmp['total_count_num'])
+                        && count($tmp) == 1) {  //count查询，这种特殊情况下
+                        array_push($result, $tmp);
+                        continue;
+                    }
                     $limit--;
                     array_push($result, $tmp);
                 }
