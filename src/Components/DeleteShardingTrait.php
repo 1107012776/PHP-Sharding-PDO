@@ -50,6 +50,7 @@ trait DeleteShardingTrait
                     if (empty($res[$key])) {
                         $this->_sqlErrors[] = $statement->errorInfo();
                     }
+                    $this->_addExeSql($sql, $this->_condition_bind, $db);
                 }
             };
             if (!empty($sqlArr)) {  //扫描多张表
@@ -80,6 +81,7 @@ trait DeleteShardingTrait
                 if (empty($res)) {
                     $this->_sqlErrors[] = $statement->errorInfo();
                 }
+                $this->_addExeSql($sql, $this->_condition_bind, $this->_current_exec_db);
             }
             /**
              * @var \PDOStatement $s
