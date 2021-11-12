@@ -13,6 +13,7 @@ namespace PhpShardingPdo\Components;
 
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Core\ShardingPdoContext;
+use PhpShardingPdo\Core\SPDO;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
 
 /**
@@ -165,14 +166,18 @@ trait TransactionShardingTrait
     /**
      * 添加查询的sql
      */
-    private function _addSelectSql($sql, $bindParams)
+    private function _addSelectSql($sql, $bindParams, $pdoObj = null)
     {
+        /**
+         * @var \PhpShardingPdo\Core\SPDO $pdoObj
+         */
+        $dsn = $pdoObj->getDsn();
         $exeSql = $sql;
         foreach ($bindParams as $bKey => $bVal) {
             $bVal = $this->_sqlAddslashes($bVal);
             $exeSql = str_replace($bKey, "'$bVal'", $exeSql);
         }
-        $newSql = date('Y-m-d H:i:s', time()) . '[time]: ' . $exeSql . ';' . PHP_EOL;
+        $newSql = date('Y-m-d H:i:s', time()) . '['.$dsn.'][time]: ' . $exeSql . ';' . PHP_EOL;
         $sqlLogPath = ConfigEnv::get('shardingPdo.sqlLogPath');
         $sqlLogOpen = ConfigEnv::get('shardingPdo.sqlLogOpen', false);
         if (!empty($sqlLogPath) && $sqlLogOpen) {
@@ -184,14 +189,18 @@ trait TransactionShardingTrait
     /**
      * 添加执行的sql
      */
-    private function _addExeSql($sql, $bindParams)
+    private function _addExeSql($sql, $bindParams, $pdoObj = null)
     {
+        /**
+         * @var \PhpShardingPdo\Core\SPDO $pdoObj
+         */
+        $dsn = $pdoObj->getDsn();
         $exeSql = $sql;
         foreach ($bindParams as $bKey => $bVal) {
             $bVal = $this->_sqlAddslashes($bVal);
             $exeSql = str_replace($bKey, "'$bVal'", $exeSql);
         }
-        $newSql = date('Y-m-d H:i:s', time()) . '[time]: ' . $exeSql . ';' . PHP_EOL;
+        $newSql = date('Y-m-d H:i:s', time()) . '['.$dsn.'][time]: ' . $exeSql . ';' . PHP_EOL;
         $sqlLogPath = ConfigEnv::get('shardingPdo.sqlLogPath');
         $sqlLogOpen = ConfigEnv::get('shardingPdo.sqlLogOpen', false);
         if (!empty($sqlLogPath) && $sqlLogOpen) {

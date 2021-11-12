@@ -62,7 +62,7 @@ trait UpdateShardingTrait
                  */
                 $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($bindParams);
-                $this->_addExeSql($sql, $bindParams);
+                $this->_addExeSql($sql, $bindParams, $this->_current_exec_db);
                 $rowsCount += $statement->rowCount();
                 if (empty($res)) {
                     $this->_sqlErrors[] = $statement->errorInfo();
@@ -79,7 +79,7 @@ trait UpdateShardingTrait
                  */
                 $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res[$key] = $statement->execute($bindParams);
-                $this->_addExeSql($sql, $bindParams);
+                $this->_addExeSql($sql, $bindParams, $db);
                 $rowsCount += $statement->rowCount();
                 if (empty($res[$key])) {
                     $this->_sqlErrors[] = $statement->errorInfo();
