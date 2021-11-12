@@ -134,9 +134,6 @@ trait TransactionShardingTrait
     private function _sqlAddslashes($value)
     {
         $value = addslashes($value);
-        $value = str_replace("_", "\_", $value);
-        $value = str_replace("%", "\%", $value);
-        $value = htmlspecialchars($value);
         return $value;
     }
 
@@ -182,6 +179,7 @@ trait TransactionShardingTrait
      */
     private function _delExeSqlLog()
     {
+        return;
         ShardingPdoContext::setValue(self::$_exeSqlArr, []);
         $_exeSqlXaUniqidFilePathArr = ShardingPdoContext::getValue(self::$_exeSqlXaUniqidFilePathArr);
         foreach ($_exeSqlXaUniqidFilePathArr as $filePath) {
