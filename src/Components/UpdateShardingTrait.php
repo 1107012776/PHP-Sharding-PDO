@@ -30,8 +30,9 @@ trait UpdateShardingTrait
         $bindParams = [];
         if (empty($this->_incrOrDecrColumnStr)) {
             foreach ($this->_update_data as $k => $v) {
-                $column_str .= ',' . $k . ' = ' . ':update_' . $k;
-                $bindParams[':update_' . $k] = $v;
+                $zwKey = ':update_' . $k.'_0';
+                $column_str .= ',' . $k . ' = ' .$zwKey ;
+                $bindParams[$zwKey] = $v;
             }
             !empty($column_str) && $column_str = substr($column_str, 1, strlen($column_str) - 1);
         } else {

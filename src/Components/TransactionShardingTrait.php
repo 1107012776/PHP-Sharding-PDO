@@ -11,7 +11,9 @@
 namespace PhpShardingPdo\Components;
 
 
+use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Core\ShardingPdoContext;
+use PHPUnit\Framework\Constraint\ExceptionMessage;
 
 /**
  * 事务管理，分库分表之后
@@ -134,9 +136,6 @@ trait TransactionShardingTrait
     private function _sqlAddslashes($value)
     {
         $value = addslashes($value);
-        $value = str_replace("_", "\_", $value);
-        $value = str_replace("%", "\%", $value);
-        $value = htmlspecialchars($value);
         return $value;
     }
 
@@ -150,6 +149,7 @@ trait TransactionShardingTrait
         }
         ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
         $log = 'START' . PHP_EOL;
+        $log .= PHP_EOL;
         foreach (ShardingPdoContext::getValue(self::$_exeSqlArr) as $sql) {
             $log .= $sql;
         }
@@ -160,6 +160,24 @@ trait TransactionShardingTrait
         ShardingPdoContext::array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
         file_put_contents($filePath, $log . PHP_EOL . 'END' . PHP_EOL, FILE_APPEND);
         ShardingPdoContext::setValue(self::$_exeSqlArr, []);
+    }
+
+    /**
+     * 添加查询的sql
+     */
+    private function _addSelectSql($sql, $bindParams)
+    {
+        $exeSql = $sql;
+        foreach ($bindParams as $bKey => $bVal) {
+            $bVal = $this->_sqlAddslashes($bVal);
+            $exeSql = str_replace($bKey, "'$bVal'", $exeSql);
+        }
+        $newSql = date('Y-m-d H:i:s', time()) . '[time]: ' . $exeSql . ';' . PHP_EOL;
+        $sqlLogPath = ConfigEnv::get('shardingPdo.sqlLogPath');
+        $sqlLogOpen = ConfigEnv::get('shardingPdo.sqlLogOpen', false);
+        if (!empty($sqlLogPath) && $sqlLogOpen) {
+            @file_put_contents(str_replace('.sql', date('YmdH') . '.sql', $sqlLogPath), $newSql, FILE_APPEND);
+        }
     }
 
 
@@ -173,7 +191,13 @@ trait TransactionShardingTrait
             $bVal = $this->_sqlAddslashes($bVal);
             $exeSql = str_replace($bKey, "'$bVal'", $exeSql);
         }
-        ShardingPdoContext::array_push(self::$_exeSqlArr, date('Y-m-d H:i:s') . ': ' . $exeSql . ';' . PHP_EOL);
+        $newSql = date('Y-m-d H:i:s', time()) . '[time]: ' . $exeSql . ';' . PHP_EOL;
+        $sqlLogPath = ConfigEnv::get('shardingPdo.sqlLogPath');
+        $sqlLogOpen = ConfigEnv::get('shardingPdo.sqlLogOpen', false);
+        if (!empty($sqlLogPath) && $sqlLogOpen) {
+            @file_put_contents(str_replace('.sql', date('YmdH') . '.sql', $sqlLogPath), $newSql, FILE_APPEND);
+        }
+        ShardingPdoContext::array_push(self::$_exeSqlArr, $newSql);
     }
 
 

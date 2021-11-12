@@ -37,9 +37,10 @@ trait InsertShardingTrait
         $value_str = '';
         $bindParams = [];
         foreach ($this->_insert_data as $k => $v) {
+            $zwKey = 'insert_'.$k.'_0';
             $column_str .= ',`' . $k . '`';
-            $value_str .= ',:' . $k . '';
-            $bindParams[':' . $k] = $v;
+            $value_str .= ',:' . $zwKey . '';
+            $bindParams[':' . $zwKey] = $v;
         }
         $column_str = trim($column_str, ',');
         if (empty($column_str)) {
@@ -47,7 +48,7 @@ trait InsertShardingTrait
         }
         $sql .= $column_str . ')';
         $value_str = trim($value_str, ',');
-        $sql .= 'values(' . $value_str . ')';
+        $sql .= ' values (' . $value_str . ')';
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {
             $sqlArr[] = str_replace('###TABLENAME###', $this->_table_name, $sql);
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {  //不允许插入到多张表

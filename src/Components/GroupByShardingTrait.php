@@ -34,6 +34,7 @@ trait  GroupByShardingTrait
                  */
                 $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
                 $res = $statement->execute($this->_condition_bind);
+                $this->_addSelectSql($sql, $this->_condition_bind);
                 return $res;
             }
             /**
@@ -45,6 +46,7 @@ trait  GroupByShardingTrait
                  */
                 $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res[$key] = $statement->execute($this->_condition_bind);
+                $this->_addSelectSql($sql, $this->_condition_bind);
             }
             return $res;
         };
