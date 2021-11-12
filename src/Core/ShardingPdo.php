@@ -27,6 +27,7 @@ class ShardingPdo
     use \PhpShardingPdo\Components\TransactionShardingTrait;
     use \PhpShardingPdo\Components\ReplaceIntoShardingTrait;
     use \PhpShardingPdo\Components\IncrDecrShardingTrait;
+    use \PhpShardingPdo\Components\ParsingTrait;
     /**
      * @var ShardingRuleConfiguration
      */
@@ -75,6 +76,7 @@ class ShardingPdo
         $this->fetch_style = \PDO::FETCH_ASSOC;
         $this->attr_cursor = \PDO::CURSOR_FWDONLY;
         $this->_incrOrDecrColumnStr = '';
+        $this->_bind_index = 0;
         return $this;
     }
 
@@ -140,7 +142,22 @@ class ShardingPdo
      */
     public function where($condition = [])
     {
-        $this->_condition = array_merge($this->_condition, $condition);
+        foreach ($condition as $key => $val) {
+            if (!isset($this->_condition[$key])) {
+                $this->_condition[$key] = $val;
+            }
+            if (isset($this->_condition[$key][0])
+                && $this->_condition[$key][0] == 'more'
+            ) {
+                array_push($this->_condition[$key][1], $val);
+            } else {  //为兼容一个键值多个查询条件
+                $old = $this->_condition[$key];
+                $this->_condition[$key] = [
+                    'more', []
+                ];
+                array_push($this->_condition[$key][1], $old);
+            }
+        }
         return $this;
     }
 
@@ -306,146 +323,6 @@ class ShardingPdo
 
 
     /***************************************** 私有方法  *********************************************/
-
-    /**
-     * 参数解析绑定
-     * @param $key
-     * @param $val
-     */
-    private function _bind($key, $val){
-        $zwKey = ':' . $key;  //占位符
-        if (is_array($val)) {
-            switch ($val[0]) {
-                case 'neq':
-                    if (!is_array($val[1])) {
-                        $zwKey .= '_neq_0';
-                        $this->_condition_str .= ' and ' . $key . ' != ' . $zwKey;
-                        $this->_condition_bind[$zwKey] = $val[1];
-                        break;
-                    }
-                    foreach ($val[1] as $k => $v) {   //多个不等于
-                        $zwKeyNeq = $zwKey . '_neq_' . $k;
-                        $this->_condition_str .= ' and ' . $key . ' != ' . $zwKeyNeq;
-                        $this->_condition_bind[$zwKeyNeq] = $v;
-                    }
-                    break;
-                case 'like':
-                    $zwKey .= '_0';
-                    $this->_condition_str .= ' and ' . $key . ' like ' . $zwKey;
-                    $this->_condition_bind[$zwKey] = $val[1];
-                    break;
-                case 'gt':
-                    $zwKey .= '_0';
-                    $this->_condition_str .= ' and ' . $key . ' > ' . $zwKey;
-                    $this->_condition_bind[$zwKey] = $val[1];
-                    break;
-                case 'egt':
-                    $zwKey .= '_0';
-                    $this->_condition_str .= ' and ' . $key . ' >= ' . $zwKey;
-                    $this->_condition_bind[$zwKey] = $val[1];
-                    break;
-                case 'elt':
-                    $zwKey .= '_0';
-                    $this->_condition_str .= ' and ' . $key . ' <= ' . $zwKey;
-                    $this->_condition_bind[$zwKey] = $val[1];
-                    break;
-                case 'lt':
-                    $zwKey .= '_0';
-                    $this->_condition_str .= ' and ' . $key . ' < ' . $zwKey;
-                    $this->_condition_bind[$zwKey] = $val[1];
-                    break;
-                case 'in':
-                    $zwKeyIn = '';
-                    foreach ($val[1] as $k => $v) {
-                        $zwKeyIn .= ',' . $zwKey . '_in_' . $k;
-                        $this->_condition_bind[$zwKey . '_in_' . $k] = $v;
-                    }
-                    $zwKeyIn = trim($zwKeyIn, ',');
-                    $this->_condition_str .= ' and ' . $key . ' in (' . $zwKeyIn . ')';
-                    break;
-                case 'notIn':
-                    $zwKeyIn = '';
-                    foreach ($val[1] as $k => $v) {
-                        $zwKeyIn .= ',' . $zwKey . '_notIn_' . $k;
-                        $this->_condition_bind[$zwKey . '_notIn_' . $k] = $v;
-                    }
-                    $zwKeyIn = trim($zwKeyIn, ',');
-                    $this->_condition_str .= ' and ' . $key . ' not in (' . $zwKeyIn . ')';
-                    break;
-                case 'between':
-                    $zwKeyMin = $zwKey . '_between_min_0';
-                    $zwKeyMax = $zwKey . '_between_max_0';
-                    $this->_condition_str .= ' and ' . $key . ' <= ' . $zwKeyMax;
-                    $this->_condition_str .= ' and ' . $key . ' >= ' . $zwKeyMin;
-                    $this->_condition_bind[$zwKeyMin] = min($val[1]);
-                    $this->_condition_bind[$zwKeyMax] = max($val[1]);
-                    break;
-                case 'notBetween':
-                    $zwKeyMin = $zwKey . '_notBetween_min_0';
-                    $zwKeyMax = $zwKey . '_notBetween_max_0';
-                    $this->_condition_str .= ' and ' . $key . ' > ' . $zwKeyMax;
-                    $this->_condition_str .= ' and ' . $key . ' < ' . $zwKeyMin;
-                    $this->_condition_bind[$zwKeyMin] = min($val[1]);
-                    $this->_condition_bind[$zwKeyMax] = max($val[1]);
-                    break;
-                case 'is':
-                    $zwKeyIs = $zwKey . '_is_0';
-                    if ($val[1] === null) {
-                        $this->_condition_str .= ' and ' . $key . ' is NULL';
-                    } else {
-                        $this->_condition_str .= ' and ' . $key . ' is ' . $zwKeyIs;
-                        $this->_condition_bind[$zwKeyIs] = $val[1];
-                    }
-                    break;
-                case 'isNot':
-                    $zwKeyIs = $zwKey . '_isNot_0';
-                    if ($val[1] === null) {
-                        $this->_condition_str .= ' and ' . $key . ' is not NULL';
-                    } else {
-                        $this->_condition_str .= ' and ' . $key . ' is not ' . $zwKeyIs;
-                        $this->_condition_bind[$zwKeyIs] = $val[1];
-                    }
-                    break;
-                case 'more':
-                    $this->_bind($key, $val[1]);
-                    break;
-            }
-        } else {
-            $zwKey .= '_0';
-            $this->_condition_str .= ' and ' . $key . ' = ' . $zwKey;
-            $this->_condition_bind[$zwKey] = $val;
-        }
-    }
-
-    /**
-     * 解析
-     */
-    private function _pare()
-    {
-        foreach ($this->_condition as $key => $val) {
-            $this->_bind($key, $val);
-        }
-        if (!empty($this->_condition_str)) {
-            $this->_condition_str = ' where ' . substr($this->_condition_str, 5, strlen($this->_condition_str) - 5);
-        }
-        if (!empty($this->_order_str)) {
-            $this->_order_str = str_replace(' order by ', '', $this->_order_str);
-            $this->_order_str = ' order by ' . $this->_order_str;
-        }
-        if (!empty($this->_limit_str)) {
-            $this->_limit_str = str_replace(' limit ', '', $this->_limit_str);
-            $this->_limit_str = ' limit ' . $this->_limit_str;
-        }
-        if (!empty($this->_group_str)) {
-            $this->_group_str = str_replace(' group by ', '', $this->_group_str);
-            $this->_group_str = ' group by ' . $this->_group_str;
-        }
-        if (!empty($this->_field)) {
-            $this->_field_str = implode(',', $this->_field);
-        }
-        $this->_current_exec_db = $this->_getQpDb();
-        $this->_current_exec_table = $this->_getQpTableName();
-    }
 
     /**
      * limit页返回数,用于limit返回
