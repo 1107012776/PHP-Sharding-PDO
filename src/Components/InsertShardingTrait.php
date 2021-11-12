@@ -47,7 +47,7 @@ trait InsertShardingTrait
         }
         $sql .= $column_str . ')';
         $value_str = trim($value_str, ',');
-        $sql .= 'values(' . $value_str . ')';
+        $sql .= ' values (' . $value_str . ')';
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {
             $sqlArr[] = str_replace('###TABLENAME###', $this->_table_name, $sql);
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {  //不允许插入到多张表

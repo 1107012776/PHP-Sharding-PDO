@@ -12,6 +12,7 @@ namespace PhpShardingPdo\Test;
 ini_set("display_errors", "On");
 
 error_reporting(E_ALL); //显示所有错误信息
+ini_set('date.timezone', 'Asia/Shanghai');
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Test\Migrate\Migrate;
 use PhpShardingPdo\Test\Model\ArticleModel;
