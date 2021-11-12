@@ -37,9 +37,10 @@ trait InsertShardingTrait
         $value_str = '';
         $bindParams = [];
         foreach ($this->_insert_data as $k => $v) {
+            $zwKey = 'insert_'.$k.'_0';
             $column_str .= ',`' . $k . '`';
-            $value_str .= ',:' . $k . '';
-            $bindParams[':' . $k] = $v;
+            $value_str .= ',:' . $zwKey . '';
+            $bindParams[':' . $zwKey] = $v;
         }
         $column_str = trim($column_str, ',');
         if (empty($column_str)) {
