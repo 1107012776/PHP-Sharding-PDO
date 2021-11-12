@@ -169,9 +169,9 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
 
     protected static function connect($dsn, $user, $pass, $option = [])
     {
-        //$dbh = new \PDO($dsn, $user, $pass); //初始化一个PDO对象
+        //$dbh = new PhpShardingPdo\Core\SPDO($dsn, $user, $pass); //初始化一个PDO对象
         //默认这个不是长连接，如果需要数据库长连接，需要最后加一个参数：array(PDO::ATTR_PERSISTENT => true) 变成这样：
-//     $dbh = new \PhpShardingPdo\Core\SPDO($dsn, $user, $pass, array(\PDO :: ATTR_TIMEOUT => 30,\PDO::ATTR_PERSISTENT => true));
+        //$dbh = new \PhpShardingPdo\Core\SPDO($dsn, $user, $pass, array(\PDO :: ATTR_TIMEOUT => 30,\PDO::ATTR_PERSISTENT => true));
         $dbh = new \PhpShardingPdo\Core\SPDO($dsn, $user, $pass, $option);
         $dbh->query('set names utf8mb4;');
         return $dbh;
