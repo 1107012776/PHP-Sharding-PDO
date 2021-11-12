@@ -162,6 +162,10 @@ class IntegrationTest extends TestCase
         $this->assertEquals($count == 2, true);
     }
 
+    /**
+     * 查询测试
+     * php vendor/bin/phpunit tests/IntegrationTest.php --filter testSelectFindAll
+     */
     public function testSelectFindAll()
     {
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
@@ -246,6 +250,12 @@ class IntegrationTest extends TestCase
             ->where(['cate_id' => ['lt', 3]])
             ->count();
         $this->assertEquals($count == 1, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['egt', 1]
+        ])->where(['article_title' => $this->article_title1])
+            ->where(['cate_id' => ['elt', 4]])
+            ->count();
+        $this->assertEquals($count == 4, true);
     }
 
     public function testSelectOrderFindAll()
