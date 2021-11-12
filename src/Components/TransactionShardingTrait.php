@@ -170,7 +170,7 @@ trait TransactionShardingTrait
             $bVal = $this->_sqlAddslashes($bVal);
             $exeSql = str_replace($bKey, "'$bVal'", $exeSql);
         }
-        ShardingPdoContext::array_push(self::$_exeSqlArr, date('Y-m-d H:i:s') . ': ' . $exeSql . ';' . PHP_EOL);
+        ShardingPdoContext::array_push(self::$_exeSqlArr, date('Y-m-d H:i:s',time()) . '[time]: ' . $exeSql . ';' . PHP_EOL);
     }
 
 
