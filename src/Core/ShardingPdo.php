@@ -154,9 +154,9 @@ class ShardingPdo
             } else {  //为兼容一个键值多个查询条件
                 $old = $this->_condition[$key];
                 $this->_condition[$key] = [
-                    'more', []
+                    'more', [$old]
                 ];
-                array_push($this->_condition[$key][1], $old);
+                array_push($this->_condition[$key][1], $val);
             }
         }
         return $this;
