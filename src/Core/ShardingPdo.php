@@ -145,6 +145,7 @@ class ShardingPdo
         foreach ($condition as $key => $val) {
             if (!isset($this->_condition[$key])) {
                 $this->_condition[$key] = $val;
+                continue;
             }
             if (isset($this->_condition[$key][0])
                 && $this->_condition[$key][0] == 'more'
