@@ -54,10 +54,10 @@ trait ReplaceIntoShardingTrait
         $bindParams = [];
         foreach ($this->_insert_data as $k => $v) {
             $this->_bind_index++;
-            $zwKey = ':update_' . $k.'_'.$this->_bind_index.'_0';
+            $zwKey = ':insert_' . $k.'_'.$this->_bind_index.'_0';
             $column_str .= ',`' . $k . '`';
-            $value_str .= ',:' . $zwKey . '';
-            $bindParams[':' . $zwKey] = $v;
+            $value_str .= ',' . $zwKey . '';
+            $bindParams[$zwKey] = $v;
         }
         $column_str = trim($column_str, ',');
         if (empty($column_str)) {
