@@ -177,4 +177,48 @@ trait SelectSearchSharingTrait
         }
         return $result;
     }
+
+
+    private function _search()
+    {
+        $this->_pare();
+        if (!empty($this->_group_str)) {  //存在group by
+            return $this->_groupSearch();
+        }
+        return $this->_defaultSearch();
+    }
+
+
+    /**
+     * 获取orderBy字段
+     * @return $order =>
+     * [
+     *    [
+     *        'id','asc',
+     *    ],
+     *    [
+     *       'create_time','desc'
+     *    ]
+     * ]
+     */
+    private function _getOrderField()
+    {
+        $order = str_replace(' order by ', '', $this->_order_str);
+        if (strstr($order, ',')) {
+            $order = explode(',', $order);
+        }
+        if (is_array($order)) {  //多个order by
+            foreach ($order as &$v) {
+                $v = trim($v);
+                $v = explode(' ', $v);
+                $v = array_filter($v);  //去空值
+            }
+        } else {
+            $order = trim($order);
+            $order = explode(' ', $order);
+            $order = array_filter($order); //去空值
+            $order = [$order];
+        }
+        return $order;
+    }
 }
