@@ -24,8 +24,8 @@ trait ParsingTrait{
      */
     private function _bind($key, $val)
     {
-        $zwKey = ':' . $key.'_'.$this->_bind_index;  //占位符
         $this->_bind_index++;  //自加
+        $zwKey = ':' . $key.'_'.$this->_bind_index;  //占位符
         if (is_array($val)) {
             switch ($val[0]) {
                 case 'neq':
