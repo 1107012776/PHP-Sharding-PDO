@@ -10,6 +10,9 @@
 
 namespace PhpShardingPdo\Core;
 
+/**
+ * 继承\PDO，便于后期扩展
+ */
 class SPDO extends \PDO
 {
     private $dsn;

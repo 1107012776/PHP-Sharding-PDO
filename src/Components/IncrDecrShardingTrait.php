@@ -10,7 +10,7 @@
 
 namespace PhpShardingPdo\Components;
 /**
- * sharding
+ * 自增、自减sharding
  * User: lys
  * Date: 2019/8/1
  * Time: 17:03

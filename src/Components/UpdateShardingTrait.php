@@ -10,7 +10,7 @@
 
 namespace PhpShardingPdo\Components;
 /**
- * 插入sharding
+ * 更新 sharding
  * User: lys
  * Date: 2019/8/1
  * Time: 17:03

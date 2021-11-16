@@ -13,8 +13,7 @@ namespace PhpShardingPdo\Components;
 
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Core\ShardingPdoContext;
-use PhpShardingPdo\Core\SPDO;
-use PHPUnit\Framework\Constraint\ExceptionMessage;
+
 
 /**
  * 事务管理，分库分表之后

@@ -10,7 +10,9 @@
 
 namespace PhpShardingPdo\Core;
 
-
+/**
+ * 上下文管理类
+ */
 class ShardingPdoContext
 {
     protected static $_self;

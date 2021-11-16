@@ -10,8 +10,8 @@
 
 namespace PhpShardingPdo\Core;
 /**
- * Created by PhpStorm.
- * User: 11070
+ * 归并排序处理类
+ * User: linyushan
  * Date: 2019/7/28
  * Time: 17:13
  */
