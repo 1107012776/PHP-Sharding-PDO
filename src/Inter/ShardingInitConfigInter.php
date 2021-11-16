@@ -29,8 +29,7 @@ abstract class ShardingInitConfigInter
      */
     public static function init()
     {
-        $shardingInitName = self::$shardingInitConfigInterName . static::class;
-        $databasePdoInstanceMapName = $shardingInitName . '_pdo';
+        $databasePdoInstanceMapName = static::getDatabasePdoInstanceMapName();
         $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
         $obj = new static();
         if (empty($map)) {
@@ -48,8 +47,7 @@ abstract class ShardingInitConfigInter
      */
     public static function getDbMap()
     {
-        $shardingInitName = self::$shardingInitConfigInterName . static::class;
-        $databasePdoInstanceMapName = $shardingInitName . '_pdo';
+        $databasePdoInstanceMapName = static::getDatabasePdoInstanceMapName();
         $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
         return $map;
     }
@@ -62,8 +60,7 @@ abstract class ShardingInitConfigInter
      */
     public static function reconnection(callable $errorCallback = null)
     {
-        $shardingInitName = self::$shardingInitConfigInterName . static::class;
-        $databasePdoInstanceMapName = $shardingInitName . '_pdo';
+        $databasePdoInstanceMapName = static::getDatabasePdoInstanceMapName();
         $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
         if (!empty($map)) {
             try {
@@ -87,8 +84,7 @@ abstract class ShardingInitConfigInter
 
     public static function close(callable $errorCallback = null)
     {
-        $shardingInitName = self::$shardingInitConfigInterName . static::class;
-        $databasePdoInstanceMapName = $shardingInitName . '_pdo';
+        $databasePdoInstanceMapName = static::getDatabasePdoInstanceMapName();
         $map = ShardingPdoContext::getValue($databasePdoInstanceMapName);
         if (!empty($map)) {
             try {
@@ -108,6 +104,13 @@ abstract class ShardingInitConfigInter
             ShardingPdoContext::setValue($databasePdoInstanceMapName, false);
         }
         return true;
+    }
+
+    protected static function getDatabasePdoInstanceMapName()
+    {
+        $shardingInitName = self::$shardingInitConfigInterName . static::class;
+        $databasePdoInstanceMapName = $shardingInitName . '_pdo';
+        return $databasePdoInstanceMapName;
     }
 
 
