@@ -256,6 +256,12 @@ class IntegrationTest extends TestCase
             ->where(['cate_id' => ['elt', 4]])
             ->count();
         $this->assertEquals($count == 4, true);
+        $count = $model->renew()->where([
+            'cate_id' => ['findInSet', 1]
+        ])->where(['article_title' => $this->article_title1])
+            ->count();
+        $this->assertEquals($count == 2, true);
+
     }
 
     public function testSelectOrderFindAll()

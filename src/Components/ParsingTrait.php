@@ -118,6 +118,11 @@ trait ParsingTrait{
                         $this->_condition_bind[$zwKeyIs] = $val[1];
                     }
                     break;
+                case 'findInSet':
+                    $zwKeyIs = $zwKey . '_findInSet_0';
+                    $this->_condition_str .= ' and '.'FIND_IN_SET(' .$zwKeyIs.','.$key.')';
+                    $this->_condition_bind[$zwKeyIs] = $val[1];
+                    break;
                 case 'more':
                     foreach ($val[1] as $subVal) {
                         $this->_bind($key, $subVal);
