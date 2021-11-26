@@ -24,9 +24,9 @@ PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to ano
 ```
 # 自动化测试
 
-##（1）先要配置tests/Config/.env ，测试环境数据库链接
+## （1）先要配置tests/Config/.env ，测试环境数据库链接
 
-### .env文件
+#### .env文件
 ```php
 [database]
 host=localhost
