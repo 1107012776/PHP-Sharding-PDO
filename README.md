@@ -24,7 +24,7 @@ PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to ano
 ```
 # 自动化测试
 
-## （1）先要配置tests/Config/.env ，测试环境数据库链接
+### （1）先要配置tests/Config/.env ，测试环境数据库链接
 
 #### .env文件
 ```php
@@ -46,7 +46,7 @@ php vendor/bin/phpunit tests/IntegrationCoroutineTest.php --filter testExecStart
 
 
 # 示例 （详细请看tests目录）
-## 1.我们需要配置一下基本的分块规则配置类
+### 1.我们需要配置一下基本的分块规则配置类
 ```php
 <?php
 
@@ -253,7 +253,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
 }
 
 ```
-## 2.Model创建
+### 2.Model创建
 ```php
 <?php
 
@@ -306,8 +306,8 @@ Class UserModel extends Model
 }
 ```
 
-## 3.基础用法
-### 查询
+### 3.基础用法
+#### 查询
 ```php
 <?php
 $model = new \PhpShardingPdo\Test\Model\ArticleModel();
@@ -354,9 +354,15 @@ var_dump($list);
 //like 查询
 $list = $model->renew()->where(['article_title' => ['like','某网络科技%'],'type' => 1])->findAll();  
 var_dump($list);
+//findInSet 查询
+$count = $model->renew()->where([
+            'cate_id' => ['findInSet', 1]
+])->where(['article_title' => '文章1'])
+->count();
+$this->assertEquals($count == 2, true);
 ```
 
-### 插入
+#### 插入
 ```php
 <?php
 $model = new \PhpShardingPdo\Test\Model\ArticleModel();
@@ -372,7 +378,7 @@ $user->commit();
 ```
 
 
-### 更新
+#### 更新
 ```php
 <?php
 $model = new \PhpShardingPdo\Test\Model\ArticleModel();
@@ -388,7 +394,7 @@ var_dump($res); //影响行数
 $model->commit();
 ```
 
-### 删除
+#### 删除
 ```php
 <?php
 $model = new \PhpShardingPdo\Test\Model\ArticleModel();
@@ -404,8 +410,8 @@ $model->commit();
 
 ```
 
-# 本项目基于 Apache-2.0 License 协议
+### 本项目基于 Apache-2.0 License 协议
 https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
 
-# 更多请关注本人的博客
+### 更多请关注本人的博客
 https://www.developzhe.com
