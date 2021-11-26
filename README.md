@@ -1,5 +1,16 @@
 # PHP-Sharding-PDO
 PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协程
+
+[一、安装](#安装)
+
+[二、说明](#说明)
+
+[三、注意](#注意)
+
+[四、自动化测试](#自动化测试)
+
+[五、示例](#示例)
+
 # 安装
 composer require lys/php-sharding-pdo
 
