@@ -9,7 +9,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
 
 [四、自动化测试](#自动化测试)
 
-[五、示例](#示例)
+[五、示例](#示例（详细请看tests目录）)
 
 # 安装
 composer require lys/php-sharding-pdo
