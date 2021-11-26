@@ -356,7 +356,7 @@ $list = $model->renew()->where(['article_title' => ['like','某网络科技%'],'
 var_dump($list);
 //findInSet 查询
 $count = $model->renew()->where([
-            'cate_id' => ['findInSet', 1]
+    'cate_id' => ['findInSet', 1]
 ])->where(['article_title' => '文章1'])
 ->count();
 $this->assertEquals($count == 2, true);
