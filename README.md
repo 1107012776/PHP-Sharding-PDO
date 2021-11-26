@@ -343,6 +343,13 @@ var_dump($list);
 //between 两者之间 相当于  id >= 100 and id <= 10000
 $list = $model->renew()->where(['id' => ['between', [100, 10000]]])->findAll();  
 var_dump($list);
+//同一个字段多条件查询 相当于 cate_id >= 1 and cate_id <= 4 和上面的between一样
+$count = $model->renew()->where([
+    'cate_id' => ['egt', 1]
+])->where(['article_title' => '文章1'])
+->where(['cate_id' => ['elt', 4]])
+->count();
+$this->assertEquals($count == 4, true);
 //not between  不在两者之间 相当于  id < 100 and id > 10000
 $list = $model->renew()->where(['id' => ['notBetween', [100, 10000]]])->findAll();  
 var_dump($list);
