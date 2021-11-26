@@ -272,6 +272,27 @@ class Model
         return $this;
     }
 
+    /**
+     * 内连接
+     */
+    public function innerJoin(Model $obj){
+
+    }
+
+    /**
+     * 左连接
+     */
+    public function leftJoin(Model $obj){
+
+    }
+
+    /**
+     * 右连接
+     */
+    public function rightJoin(Model $obj){
+
+    }
+
     public function __clone()
     {
         $this->dao = clone $this->dao;
