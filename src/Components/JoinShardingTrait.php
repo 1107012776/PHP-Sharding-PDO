@@ -16,17 +16,16 @@ namespace PhpShardingPdo\Components;
  */
 trait JoinShardingTrait
 {
-    private $table_alias = ''; //表别名
+    private $_table_alias = ''; //表别名
 
     /**
-     * 获取表真实别名
+     * 获取表别名
      * @param string $execTableName
      * @return string
      */
-    protected function getTableAlias($execTableName = '')
+    protected function getTableAlias()
     {
-        $ext = str_replace($this->_table_name, '', $execTableName);
-        return $this->table_alias . $ext;
+        return $this->_table_alias;
     }
 
     /**
@@ -35,10 +34,10 @@ trait JoinShardingTrait
      * @return string
      */
     protected function getExecStringTableAlias($execTableName){
-        if(empty($this->join_table_alias)){
+        if(empty($this->_table_alias)){
             return '`'.$execTableName.'`';
         }
-        return '`'.$execTableName.'`'.' as '.$this->getTableAlias($execTableName);
+        return '`'.$execTableName.'`'.' as '.$this->getTableAlias();
     }
 
 
@@ -49,7 +48,7 @@ trait JoinShardingTrait
      */
     public function setTableNameAs($tableAlias = '')
     {
-        $this->table_alias = $tableAlias;
+        $this->_table_alias = $tableAlias;
         return $this;
     }
 }

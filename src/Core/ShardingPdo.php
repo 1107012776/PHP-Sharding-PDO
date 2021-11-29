@@ -78,6 +78,7 @@ class ShardingPdo
         $this->attr_cursor = \PDO::CURSOR_FWDONLY;
         $this->_incrOrDecrColumnStr = '';
         $this->_bind_index = 0;
+        $this->_table_alias = '';  //表别名
         return $this;
     }
 
