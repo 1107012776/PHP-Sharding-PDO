@@ -28,6 +28,7 @@ class ShardingPdo
     use \PhpShardingPdo\Components\ReplaceIntoShardingTrait;
     use \PhpShardingPdo\Components\IncrDecrShardingTrait;
     use \PhpShardingPdo\Components\ParsingTrait;
+    use \PhpShardingPdo\Components\JoinShardingTrait;
     /**
      * @var ShardingRuleConfiguration
      */

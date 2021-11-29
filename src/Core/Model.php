@@ -276,22 +276,34 @@ class Model
      * 内连接
      */
     public function innerJoin(Model $obj){
-
+        return $this;
     }
 
     /**
      * 左连接
      */
     public function leftJoin(Model $obj){
-
+        return $this;
     }
 
     /**
      * 右连接
      */
     public function rightJoin(Model $obj){
-
+        return $this;
     }
+
+
+    /**
+     * join表别名
+     * @var $alias  //别名
+     * @return Model
+     */
+    public function joinTableNameAlias($alias = ''){
+        $this->dao->setTableNameAs($alias);
+        return $this;
+    }
+
 
     public function __clone()
     {
