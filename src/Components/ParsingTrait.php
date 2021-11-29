@@ -25,9 +25,6 @@ trait ParsingTrait{
     private function _bind($key, $val)
     {
         $this->_bind_index++;  //自加
-        if(!empty($this->getTableAlias())){  //如果有别名则全部走别名
-            $key = $this->getTableAlias().'.'.$key;
-        }
         $zwKey = ':' . $key.'_'.$this->_bind_index;  //占位符
         if (is_array($val)) {
             switch ($val[0]) {
