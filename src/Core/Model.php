@@ -10,6 +10,7 @@
 
 namespace PhpShardingPdo\Core;
 
+use PhpShardingPdo\Common\ShardingConst;
 use PhpShardingPdo\Inter\ShardingInitConfigInter;
 
 /**
@@ -273,6 +274,7 @@ class Model
     }
 
     public function on($condition){
+        $this->dao->on($condition);
         return $this;
     }
 
@@ -280,6 +282,12 @@ class Model
      * 内连接
      */
     public function innerJoin($joinModelObj){
+        if(empty($this->dao->getJoinType())){
+            $this->dao->setJoinType(ShardingConst::INNER_JOIN);
+        }elseif($this->dao->getJoinType() != ShardingConst::INNER_JOIN){
+            return false;  //这种情况直接返回false
+        }
+        $this->dao->addJoinModelObj($joinModelObj);
         return $this;
     }
 
@@ -287,6 +295,12 @@ class Model
      * 左连接
      */
     public function leftJoin($joinModelObj){
+        if(empty($this->dao->getJoinType())){
+            $this->dao->setJoinType(ShardingConst::LEFT_JOIN);
+        }elseif($this->dao->getJoinType() != ShardingConst::LEFT_JOIN){
+            return false;  //这种情况直接返回false
+        }
+        $this->dao->addJoinModelObj($joinModelObj);
         return $this;
     }
 
@@ -294,6 +308,12 @@ class Model
      * 右连接
      */
     public function rightJoin($joinModelObj){
+        if(empty($this->dao->getJoinType())){
+            $this->dao->setJoinType(ShardingConst::RIGHT_JOIN);
+        }elseif($this->dao->getJoinType() != ShardingConst::RIGHT_JOIN){
+            return false;  //这种情况直接返回false
+        }
+        $this->dao->addJoinModelObj($joinModelObj);
         return $this;
     }
 

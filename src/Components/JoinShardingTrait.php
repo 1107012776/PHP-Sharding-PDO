@@ -9,6 +9,7 @@
  */
 
 namespace PhpShardingPdo\Components;
+use PhpShardingPdo\Common\ShardingConst;
 use PhpShardingPdo\Core\Model;
 
 /**
@@ -19,12 +20,30 @@ use PhpShardingPdo\Core\Model;
 trait JoinShardingTrait
 {
     private $_table_alias = ''; //表别名
+    private $_join_type = 0; //join类型
     /**
-     * @var Model $_joinModelObj
+     * @var array $_joinModelObjArr
      */
-    private $_joinModelObj; //join的model class 名
+    private $_joinModelObjArr = []; //join的model对象
     private $_on_condition = []; //on条件
     private $_on_condition_str = ''; //on条件字符串
+
+    /**
+     * @return int
+     */
+    public function getJoinType()
+    {
+        return $this->_join_type;
+    }
+
+    /**
+     * @return int
+     */
+    public function setJoinType($type)
+    {
+        return $this->_join_type = $type;
+    }
+
 
     /**
      * 获取表别名
@@ -57,6 +76,14 @@ trait JoinShardingTrait
     public function setTableNameAs($tableAlias = '')
     {
         $this->_table_alias = $tableAlias;
+        return $this;
+    }
+
+    /**
+     * 添加join对象
+     */
+    public function addJoinModelObj(Model $obj){
+        $this->_joinModelObjArr[] = $obj;
         return $this;
     }
 
