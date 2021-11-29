@@ -9,6 +9,8 @@
  */
 
 namespace PhpShardingPdo\Components;
+use PhpShardingPdo\Core\Model;
+
 /**
  * Join sharding
  * Trait JoinShardingTrait
@@ -17,6 +19,12 @@ namespace PhpShardingPdo\Components;
 trait JoinShardingTrait
 {
     private $_table_alias = ''; //表别名
+    /**
+     * @var Model $_joinModelObj
+     */
+    private $_joinModelObj; //join的model class 名
+    private $_on_condition = []; //on条件
+    private $_on_condition_str = ''; //on条件字符串
 
     /**
      * 获取表别名
@@ -49,6 +57,33 @@ trait JoinShardingTrait
     public function setTableNameAs($tableAlias = '')
     {
         $this->_table_alias = $tableAlias;
+        return $this;
+    }
+
+    /**
+     * 查询条件
+     * @param array $condition
+     * @return $this
+     */
+    public function on($condition = [])
+    {
+        foreach ($condition as $key => $val) {
+            if (!isset($this->_on_condition[$key])) {
+                $this->_on_condition[$key] = $val;
+                continue;
+            }
+            if (isset($this->_on_condition[$key][0])
+                && $this->_on_condition[$key][0] == 'more'
+            ) {
+                array_push($this->_on_condition[$key][1], $val);
+            } else {  //为兼容一个键值多个查询条件
+                $old = $this->_on_condition[$key];
+                $this->_on_condition[$key] = [
+                    'more', [$old]
+                ];
+                array_push($this->_on_condition[$key][1], $val);
+            }
+        }
         return $this;
     }
 }

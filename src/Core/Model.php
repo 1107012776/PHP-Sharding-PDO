@@ -272,24 +272,28 @@ class Model
         return $this;
     }
 
+    public function on($condition){
+        return $this;
+    }
+
     /**
      * 内连接
      */
-    public function innerJoin(Model $obj){
+    public function innerJoin($joinModelObj){
         return $this;
     }
 
     /**
      * 左连接
      */
-    public function leftJoin(Model $obj){
+    public function leftJoin($joinModelObj){
         return $this;
     }
 
     /**
      * 右连接
      */
-    public function rightJoin(Model $obj){
+    public function rightJoin($joinModelObj){
         return $this;
     }
 
@@ -303,7 +307,6 @@ class Model
         $this->dao->setTableNameAs($alias);
         return $this;
     }
-
 
     public function __clone()
     {
