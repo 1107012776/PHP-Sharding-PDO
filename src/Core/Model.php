@@ -335,7 +335,7 @@ class Model
      * @return Model
      */
     public function alias($alias = ''){
-        $this->dao->setTableNameAs($alias);
+        $this->dao->setTableNameAlias($alias);
         return $this;
     }
 

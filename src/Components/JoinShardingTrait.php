@@ -90,7 +90,7 @@ trait JoinShardingTrait
      * @param string $tableAlias
      * @return $this
      */
-    public function setTableNameAs($tableAlias = '')
+    public function setTableNameAlias($tableAlias = '')
     {
         $this->_table_alias = $tableAlias;
         return $this;
