@@ -26,7 +26,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
     
     - [删除](#删除)
 # 安装
-composer require lys/php-sharding-pdo
+> composer require lys/php-sharding-pdo
 
 # 说明
 ###### （1）已支持协程，使用协程必须在主进程开启   \Swoole\Runtime::enableCoroutine(); 
@@ -34,9 +34,9 @@ composer require lys/php-sharding-pdo
 
 # 注意
 ###### （1）协程模式必须在主进程开启这个东西，否则会出现死锁
-\Swoole\Runtime::enableCoroutine(); 
+> \Swoole\Runtime::enableCoroutine(); 
 ###### （2）协程中不能使用pdo长链接，在高并发的情况下，会出现如下异常
-PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to another coroutine#2, reading of the same socket in coroutine#4 at the same time is not allowed
+> PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to another coroutine#2, reading of the same socket in coroutine#4 at the same time is not allowed
 
 ###### （3）Replace into自增主键，并发量大的时候可能出现返回false和死锁的，所以不适合高并发项目的使用，高并发，请使用雪花算法等一些分布式主键方案
 
@@ -51,7 +51,7 @@ PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to ano
 
 ### （1）先要配置tests/Config/.env ，测试环境数据库链接
 
-#### .env文件
+> .env文件
 ```php
 [database]
 host=localhost
@@ -62,16 +62,16 @@ password=testpassword
 
 #### 非协程
 
-php vendor/bin/phpunit tests/IntegrationTest.php --filter testExecStart
+> php vendor/bin/phpunit tests/IntegrationTest.php --filter testExecStart
 
 #### 协程
 
-php vendor/bin/phpunit tests/IntegrationCoroutineTest.php --filter testExecStart
+> php vendor/bin/phpunit tests/IntegrationCoroutineTest.php --filter testExecStart
 
 
 
 # 示例 
-##### 详细请看tests目录
+> 详细请看tests目录
 ### 1.我们需要配置一下基本的分块规则配置类
 ```php
 <?php
@@ -444,7 +444,7 @@ $model->commit();
 ```
 
 ### 本项目基于 Apache-2.0 License 协议
-https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
+> https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
 
 ### 更多请关注本人的博客
-https://www.developzhe.com
+> https://www.developzhe.com
