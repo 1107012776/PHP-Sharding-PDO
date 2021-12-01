@@ -401,13 +401,15 @@ class IntegrationTest extends TestCase
      * join查询测试
      * php vendor/bin/phpunit tests/IntegrationTest.php --filter testJoin
      */
-    public function testJoin(){
+    public function testJoin()
+    {
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $model->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
         $entity = $cateModel->alias('cate')->where(['cate_id' => 1])->getJoinTableEntity([
-            'cate.id' => 'ar.cate_id'
+            'cate.id' => $model->getTableAlias() . '.cate_id'
         ]);
-        $list = $model->alias('ar')->innerJoin($entity)
+        $list = $model->innerJoin($entity)
             ->where(['cate_id' => 1])->findAll();
         var_dump($list);
     }
