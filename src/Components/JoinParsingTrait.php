@@ -12,8 +12,8 @@ namespace PhpShardingPdo\Components;
 use PhpShardingPdo\Common\ShardingConst;
 
 trait JoinParsingTrait{
-    private $_join_condition = []; //on条件
-    private $_join_condition_str = ''; //on条件字符串
+    private $_join_condition = []; //join条件
+    private $_join_condition_str = ''; //join条件字符串
 
     /**
      * 查询条件，on是join表之间的条件对条件，请勿直接传递值进来，这边不会做占位符处理
