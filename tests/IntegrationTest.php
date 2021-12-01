@@ -409,8 +409,12 @@ class IntegrationTest extends TestCase
         $entity = $cateModel->alias('cate')->where(['cate_id' => 1])->getJoinTableEntity([
             'cate.id' => $model->getTableAlias() . '.cate_id'
         ]);
+        $model1 = clone $model;
         $list = $model->innerJoin($entity)
             ->where(['cate_id' => 1])->findAll();
-        var_dump($list);
+        $this->assertEquals(count($list) == 2, true);
+        $count = $model1->innerJoin($entity)
+            ->where(['cate_id' => 1])->count();
+        $this->assertEquals($count == 2, true);
     }
 }
