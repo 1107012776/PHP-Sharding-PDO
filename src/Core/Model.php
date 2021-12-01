@@ -295,6 +295,11 @@ class Model
         return $this;
     }
 
+    public function joinWhereCondition($condition){
+        $this->dao->setJoinCondition($condition);
+        return $this;
+    }
+
     /**
      * 左连接
      * @var JoinTableEntity $obj

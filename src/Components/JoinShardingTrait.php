@@ -38,7 +38,7 @@ trait JoinShardingTrait
         $obj = new JoinTableEntity();
         $obj->setTableNameAlias($this->getTableAlias());
         $obj->setTableName($this->_getQpTableName());
-        $obj->on($condition); //on条件
+        $obj->setJoinCondition($condition); //on条件
         return $obj;
     }
 
@@ -106,6 +106,19 @@ trait JoinShardingTrait
         $this->_joinEntityObjArr[] = $obj;
         $this->_joinEntityObjArr = array_unique($this->_joinEntityObjArr);  //去重
         return $this;
+    }
+
+    public function getOnConditionStr(){
+        if(empty($this->_join_condition)){
+            return '';
+        }
+        if(!empty($this->_join_condition_str)){
+            return ' and '.$this->_join_condition_str.' ';
+        }
+        foreach ($this->_join_condition as $key => $val) {  //join on 的形式
+            $this->_bindOn($key, $val);
+        }
+        return ' and '.$this->_join_condition_str.' ';
     }
 
 
