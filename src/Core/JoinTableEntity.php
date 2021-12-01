@@ -202,12 +202,12 @@ class JoinTableEntity{
 
     public function getOnConditionStr(){
         if(!empty($this->_on_condition_str)){
-            return $this->_on_condition_str;
+            return ' on '.$this->_on_condition_str.' ';
         }
         foreach ($this->_on_condition as $key => $val) {  //join on 的形式
             $this->_bindOn($key, $val);
         }
-        return $this->_on_condition_str;
+        return ' on '.$this->_on_condition_str.' ';
     }
 
 }

@@ -67,7 +67,7 @@ trait JoinShardingTrait
          * @var JoinTableEntity $entityObj
          */
         foreach ($this->_joinEntityObjArr as $entityObj){
-            $sqlStr .= $entityObj->getJoinTypeText().$entityObj->getTableName().' as '.$entityObj->getTableNameAlias();
+            $sqlStr .= $entityObj->getJoinTypeText().$entityObj->getTableName().' as '.$entityObj->getTableNameAlias().$entityObj->getOnConditionStr();
         }
     }
 
