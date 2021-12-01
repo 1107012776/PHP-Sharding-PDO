@@ -439,5 +439,14 @@ class IntegrationTest extends TestCase
         $list = $model4->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($entity)
             ->where([$cateModel2->getAliasKey('id') => 1])->findAll();
         $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
+        $model4 = clone $model;
+        $cateModel2 = clone $cateModel;
+        $entity = $cateModel2->alias('cate')->where(['cate_id' => 1])->getJoinTableEntity([
+            'cate.id' => ['findInSet', $model->getAliasKey('cate_id')]
+        ]);
+        $list = $model4->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($entity)
+            ->where([$cateModel2->getAliasKey('id') => 10])->findAll();
+        $this->assertEquals(empty($list), true);
+        $this->assertEquals(empty($model4->sqlErrors()), true);
     }
 }
