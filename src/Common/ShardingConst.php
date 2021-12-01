@@ -10,7 +10,8 @@
 namespace PhpShardingPdo\Common;
 
 class ShardingConst{
-    const INNER_JOIN = 1;
-    const LEFT_JOIN = 2;
-    const RIGHT_JOIN = 3;
+    //join 类型
+    const INNER_JOIN = 1;  //内连接
+    const LEFT_JOIN = 2;   //左连接
+    const RIGHT_JOIN = 3;  //右连接
 }
