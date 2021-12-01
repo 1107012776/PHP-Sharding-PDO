@@ -412,6 +412,7 @@ class IntegrationTest extends TestCase
         ]);
         $model1 = clone $model;
         $model2 = clone $model;
+        $model3 = clone $model;
         $list = $model->innerJoin($entity)
             ->where(['cate_id' => 1])->findAll();
         $this->assertEquals(count($list) == 2, true);
@@ -419,6 +420,13 @@ class IntegrationTest extends TestCase
             ->where(['cate_id' => 1])->count();
         $this->assertEquals($count == 2, true);
         $list = $model2->field(['ar.cate_id as a','cate.id as b'])->innerJoin($entity)
+            ->where(['cate_id' => 1])->findAll();
+        $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
+        $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
+        $entity = $cateModel->alias('cate')->where(['cate_id' => 1])->getJoinTableEntity([
+            'cate.id' => ['findInSet',$model->getTableAlias() . '.cate_id']
+        ]);
+        $list = $model3->field(['ar.cate_id as a','cate.id as b'])->innerJoin($entity)
             ->where(['cate_id' => 1])->findAll();
         $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
     }
