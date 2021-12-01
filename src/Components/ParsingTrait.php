@@ -49,6 +49,11 @@ trait ParsingTrait
                     $this->_condition_str .= ShardingConst:: AND . $key . ' like ' . $zwKey;
                     $this->_condition_bind[$zwKey] = $val[1];
                     break;
+                case 'notLike':
+                    $zwKey .= '_0';
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' not like ' . $zwKey;
+                    $this->_condition_bind[$zwKey] = $val[1];
+                    break;
                 case 'gt':
                     $zwKey .= '_0';
                     $this->_condition_str .= ShardingConst:: AND . $key . ' > ' . $zwKey;
