@@ -10,9 +10,9 @@
 
 namespace PhpShardingPdo\Components;
 
-use PhpShardingPdo\Common\ShardingConst;
+
 use PhpShardingPdo\Core\JoinTableEntity;
-use PhpShardingPdo\Core\Model;
+
 
 /**
  * Join sharding
@@ -109,17 +109,17 @@ trait JoinShardingTrait
         return $this;
     }
 
-    public function getOnConditionStr(){
+    public function getJoinConditionStr(){
         if(empty($this->_join_condition)){
             return '';
         }
         if(!empty($this->_join_condition_str)){
-            return ' '.$this->_join_condition_str.' ';
+            return $this->_join_condition_str;
         }
         foreach ($this->_join_condition as $key => $val) {  //join on 的形式
             $this->_bindOn($key, $val);
         }
-        return ' '.$this->_join_condition_str.' ';
+        return $this->_join_condition_str;
     }
 
 

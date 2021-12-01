@@ -14,4 +14,8 @@ class ShardingConst{
     const INNER_JOIN = 1;  //内连接
     const LEFT_JOIN = 2;   //左连接
     const RIGHT_JOIN = 3;  //右连接
+
+
+    //and string
+    const AND = ' and ';
 }
