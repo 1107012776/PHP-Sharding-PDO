@@ -59,7 +59,6 @@ trait JoinShardingTrait
 
     /**
      * 获取表别名
-     * @param string $execTableName
      * @return string
      */
     protected function getTableAlias()
@@ -94,10 +93,13 @@ trait JoinShardingTrait
 
     /**
      * 添加JoinTableEntity对象
+     * @var JoinTableEntity $obj
+     * @return $this
      */
     public function addJoinEntityObj(JoinTableEntity $obj)
     {
         $this->_joinEntityObjArr[] = $obj;
+        $this->_joinEntityObjArr = array_unique($this->_joinEntityObjArr);  //去重
         return $this;
     }
 
