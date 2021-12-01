@@ -63,6 +63,7 @@ class IntegrationTest extends TestCase
         $this->testSelectGroupOrderLimitFindAll();
         $this->testUpdateDelete();
         $this->testLike();
+        $this->testJoin();
     }
 
     /**
