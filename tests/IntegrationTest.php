@@ -390,6 +390,12 @@ class IntegrationTest extends TestCase
         ])->find();
         $this->assertEquals(!empty($info), true);
         $this->assertEquals($info['id'] == $id, true);
+        $info = $model->renew()->where([
+            'article_title' => [
+                'notLike', '%某网络科技%'
+            ],
+        ])->find();
+        $this->assertEquals(empty($info), true);
         $res = $model->renew()->where([
             'article_title' => [
                 'like', '%某网络科技%'
