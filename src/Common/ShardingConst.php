@@ -19,5 +19,5 @@ class ShardingConst
 
 
     //and string
-    const AND = ' and ';
+    const CONDITION_AND = ' and ';
 }
