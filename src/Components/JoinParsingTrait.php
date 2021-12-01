@@ -9,9 +9,11 @@
  */
 
 namespace PhpShardingPdo\Components;
+
 use PhpShardingPdo\Common\ShardingConst;
 
-trait JoinParsingTrait{
+trait JoinParsingTrait
+{
     private $_join_condition = []; //join条件
     private $_join_condition_str = ''; //join条件字符串
 
@@ -54,24 +56,24 @@ trait JoinParsingTrait{
             switch ($val[0]) {
                 case 'neq':
                     if (!is_array($val[1])) {
-                        $this->_join_condition_str .= ShardingConst::AND . $key . ' != ' . $val[1];
+                        $this->_join_condition_str .= ShardingConst:: AND . $key . ' != ' . $val[1];
                         break;
                     }
                     foreach ($val[1] as $k => $v) {   //多个不等于
-                        $this->_join_condition_str .= ShardingConst::AND . $key . ' != ' . $v;
+                        $this->_join_condition_str .= ShardingConst:: AND . $key . ' != ' . $v;
                     }
                     break;
                 case 'gt':
-                    $this->_join_condition_str .= ShardingConst::AND . $key . ' > ' . $val[1];
+                    $this->_join_condition_str .= ShardingConst:: AND . $key . ' > ' . $val[1];
                     break;
                 case 'egt':
-                    $this->_join_condition_str .= ShardingConst::AND . $key . ' >= ' . $val[1];
+                    $this->_join_condition_str .= ShardingConst:: AND . $key . ' >= ' . $val[1];
                     break;
                 case 'elt':
-                    $this->_join_condition_str .= ShardingConst::AND . $key . ' <= ' . $val[1];
+                    $this->_join_condition_str .= ShardingConst:: AND . $key . ' <= ' . $val[1];
                     break;
                 case 'lt':
-                    $this->_join_condition_str .= ShardingConst::AND . $key . ' < ' . $val[1];
+                    $this->_join_condition_str .= ShardingConst:: AND . $key . ' < ' . $val[1];
                     break;
                 case 'in':
                     $zwKeyIn = '';
@@ -79,7 +81,7 @@ trait JoinParsingTrait{
                         $zwKeyIn .= ',' . $v;
                     }
                     $zwKeyIn = trim($zwKeyIn, ',');
-                    $this->_join_condition_str .= ShardingConst::AND . $key . ' in (' . $zwKeyIn . ')';
+                    $this->_join_condition_str .= ShardingConst:: AND . $key . ' in (' . $zwKeyIn . ')';
                     break;
                 case 'notIn':
                     $zwKeyIn = '';
@@ -87,36 +89,36 @@ trait JoinParsingTrait{
                         $zwKeyIn .= ',' . $v;
                     }
                     $zwKeyIn = trim($zwKeyIn, ',');
-                    $this->_join_condition_str .= ShardingConst::AND . $key . ' not in (' . $zwKeyIn . ')';
+                    $this->_join_condition_str .= ShardingConst:: AND . $key . ' not in (' . $zwKeyIn . ')';
                     break;
                 case 'between':
                     $zwKeyMin = min($val[1]);
                     $zwKeyMax = max($val[1]);
-                    $this->_join_condition_str .= ShardingConst::AND . $key . ' <= ' . $zwKeyMax;
-                    $this->_join_condition_str .= ShardingConst::AND . $key . ' >= ' . $zwKeyMin;
+                    $this->_join_condition_str .= ShardingConst:: AND . $key . ' <= ' . $zwKeyMax;
+                    $this->_join_condition_str .= ShardingConst:: AND . $key . ' >= ' . $zwKeyMin;
                     break;
                 case 'notBetween':
                     $zwKeyMin = min($val[1]);
                     $zwKeyMax = max($val[1]);
-                    $this->_join_condition_str .= ShardingConst::AND . $key . ' > ' . $zwKeyMax;
-                    $this->_join_condition_str .= ShardingConst::AND . $key . ' < ' . $zwKeyMin;
+                    $this->_join_condition_str .= ShardingConst:: AND . $key . ' > ' . $zwKeyMax;
+                    $this->_join_condition_str .= ShardingConst:: AND . $key . ' < ' . $zwKeyMin;
                     break;
                 case 'is':
                     if ($val[1] === null) {
-                        $this->_join_condition_str .= ShardingConst::AND . $key . ' is NULL';
+                        $this->_join_condition_str .= ShardingConst:: AND . $key . ' is NULL';
                     } else {
-                        $this->_join_condition_str .= ShardingConst::AND . $key . ' is ' . $val[1];
+                        $this->_join_condition_str .= ShardingConst:: AND . $key . ' is ' . $val[1];
                     }
                     break;
                 case 'isNot':
                     if ($val[1] === null) {
-                        $this->_join_condition_str .= ShardingConst::AND . $key . ' is not NULL';
+                        $this->_join_condition_str .= ShardingConst:: AND . $key . ' is not NULL';
                     } else {
-                        $this->_join_condition_str .= ShardingConst::AND . $key . ' is not ' . $val[1];
+                        $this->_join_condition_str .= ShardingConst:: AND . $key . ' is not ' . $val[1];
                     }
                     break;
                 case 'findInSet':
-                    $this->_join_condition_str .= ShardingConst::AND . 'FIND_IN_SET(' . $val[1] . ',' . $key . ')';
+                    $this->_join_condition_str .= ShardingConst:: AND . 'FIND_IN_SET(' . $val[1] . ',' . $key . ')';
                     break;
                 case 'more':
                     foreach ($val[1] as $subVal) {
@@ -125,7 +127,7 @@ trait JoinParsingTrait{
                     break;
             }
         } else {
-            $this->_join_condition_str .= ShardingConst::AND . $key . ' = ' . $val;
+            $this->_join_condition_str .= ShardingConst:: AND . $key . ' = ' . $val;
         }
     }
 

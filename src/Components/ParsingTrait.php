@@ -9,7 +9,9 @@
  */
 
 namespace PhpShardingPdo\Components;
+
 use PhpShardingPdo\Common\ShardingConst;
+
 /**
  * 解析
  */
@@ -26,45 +28,45 @@ trait ParsingTrait
     private function _bind($key, $val)
     {
         $this->_bind_index++;  //自加
-        $zwKey = ':' . str_replace('.','_',$key) . '_' . $this->_bind_index;  //占位符
+        $zwKey = ':' . str_replace('.', '_', $key) . '_' . $this->_bind_index;  //占位符
         if (is_array($val)) {
             switch ($val[0]) {
                 case 'neq':
                     if (!is_array($val[1])) {
                         $zwKey .= '_neq_0';
-                        $this->_condition_str .= ShardingConst::AND . $key . ' != ' . $zwKey;
+                        $this->_condition_str .= ShardingConst:: AND . $key . ' != ' . $zwKey;
                         $this->_condition_bind[$zwKey] = $val[1];
                         break;
                     }
                     foreach ($val[1] as $k => $v) {   //多个不等于
                         $zwKeyNeq = $zwKey . '_neq_' . $k;
-                        $this->_condition_str .= ShardingConst::AND . $key . ' != ' . $zwKeyNeq;
+                        $this->_condition_str .= ShardingConst:: AND . $key . ' != ' . $zwKeyNeq;
                         $this->_condition_bind[$zwKeyNeq] = $v;
                     }
                     break;
                 case 'like':
                     $zwKey .= '_0';
-                    $this->_condition_str .= ShardingConst::AND . $key . ' like ' . $zwKey;
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' like ' . $zwKey;
                     $this->_condition_bind[$zwKey] = $val[1];
                     break;
                 case 'gt':
                     $zwKey .= '_0';
-                    $this->_condition_str .= ShardingConst::AND . $key . ' > ' . $zwKey;
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' > ' . $zwKey;
                     $this->_condition_bind[$zwKey] = $val[1];
                     break;
                 case 'egt':
                     $zwKey .= '_0';
-                    $this->_condition_str .= ShardingConst::AND . $key . ' >= ' . $zwKey;
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' >= ' . $zwKey;
                     $this->_condition_bind[$zwKey] = $val[1];
                     break;
                 case 'elt':
                     $zwKey .= '_0';
-                    $this->_condition_str .= ShardingConst::AND . $key . ' <= ' . $zwKey;
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' <= ' . $zwKey;
                     $this->_condition_bind[$zwKey] = $val[1];
                     break;
                 case 'lt':
                     $zwKey .= '_0';
-                    $this->_condition_str .= ShardingConst::AND . $key . ' < ' . $zwKey;
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' < ' . $zwKey;
                     $this->_condition_bind[$zwKey] = $val[1];
                     break;
                 case 'in':
@@ -74,7 +76,7 @@ trait ParsingTrait
                         $this->_condition_bind[$zwKey . '_in_' . $k] = $v;
                     }
                     $zwKeyIn = trim($zwKeyIn, ',');
-                    $this->_condition_str .= ShardingConst::AND . $key . ' in (' . $zwKeyIn . ')';
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' in (' . $zwKeyIn . ')';
                     break;
                 case 'notIn':
                     $zwKeyIn = '';
@@ -83,45 +85,45 @@ trait ParsingTrait
                         $this->_condition_bind[$zwKey . '_notIn_' . $k] = $v;
                     }
                     $zwKeyIn = trim($zwKeyIn, ',');
-                    $this->_condition_str .= ShardingConst::AND . $key . ' not in (' . $zwKeyIn . ')';
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' not in (' . $zwKeyIn . ')';
                     break;
                 case 'between':
                     $zwKeyMin = $zwKey . '_between_min_0';
                     $zwKeyMax = $zwKey . '_between_max_0';
-                    $this->_condition_str .= ShardingConst::AND . $key . ' <= ' . $zwKeyMax;
-                    $this->_condition_str .= ShardingConst::AND . $key . ' >= ' . $zwKeyMin;
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' <= ' . $zwKeyMax;
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' >= ' . $zwKeyMin;
                     $this->_condition_bind[$zwKeyMin] = min($val[1]);
                     $this->_condition_bind[$zwKeyMax] = max($val[1]);
                     break;
                 case 'notBetween':
                     $zwKeyMin = $zwKey . '_notBetween_min_0';
                     $zwKeyMax = $zwKey . '_notBetween_max_0';
-                    $this->_condition_str .= ShardingConst::AND . $key . ' > ' . $zwKeyMax;
-                    $this->_condition_str .= ShardingConst::AND . $key . ' < ' . $zwKeyMin;
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' > ' . $zwKeyMax;
+                    $this->_condition_str .= ShardingConst:: AND . $key . ' < ' . $zwKeyMin;
                     $this->_condition_bind[$zwKeyMin] = min($val[1]);
                     $this->_condition_bind[$zwKeyMax] = max($val[1]);
                     break;
                 case 'is':
                     $zwKeyIs = $zwKey . '_is_0';
                     if ($val[1] === null) {
-                        $this->_condition_str .= ShardingConst::AND . $key . ' is NULL';
+                        $this->_condition_str .= ShardingConst:: AND . $key . ' is NULL';
                     } else {
-                        $this->_condition_str .= ShardingConst::AND . $key . ' is ' . $zwKeyIs;
+                        $this->_condition_str .= ShardingConst:: AND . $key . ' is ' . $zwKeyIs;
                         $this->_condition_bind[$zwKeyIs] = $val[1];
                     }
                     break;
                 case 'isNot':
                     $zwKeyIs = $zwKey . '_isNot_0';
                     if ($val[1] === null) {
-                        $this->_condition_str .= ShardingConst::AND . $key . ' is not NULL';
+                        $this->_condition_str .= ShardingConst:: AND . $key . ' is not NULL';
                     } else {
-                        $this->_condition_str .= ShardingConst::AND . $key . ' is not ' . $zwKeyIs;
+                        $this->_condition_str .= ShardingConst:: AND . $key . ' is not ' . $zwKeyIs;
                         $this->_condition_bind[$zwKeyIs] = $val[1];
                     }
                     break;
                 case 'findInSet':
                     $zwKeyIs = $zwKey . '_findInSet_0';
-                    $this->_condition_str .= ShardingConst::AND . 'FIND_IN_SET(' . $zwKeyIs . ',' . $key . ')';
+                    $this->_condition_str .= ShardingConst:: AND . 'FIND_IN_SET(' . $zwKeyIs . ',' . $key . ')';
                     $this->_condition_bind[$zwKeyIs] = $val[1];
                     break;
                 case 'more':
@@ -132,7 +134,7 @@ trait ParsingTrait
             }
         } else {
             $zwKey .= '_0';
-            $this->_condition_str .= ShardingConst::AND . $key . ' = ' . $zwKey;
+            $this->_condition_str .= ShardingConst:: AND . $key . ' = ' . $zwKey;
             $this->_condition_bind[$zwKey] = $val;
         }
     }
@@ -149,13 +151,13 @@ trait ParsingTrait
                 && strpos($key, '.') === false  //有 “.”号说明可能是别的表的join条件
             ) {
                 $this->_bind($alias . '.' . $key, $val);
-            }else{
+            } else {
                 $this->_bind($key, $val);
             }
         }
-        if(empty($this->_condition_str)){
+        if (empty($this->_condition_str)) {
             $this->_condition_str = $this->getJoinConditionStr();
-        }else{
+        } else {
             $this->_condition_str .= $this->getJoinConditionStr();
         }
         if (!empty($this->_condition_str)) {

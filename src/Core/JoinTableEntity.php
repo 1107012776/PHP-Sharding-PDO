@@ -19,7 +19,8 @@ use PhpShardingPdo\Components\JoinParsingTrait;
  * Class JoinTableEntity
  * @package PhpShardingPdo\Core
  */
-class JoinTableEntity{
+class JoinTableEntity
+{
     use JoinParsingTrait;
     private $tableName = '';  //数据库表名
     private $tableNameAlias = '';  //数据表别名
@@ -75,8 +76,9 @@ class JoinTableEntity{
         $this->tableNameAlias = $tableNameAlias;
     }
 
-    public function getJoinTypeText(){
-        switch ($this->joinType){
+    public function getJoinTypeText()
+    {
+        switch ($this->joinType) {
             case ShardingConst::INNER_JOIN:
                 return ' inner join ';
             case ShardingConst::LEFT_JOIN:
@@ -86,19 +88,20 @@ class JoinTableEntity{
         }
     }
 
-    public function getOnConditionStr(){
-        if(empty($this->_join_condition)){
+    public function getOnConditionStr()
+    {
+        if (empty($this->_join_condition)) {
             return '';
         }
-        if(!empty($this->_join_condition_str)){
-            return ' on '.$this->_join_condition_str;
+        if (!empty($this->_join_condition_str)) {
+            return ' on ' . $this->_join_condition_str;
         }
         foreach ($this->_join_condition as $key => $val) {  //join on 的形式
             $this->_bindOn($key, $val);
         }
-        if(!empty($this->_join_condition_str)){
+        if (!empty($this->_join_condition_str)) {
             $this->_join_condition_str = substr($this->_join_condition_str, 5, strlen($this->_join_condition_str) - 5);
-            return ' on '.$this->_join_condition_str;
+            return ' on ' . $this->_join_condition_str;
         }
         return '';
     }

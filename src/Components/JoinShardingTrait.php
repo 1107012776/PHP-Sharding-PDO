@@ -30,8 +30,8 @@ trait JoinShardingTrait
 
 
     /**
-     * @var $condition
      * @return JoinTableEntity
+     * @var $condition
      */
     public function getJoinTableEntity($condition)
     {
@@ -57,16 +57,17 @@ trait JoinShardingTrait
      * @param $execTableName
      * @return string
      */
-    protected function getExecSelectString($execTableName){
+    protected function getExecSelectString($execTableName)
+    {
         $sqlStr = $this->getExecStringTableAlias($execTableName);
-        if(empty($this->_joinEntityObjArr)){
+        if (empty($this->_joinEntityObjArr)) {
             return $sqlStr;
         }
         /**
          * @var JoinTableEntity $entityObj
          */
-        foreach ($this->_joinEntityObjArr as $entityObj){
-            $sqlStr .= $entityObj->getJoinTypeText().$entityObj->getTableName().' as '.$entityObj->getTableNameAlias().$entityObj->getOnConditionStr();
+        foreach ($this->_joinEntityObjArr as $entityObj) {
+            $sqlStr .= $entityObj->getJoinTypeText() . $entityObj->getTableName() . ' as ' . $entityObj->getTableNameAlias() . $entityObj->getOnConditionStr();
         }
         return $sqlStr;
     }
@@ -109,11 +110,12 @@ trait JoinShardingTrait
         return $this;
     }
 
-    public function getJoinConditionStr(){
-        if(empty($this->_join_condition)){
+    public function getJoinConditionStr()
+    {
+        if (empty($this->_join_condition)) {
             return '';
         }
-        if(!empty($this->_join_condition_str)){
+        if (!empty($this->_join_condition_str)) {
             return $this->_join_condition_str;
         }
         foreach ($this->_join_condition as $key => $val) {  //join on 的形式

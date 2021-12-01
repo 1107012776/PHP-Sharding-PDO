@@ -276,10 +276,11 @@ class Model
 
     /**
      * 获取join的实体
-     * @param array $condition  //on条件比如 ['a.id' => 'b.product_id']
+     * @param array $condition //on条件比如 ['a.id' => 'b.product_id']
      * @return JoinTableEntity
      */
-    public function getJoinTableEntity($condition = []){
+    public function getJoinTableEntity($condition = [])
+    {
         return $this->dao->getJoinTableEntity($condition);
     }
 
@@ -288,12 +289,12 @@ class Model
      * @param  $obj
      * @return $this
      */
-    public function innerJoin(JoinTableEntity $obj){
+    public function innerJoin(JoinTableEntity $obj)
+    {
         $obj->setJoinType(ShardingConst::INNER_JOIN);
         $this->dao->addJoinEntityObj($obj);
         return $this;
     }
-
 
 
     /**
@@ -301,7 +302,8 @@ class Model
      * @param  $obj
      * @return $this
      */
-    public function leftJoin(JoinTableEntity $obj){
+    public function leftJoin(JoinTableEntity $obj)
+    {
         $obj->setJoinType(ShardingConst::LEFT_JOIN);
         $this->dao->addJoinEntityObj($obj);
         return $this;
@@ -312,7 +314,8 @@ class Model
      * @param  $obj
      * @return $this
      */
-    public function rightJoin(JoinTableEntity $obj){
+    public function rightJoin(JoinTableEntity $obj)
+    {
         $obj->setJoinType(ShardingConst::RIGHT_JOIN);
         $this->dao->addJoinEntityObj($obj);
         return $this;
@@ -324,17 +327,19 @@ class Model
      * @param $condition //请传递比如 ['table1.id' => 'table2.product_id']
      * @return $this
      */
-    public function joinWhereCondition($condition = []){
+    public function joinWhereCondition($condition = [])
+    {
         $this->dao->setJoinCondition($condition);
         return $this;
     }
 
     /**
      * 设置表别名
-     * @var $alias  //别名
+     * @var $alias //别名
      * @return Model
      */
-    public function alias($alias = ''){
+    public function alias($alias = '')
+    {
         $this->dao->setTableNameAlias($alias);
         return $this;
     }
@@ -342,7 +347,8 @@ class Model
     /**
      * 表别名
      */
-    public function getTableAlias(){
+    public function getTableAlias()
+    {
         return $this->dao->getTableAlias();
     }
 
@@ -351,11 +357,12 @@ class Model
      * @param string $key //字段名称
      * @return string
      */
-    public function getAliasKey($key){
-        if(empty($this->dao->getTableAlias())){
+    public function getAliasKey($key)
+    {
+        if (empty($this->dao->getTableAlias())) {
             return $key;
         }
-        return $this->dao->getTableAlias().'.'.$key;
+        return $this->dao->getTableAlias() . '.' . $key;
     }
 
 
@@ -370,7 +377,7 @@ class Model
      */
     protected function _init()
     {
-        if(!method_exists($this, 'getSoftDeleteCondition')){
+        if (!method_exists($this, 'getSoftDeleteCondition')) {
             return;
         }
         //软删除
