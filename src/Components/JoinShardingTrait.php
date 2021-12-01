@@ -11,6 +11,7 @@
 namespace PhpShardingPdo\Components;
 
 use PhpShardingPdo\Common\ShardingConst;
+use PhpShardingPdo\Core\JoinTableEntity;
 use PhpShardingPdo\Core\Model;
 
 /**
@@ -23,9 +24,9 @@ trait JoinShardingTrait
     private $_table_alias = ''; //表别名
     private $_join_type = 0; //join类型
     /**
-     * @var array $_joinModelObjArr
+     * @var array $_joinEntityObjArr
      */
-    private $_joinModelObjArr = []; //join的model对象
+    private $_joinEntityObjArr = []; //join的JoinTableEntity对象
     private $_on_condition = []; //on条件
     private $_on_condition_str = ''; //on条件字符串
 
@@ -43,6 +44,16 @@ trait JoinShardingTrait
     public function setJoinType($type)
     {
         return $this->_join_type = $type;
+    }
+
+    /**
+     * @return JoinTableEntity
+     */
+    public function getJoinTableEntity(){
+        $obj = new JoinTableEntity();
+        $obj->setTableNameAlias($this->getTableAlias());
+        $obj->setTableName( $this->_getQpTableName());
+        return $obj;
     }
 
 
@@ -82,11 +93,11 @@ trait JoinShardingTrait
     }
 
     /**
-     * 添加join对象
+     * 添加JoinTableEntity对象
      */
-    public function addJoinModelObj(Model $obj)
+    public function addJoinEntityObj(JoinTableEntity $obj)
     {
-        $this->_joinModelObjArr[] = $obj;
+        $this->_joinEntityObjArr[] = $obj;
         return $this;
     }
 

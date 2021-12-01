@@ -278,42 +278,41 @@ class Model
         return $this;
     }
 
+    public function getJoinTableEntity(){
+        $this->dao->getJoinTableEntity();
+        return $this;
+    }
+
     /**
      * 内连接
+     * @var JoinTableEntity $obj
+     * @return $this
      */
-    public function innerJoin($joinModelObj){
-        if(empty($this->dao->getJoinType())){
-            $this->dao->setJoinType(ShardingConst::INNER_JOIN);
-        }elseif($this->dao->getJoinType() != ShardingConst::INNER_JOIN){
-            return false;  //这种情况直接返回false
-        }
-        $this->dao->addJoinModelObj($joinModelObj);
+    public function innerJoin(JoinTableEntity $obj){
+        $obj->setJoinType(ShardingConst::INNER_JOIN);
+        $this->dao->addJoinEntityObj($obj);
         return $this;
     }
 
     /**
      * 左连接
+     * @var JoinTableEntity $obj
+     * @return $this
      */
-    public function leftJoin($joinModelObj){
-        if(empty($this->dao->getJoinType())){
-            $this->dao->setJoinType(ShardingConst::LEFT_JOIN);
-        }elseif($this->dao->getJoinType() != ShardingConst::LEFT_JOIN){
-            return false;  //这种情况直接返回false
-        }
-        $this->dao->addJoinModelObj($joinModelObj);
+    public function leftJoin(JoinTableEntity $obj){
+        $obj->setJoinType(ShardingConst::LEFT_JOIN);
+        $this->dao->addJoinEntityObj($obj);
         return $this;
     }
 
     /**
      * 右连接
+     * @var JoinTableEntity $obj
+     * @return $this
      */
-    public function rightJoin($joinModelObj){
-        if(empty($this->dao->getJoinType())){
-            $this->dao->setJoinType(ShardingConst::RIGHT_JOIN);
-        }elseif($this->dao->getJoinType() != ShardingConst::RIGHT_JOIN){
-            return false;  //这种情况直接返回false
-        }
-        $this->dao->addJoinModelObj($joinModelObj);
+    public function rightJoin(JoinTableEntity $obj){
+        $obj->setJoinType(ShardingConst::RIGHT_JOIN);
+        $this->dao->addJoinEntityObj($obj);
         return $this;
     }
 
