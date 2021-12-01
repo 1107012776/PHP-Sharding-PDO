@@ -22,37 +22,23 @@ use PhpShardingPdo\Core\Model;
 trait JoinShardingTrait
 {
     private $_table_alias = ''; //表别名
-    private $_join_type = 0; //join类型
+
     /**
      * @var array $_joinEntityObjArr
      */
     private $_joinEntityObjArr = []; //join的JoinTableEntity对象
-    private $_on_condition = []; //on条件
-    private $_on_condition_str = ''; //on条件字符串
+
 
     /**
-     * @return int
-     */
-    public function getJoinType()
-    {
-        return $this->_join_type;
-    }
-
-    /**
-     * @return int
-     */
-    public function setJoinType($type)
-    {
-        return $this->_join_type = $type;
-    }
-
-    /**
+     * @var $condition
      * @return JoinTableEntity
      */
-    public function getJoinTableEntity(){
+    public function getJoinTableEntity($condition)
+    {
         $obj = new JoinTableEntity();
         $obj->setTableNameAlias($this->getTableAlias());
-        $obj->setTableName( $this->_getQpTableName());
+        $obj->setTableName($this->_getQpTableName());
+        $obj->on($condition); //on条件
         return $obj;
     }
 
@@ -64,6 +50,25 @@ trait JoinShardingTrait
     protected function getTableAlias()
     {
         return $this->_table_alias;
+    }
+
+    /**
+     * 获取具体查询sql 可能是join on的查询形式
+     * @param $execTableName
+     * @return string
+     */
+    protected function getExecSelectString($execTableName){
+        $sqlStr = $this->getExecStringTableAlias($execTableName);
+        if(empty($this->_joinEntityObjArr)){
+            return $sqlStr;
+        }
+
+        /**
+         * @var JoinTableEntity $entityObj
+         */
+        foreach ($this->_joinEntityObjArr as $entityObj){
+            $sqlStr .= $entityObj->getJoinTypeText().$entityObj->getTableName().' as '.$entityObj->getTableNameAlias();
+        }
     }
 
     /**
@@ -93,8 +98,8 @@ trait JoinShardingTrait
 
     /**
      * 添加JoinTableEntity对象
-     * @var JoinTableEntity $obj
      * @return $this
+     * @var JoinTableEntity $obj
      */
     public function addJoinEntityObj(JoinTableEntity $obj)
     {
@@ -103,117 +108,5 @@ trait JoinShardingTrait
         return $this;
     }
 
-    /**
-     * 查询条件，on是join表之间的条件对条件，请勿直接传递值进来，这边不会做占位符处理
-     * @param array $condition
-     * @return $this
-     */
-    public function on($condition = [])
-    {
-        foreach ($condition as $key => $val) {
-            if (!isset($this->_on_condition[$key])) {
-                $this->_on_condition[$key] = $val;
-                continue;
-            }
-            if (isset($this->_on_condition[$key][0])
-                && $this->_on_condition[$key][0] == 'more'
-            ) {
-                array_push($this->_on_condition[$key][1], $val);
-            } else {  //为兼容一个键值多个查询条件
-                $old = $this->_on_condition[$key];
-                $this->_on_condition[$key] = [
-                    'more', [$old]
-                ];
-                array_push($this->_on_condition[$key][1], $val);
-            }
-        }
-        return $this;
-    }
 
-    /*******************************************  join 解析 ********************************************************/
-    /**
-     * 参数解析绑定
-     * @param $key
-     * @param $val
-     */
-    private function _bindOn($key, $val)
-    {
-        if (is_array($val)) {
-            switch ($val[0]) {
-                case 'neq':
-                    if (!is_array($val[1])) {
-                        $this->_on_condition_str .= ' and ' . $key . ' != ' . $val[1];
-                        break;
-                    }
-                    foreach ($val[1] as $k => $v) {   //多个不等于
-                        $this->_on_condition_str .= ' and ' . $key . ' != ' . $v;
-                    }
-                    break;
-                case 'gt':
-                    $this->_on_condition_str .= ' and ' . $key . ' > ' . $val[1];
-                    break;
-                case 'egt':
-                    $this->_on_condition_str .= ' and ' . $key . ' >= ' . $val[1];
-                    break;
-                case 'elt':
-                    $this->_on_condition_str .= ' and ' . $key . ' <= ' . $val[1];
-                    break;
-                case 'lt':
-                    $this->_on_condition_str .= ' and ' . $key . ' < ' . $val[1];
-                    break;
-                case 'in':
-                    $zwKeyIn = '';
-                    foreach ($val[1] as $k => $v) {
-                        $zwKeyIn .= ',' . $v;
-                    }
-                    $zwKeyIn = trim($zwKeyIn, ',');
-                    $this->_on_condition_str .= ' and ' . $key . ' in (' . $zwKeyIn . ')';
-                    break;
-                case 'notIn':
-                    $zwKeyIn = '';
-                    foreach ($val[1] as $k => $v) {
-                        $zwKeyIn .= ',' . $v;
-                    }
-                    $zwKeyIn = trim($zwKeyIn, ',');
-                    $this->_on_condition_str .= ' and ' . $key . ' not in (' . $zwKeyIn . ')';
-                    break;
-                case 'between':
-                    $zwKeyMin = min($val[1]);
-                    $zwKeyMax = max($val[1]);
-                    $this->_on_condition_str .= ' and ' . $key . ' <= ' . $zwKeyMax;
-                    $this->_on_condition_str .= ' and ' . $key . ' >= ' . $zwKeyMin;
-                    break;
-                case 'notBetween':
-                    $zwKeyMin = min($val[1]);
-                    $zwKeyMax = max($val[1]);
-                    $this->_on_condition_str .= ' and ' . $key . ' > ' . $zwKeyMax;
-                    $this->_on_condition_str .= ' and ' . $key . ' < ' . $zwKeyMin;
-                    break;
-                case 'is':
-                    if ($val[1] === null) {
-                        $this->_on_condition_str .= ' and ' . $key . ' is NULL';
-                    } else {
-                        $this->_on_condition_str .= ' and ' . $key . ' is ' . $val[1];
-                    }
-                    break;
-                case 'isNot':
-                    if ($val[1] === null) {
-                        $this->_on_condition_str .= ' and ' . $key . ' is not NULL';
-                    } else {
-                        $this->_on_condition_str .= ' and ' . $key . ' is not ' . $val[1];
-                    }
-                    break;
-                case 'findInSet':
-                    $this->_on_condition_str .= ' and ' . 'FIND_IN_SET(' . $val[1] . ',' . $key . ')';
-                    break;
-                case 'more':
-                    foreach ($val[1] as $subVal) {
-                        $this->_bindOn($key, $subVal);
-                    }
-                    break;
-            }
-        } else {
-            $this->_on_condition_str .= ' and ' . $key . ' = ' . $val;
-        }
-    }
 }

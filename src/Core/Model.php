@@ -273,13 +273,14 @@ class Model
         return $this;
     }
 
-    public function on($condition){
-        $this->dao->on($condition);
-        return $this;
-    }
 
-    public function getJoinTableEntity(){
-        $this->dao->getJoinTableEntity();
+    /**
+     * 获取join的实体
+     * @param array $condition  //on条件比如 ['a.id' => 'b.product_id']
+     * @return $this
+     */
+    public function getJoinTableEntity($condition = []){
+        $this->dao->getJoinTableEntity($condition);
         return $this;
     }
 
