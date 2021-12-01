@@ -277,16 +277,15 @@ class Model
     /**
      * 获取join的实体
      * @param array $condition  //on条件比如 ['a.id' => 'b.product_id']
-     * @return $this
+     * @return JoinTableEntity
      */
     public function getJoinTableEntity($condition = []){
-        $this->dao->getJoinTableEntity($condition);
-        return $this;
+        return $this->dao->getJoinTableEntity($condition);
     }
 
     /**
      * 内连接
-     * @var JoinTableEntity $obj
+     * @param  $obj
      * @return $this
      */
     public function innerJoin(JoinTableEntity $obj){
@@ -295,14 +294,11 @@ class Model
         return $this;
     }
 
-    public function joinWhereCondition($condition){
-        $this->dao->setJoinCondition($condition);
-        return $this;
-    }
+
 
     /**
      * 左连接
-     * @var JoinTableEntity $obj
+     * @param  $obj
      * @return $this
      */
     public function leftJoin(JoinTableEntity $obj){
@@ -313,7 +309,7 @@ class Model
 
     /**
      * 右连接
-     * @var JoinTableEntity $obj
+     * @param  $obj
      * @return $this
      */
     public function rightJoin(JoinTableEntity $obj){
@@ -323,14 +319,26 @@ class Model
     }
 
 
+    public function joinWhereCondition($condition){
+        $this->dao->setJoinCondition($condition);
+        return $this;
+    }
+
     /**
-     * join表别名
+     * 表别名join的时候有用
      * @var $alias  //别名
      * @return Model
      */
-    public function joinTableNameAlias($alias = ''){
+    public function alias($alias = ''){
         $this->dao->setTableNameAs($alias);
         return $this;
+    }
+
+    /**
+     * 表别名
+     */
+    public function getTableAlias(){
+        return $this->dao->getTableAlias();
     }
 
     public function __clone()
@@ -344,6 +352,11 @@ class Model
      */
     protected function _init()
     {
-        method_exists($this, 'getSoftDeleteCondition') && $this->dao->where($this->getSoftDeleteCondition());
+        if(!method_exists($this, 'getSoftDeleteCondition')){
+            return;
+        }
+        //软删除
+        $condition = $this->getSoftDeleteCondition();
+        $this->dao->where($condition);
     }
 }

@@ -13,7 +13,8 @@ namespace PhpShardingPdo\Components;
 /**
  * 解析
  */
-trait ParsingTrait{
+trait ParsingTrait
+{
 
     private $_bind_index = 0;
 
@@ -25,7 +26,7 @@ trait ParsingTrait{
     private function _bind($key, $val)
     {
         $this->_bind_index++;  //自加
-        $zwKey = ':' . $key.'_'.$this->_bind_index;  //占位符
+        $zwKey = ':' . str_replace('.','_',$key) . '_' . $this->_bind_index;  //占位符
         if (is_array($val)) {
             switch ($val[0]) {
                 case 'neq':
@@ -120,7 +121,7 @@ trait ParsingTrait{
                     break;
                 case 'findInSet':
                     $zwKeyIs = $zwKey . '_findInSet_0';
-                    $this->_condition_str .= ' and '.'FIND_IN_SET(' .$zwKeyIs.','.$key.')';
+                    $this->_condition_str .= ' and ' . 'FIND_IN_SET(' . $zwKeyIs . ',' . $key . ')';
                     $this->_condition_bind[$zwKeyIs] = $val[1];
                     break;
                 case 'more':
@@ -142,7 +143,14 @@ trait ParsingTrait{
     private function _pare()
     {
         foreach ($this->_condition as $key => $val) {
-            $this->_bind($key, $val);
+            $alias = $this->getTableAlias();  //表别名
+            if (!empty($alias)
+                && strpos($key, $alias) === false
+            ) {
+                $this->_bind($alias . '.' . $key, $val);
+            }else{
+                $this->_bind($key, $val);
+            }
         }
         if (!empty($this->_condition_str)) {
             $this->_condition_str = ' where ' . substr($this->_condition_str, 5, strlen($this->_condition_str) - 5);

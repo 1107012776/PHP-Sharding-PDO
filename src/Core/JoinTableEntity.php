@@ -96,7 +96,11 @@ class JoinTableEntity{
         foreach ($this->_join_condition as $key => $val) {  //join on 的形式
             $this->_bindOn($key, $val);
         }
-        return ' on '.$this->_join_condition_str.' ';
+        if(!empty($this->_join_condition_str)){
+            $this->_join_condition_str = substr($this->_join_condition_str, 5, strlen($this->_join_condition_str) - 5);
+            return ' on '.$this->_join_condition_str.' ';
+        }
+        return '';
     }
 
 }

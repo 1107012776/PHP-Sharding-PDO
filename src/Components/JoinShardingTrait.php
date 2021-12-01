@@ -47,7 +47,7 @@ trait JoinShardingTrait
      * 获取表别名
      * @return string
      */
-    protected function getTableAlias()
+    public function getTableAlias()
     {
         return $this->_table_alias;
     }
@@ -62,13 +62,13 @@ trait JoinShardingTrait
         if(empty($this->_joinEntityObjArr)){
             return $sqlStr;
         }
-
         /**
          * @var JoinTableEntity $entityObj
          */
         foreach ($this->_joinEntityObjArr as $entityObj){
             $sqlStr .= $entityObj->getJoinTypeText().$entityObj->getTableName().' as '.$entityObj->getTableNameAlias().$entityObj->getOnConditionStr();
         }
+        return $sqlStr;
     }
 
     /**
@@ -96,6 +96,7 @@ trait JoinShardingTrait
         return $this;
     }
 
+
     /**
      * 添加JoinTableEntity对象
      * @return $this
@@ -113,12 +114,12 @@ trait JoinShardingTrait
             return '';
         }
         if(!empty($this->_join_condition_str)){
-            return ' and '.$this->_join_condition_str.' ';
+            return ' '.$this->_join_condition_str.' ';
         }
         foreach ($this->_join_condition as $key => $val) {  //join on 的形式
             $this->_bindOn($key, $val);
         }
-        return ' and '.$this->_join_condition_str.' ';
+        return ' '.$this->_join_condition_str.' ';
     }
 
 
