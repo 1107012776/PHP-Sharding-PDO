@@ -146,6 +146,7 @@ trait ParsingTrait
             $alias = $this->getTableAlias();  //表别名
             if (!empty($alias)
                 && strpos($key, $alias) === false
+                && strpos($key, '.') === false  //有 “.”号说明可能是别的表的join条件
             ) {
                 $this->_bind($alias . '.' . $key, $val);
             }else{

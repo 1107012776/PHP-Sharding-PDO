@@ -407,27 +407,37 @@ class IntegrationTest extends TestCase
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
         $model->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
-        $entity = $cateModel->alias('cate')->where(['cate_id' => 1])->getJoinTableEntity([
-            'cate.id' => $model->getTableAlias() . '.cate_id'
+        $cateModel0 = clone $cateModel;
+        $entity = $cateModel0->alias('cate')->where(['cate_id' => 1])->getJoinTableEntity([
+            'cate.id' => $model->getAliasKey('cate_id')
         ]);
+        $model0 = clone $model;
         $model1 = clone $model;
         $model2 = clone $model;
         $model3 = clone $model;
-        $list = $model->innerJoin($entity)
+        $list = $model0->innerJoin($entity)
             ->where(['cate_id' => 1])->findAll();
         $this->assertEquals(count($list) == 2, true);
         $count = $model1->innerJoin($entity)
             ->where(['cate_id' => 1])->count();
         $this->assertEquals($count == 2, true);
-        $list = $model2->field(['ar.cate_id as a','cate.id as b'])->innerJoin($entity)
+        $list = $model2->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($entity)
             ->where(['cate_id' => 1])->findAll();
         $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
-        $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
-        $entity = $cateModel->alias('cate')->where(['cate_id' => 1])->getJoinTableEntity([
-            'cate.id' => ['findInSet',$model->getTableAlias() . '.cate_id']
+        $cateModel1 = clone $cateModel;
+        $entity = $cateModel1->alias('cate')->where(['cate_id' => 1])->getJoinTableEntity([
+            'cate.id' => ['findInSet', $model->getAliasKey('cate_id')]
         ]);
-        $list = $model3->field(['ar.cate_id as a','cate.id as b'])->innerJoin($entity)
-            ->where(['cate_id' => 1])->findAll();
+        $list = $model3->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($entity)
+            ->where([$model3->getAliasKey('cate_id') => 1])->findAll();
+        $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
+        $model4 = clone $model;
+        $cateModel2 = clone $cateModel;
+        $entity = $cateModel2->alias('cate')->where(['cate_id' => 1])->getJoinTableEntity([
+            'cate.id' => ['findInSet', $model->getAliasKey('cate_id')]
+        ]);
+        $list = $model4->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($entity)
+            ->where([$cateModel2->getAliasKey('id') => 1])->findAll();
         $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
     }
 }

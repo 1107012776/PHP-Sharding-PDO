@@ -319,13 +319,19 @@ class Model
     }
 
 
+    /**
+     * join之后的 where 条件，该方法不会使用占位符，
+     * 所以请不要传递变量的值，请传递表的join where 过滤关联条件
+     * @param $condition
+     * @return $this
+     */
     public function joinWhereCondition($condition){
         $this->dao->setJoinCondition($condition);
         return $this;
     }
 
     /**
-     * 表别名join的时候有用
+     * 设置表别名
      * @var $alias  //别名
      * @return Model
      */
@@ -340,6 +346,19 @@ class Model
     public function getTableAlias(){
         return $this->dao->getTableAlias();
     }
+
+    /**
+     * join字段别名
+     * @param string $key //字段名称
+     * @return string
+     */
+    public function getAliasKey($key){
+        if(empty($this->dao->getTableAlias())){
+            return $key;
+        }
+        return $this->dao->getTableAlias().'.'.$key;
+    }
+
 
     public function __clone()
     {
