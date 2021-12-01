@@ -320,12 +320,11 @@ class Model
 
 
     /**
-     * join之后的 where 条件，该方法不会使用占位符，
-     * 所以请不要传递变量的值，请传递表的join where 过滤关联条件
-     * @param $condition
+     * join之后的 where 条件，该方法不会使用占位符，避免直接传递不安全的输入
+     * @param $condition //请传递比如 ['table1.id' => 'table2.product_id']
      * @return $this
      */
-    public function joinWhereCondition($condition){
+    public function joinWhereCondition($condition = []){
         $this->dao->setJoinCondition($condition);
         return $this;
     }
