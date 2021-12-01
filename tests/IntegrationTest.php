@@ -410,11 +410,15 @@ class IntegrationTest extends TestCase
             'cate.id' => $model->getTableAlias() . '.cate_id'
         ]);
         $model1 = clone $model;
+        $model2 = clone $model;
         $list = $model->innerJoin($entity)
             ->where(['cate_id' => 1])->findAll();
         $this->assertEquals(count($list) == 2, true);
         $count = $model1->innerJoin($entity)
             ->where(['cate_id' => 1])->count();
         $this->assertEquals($count == 2, true);
+        $list = $model2->field(['ar.cate_id as a','cate.id as b'])->innerJoin($entity)
+            ->where(['cate_id' => 1])->findAll();
+        $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
     }
 }
