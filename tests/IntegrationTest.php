@@ -500,6 +500,39 @@ class IntegrationTest extends TestCase
         $this->assertEquals(!empty($list), true);
 
 
+
+
+
+    }
+
+    public function testLeftJoin(){
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $articleModel->alias('ar');
+        $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
+        $cateModel->alias('cate');
+        $articleModel1 = clone $articleModel;
+        $cateModel1 = clone $cateModel;
+        $plan = $cateModel1->where(['cate_id' => 1])->getJoinTablePlan([
+            'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
+        ]);
+        $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->leftJoin($plan)
+            ->where([$cateModel1->getFieldAlias('id') => 1])->findAll();
+        $this->assertEquals(count($list) == 2, true);
+    }
+
+    public function testRightJoin(){
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $articleModel->alias('ar');
+        $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
+        $cateModel->alias('cate');
+        $articleModel1 = clone $articleModel;
+        $cateModel1 = clone $cateModel;
+        $plan = $cateModel1->where(['cate_id' => 1])->getJoinTablePlan([
+            'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
+        ]);
+        $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->rightJoin($plan)
+            ->where([$cateModel1->getFieldAlias('id') => 1])->findAll();
+        $this->assertEquals(count($list) == 2, true);
     }
 }
 
