@@ -609,7 +609,7 @@ class IntegrationTest extends TestCase
 ```
 
 ### 本项目基于 Apache-2.0 License 协议
-[Apache-2.0](https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE)
+> [Apache-2.0](https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE)
 
 ### 更多请关注本人的博客
 > https://www.developzhe.com
