@@ -25,6 +25,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
     - [更新](#更新)
     
     - [删除](#删除)
+  - [4.Join用法](#4Join用法(进阶型查询))  
 # 安装
 > composer require lys/php-sharding-pdo
 
