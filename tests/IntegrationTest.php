@@ -17,6 +17,7 @@ ini_set('date.timezone', 'Asia/Shanghai');
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Test\Migrate\Migrate;
 use PhpShardingPdo\Test\Model\ArticleModel;
+use PhpShardingPdo\Test\Model\UserModel;
 use PHPUnit\Framework\TestCase;
 
 $file_load_path = __DIR__ . '/../../../autoload.php';
@@ -410,54 +411,75 @@ class IntegrationTest extends TestCase
      */
     public function testJoin()
     {
-        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
-        $model->alias('ar');
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $articleModel->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
         $cateModel1 = clone $cateModel;
         $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->getJoinTablePlan([
-            'cate.id' => $model->getFieldAlias('cate_id')
+            'cate.id' => $articleModel->getFieldAlias('cate_id')
         ]);
-        $model1 = clone $model;
-        $list = $model1->innerJoin($plan)
+        $articleModel1 = clone $articleModel;
+        $list = $articleModel1->innerJoin($plan)
             ->where(['cate_id' => 1])->findAll();
         $this->assertEquals(count($list) == 2, true);
-        $this->assertEquals(empty($model1->sqlErrors()), true);
-        $model1 = clone $model;
-        $count = $model1->innerJoin($plan)
+        $this->assertEquals(empty($articleModel1->sqlErrors()), true);
+        $articleModel1 = clone $articleModel;
+        $count = $articleModel1->innerJoin($plan)
             ->where(['cate_id' => 1])->count();
         $this->assertEquals($count == 2, true);
-        $this->assertEquals(empty($model1->sqlErrors()), true);
-        $model1 = clone $model;
-        $list = $model1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
+        $this->assertEquals(empty($articleModel1->sqlErrors()), true);
+        $articleModel1 = clone $articleModel;
+        $list = $articleModel1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
             ->where(['cate_id' => 1])->findAll();
         $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
-        $this->assertEquals(empty($model1->sqlErrors()), true);
+        $this->assertEquals(empty($articleModel1->sqlErrors()), true);
         $cateModel1 = clone $cateModel;
         $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->getJoinTablePlan([
-            'cate.id' => ['findInSet', $model->getFieldAlias('cate_id')]
+            'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
         ]);
-        $model1 = clone $model;
-        $list = $model1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
-            ->where([$model1->getFieldAlias('cate_id') => 1])->findAll();
+        $articleModel1 = clone $articleModel;
+        $list = $articleModel1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
+            ->where([$articleModel1->getFieldAlias('cate_id') => 1])->findAll();
         $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
-        $this->assertEquals(empty($model1->sqlErrors()), true);
-        $model1 = clone $model;
+        $this->assertEquals(empty($articleModel1->sqlErrors()), true);
+        $articleModel1 = clone $articleModel;
         $cateModel1 = clone $cateModel;
         $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->getJoinTablePlan([
-            'cate.id' => ['findInSet', $model->getFieldAlias('cate_id')]
+            'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
         ]);
-        $list = $model1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
+        $list = $articleModel1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
             ->where([$cateModel1->getFieldAlias('id') => 1])->findAll();
         $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
-        $this->assertEquals(empty($model1->sqlErrors()), true);
-        $model1 = clone $model;
+        $this->assertEquals(empty($articleModel1->sqlErrors()), true);
+        $articleModel1 = clone $articleModel;
         $cateModel1 = clone $cateModel;
-        $plan = $model1->alias('cate')->where(['cate_id' => 1])->getJoinTablePlan([
-            'cate.id' => ['findInSet', $model->getFieldAlias('cate_id')]
+        $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->getJoinTablePlan([
+            'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
         ]);
-        $list = $model1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
+        $list = $articleModel1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
             ->where([$cateModel1->getFieldAlias('id') => 10])->findAll();
         $this->assertEquals(empty($list), true);
-        $this->assertEquals(empty($model1->sqlErrors()), true);
+        $this->assertEquals(empty($articleModel1->sqlErrors()), true);
+        //实行三表关联查询
+        $userModel = new UserModel();  //分类表
+        $articleModel1 = clone $articleModel; //文章表
+        $cateModel1 = clone $cateModel;  //分类表
+        $userModel1 = clone $userModel;  //分类表
+        $user_id = 1;
+        $catePlan = $cateModel1->alias('cate')->where(['id' => 1])->getJoinTablePlan([
+            'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
+        ]);
+        $articlePlan = $articleModel1->alias('ar')->where(['cate_id' => 1])->getJoinTablePlan([
+            'user.id' => ['findInSet', $articleModel1->getFieldAlias('user_id')]
+        ]);
+        $list = $userModel1->alias('user')->field(['user.id','ar.cate_id as a', 'cate.id as b'])
+            ->innerJoin($catePlan)
+            ->innerJoin($articlePlan)
+            ->where([
+                'id' => $user_id
+            ])->findAll();
+        var_dump($list,$userModel1->sqlErrors());
+       /* $this->assertEquals(empty($list), true);
+        $this->assertEquals(empty($userModel1->sqlErrors()), true);*/
     }
 }

@@ -105,8 +105,10 @@ trait JoinShardingTrait
      */
     public function addJoinPlanObj(JoinTablePlan $obj)
     {
+        if(in_array($obj, $this->_joinEntityObjArr)){
+            return $this;
+        }
         $this->_joinEntityObjArr[] = $obj;
-        $this->_joinEntityObjArr = array_unique($this->_joinEntityObjArr);  //去重
         return $this;
     }
 
