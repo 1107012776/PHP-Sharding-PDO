@@ -16,10 +16,10 @@ use PhpShardingPdo\Components\JoinParsingTrait;
 
 /**
  * join 实体类
- * Class JoinTableEntity
+ * Class JoinTablePlan
  * @package PhpShardingPdo\Core
  */
-class JoinTableEntity
+class JoinTablePlan
 {
     use JoinParsingTrait;
     private $tableName = '';  //数据库表名

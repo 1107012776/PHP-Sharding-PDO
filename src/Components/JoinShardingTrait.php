@@ -11,7 +11,7 @@
 namespace PhpShardingPdo\Components;
 
 
-use PhpShardingPdo\Core\JoinTableEntity;
+use PhpShardingPdo\Core\JoinTablePlan;
 
 
 /**
@@ -26,16 +26,16 @@ trait JoinShardingTrait
     /**
      * @var array $_joinEntityObjArr
      */
-    private $_joinEntityObjArr = []; //join的JoinTableEntity对象
+    private $_joinEntityObjArr = []; //join的JoinTablePlan对象
 
 
     /**
-     * @return JoinTableEntity
+     * @return JoinTablePlan
      * @var $condition
      */
-    public function getJoinTableEntity($condition)
+    public function getJoinTablePlan($condition)
     {
-        $obj = new JoinTableEntity();
+        $obj = new JoinTablePlan();
         $obj->setTableNameAlias($this->getTableAlias());
         $obj->setTableName($this->_getQpTableName());
         $obj->setJoinCondition($condition); //on条件
@@ -64,7 +64,7 @@ trait JoinShardingTrait
             return $sqlStr;
         }
         /**
-         * @var JoinTableEntity $entityObj
+         * @var JoinTablePlan $entityObj
          */
         foreach ($this->_joinEntityObjArr as $entityObj) {
             $sqlStr .= $entityObj->getJoinTypeText() . $entityObj->getTableName() . ' as ' . $entityObj->getTableNameAlias() . $entityObj->getOnConditionStr();
@@ -99,11 +99,11 @@ trait JoinShardingTrait
 
 
     /**
-     * 添加JoinTableEntity对象
+     * 添加JoinTablePlan对象
      * @return $this
-     * @var JoinTableEntity $obj
+     * @var JoinTablePlan $obj
      */
-    public function addJoinEntityObj(JoinTableEntity $obj)
+    public function addJoinPlanObj(JoinTablePlan $obj)
     {
         $this->_joinEntityObjArr[] = $obj;
         $this->_joinEntityObjArr = array_unique($this->_joinEntityObjArr);  //去重

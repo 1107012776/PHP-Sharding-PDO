@@ -275,13 +275,13 @@ class Model
 
 
     /**
-     * 获取join的实体
+     * 获取join的计划实体
      * @param array $condition //on条件比如 ['a.id' => 'b.product_id']
-     * @return JoinTableEntity
+     * @return JoinTablePlan
      */
-    public function getJoinTableEntity($condition = [])
+    public function getJoinTablePlan($condition = [])
     {
-        return $this->dao->getJoinTableEntity($condition);
+        return $this->dao->getJoinTablePlan($condition);
     }
 
     /**
@@ -289,10 +289,10 @@ class Model
      * @param  $obj
      * @return $this
      */
-    public function innerJoin(JoinTableEntity $obj)
+    public function innerJoin(JoinTablePlan $obj)
     {
         $obj->setJoinType(ShardingConst::INNER_JOIN);
-        $this->dao->addJoinEntityObj($obj);
+        $this->dao->addJoinPlanObj($obj);
         return $this;
     }
 
@@ -302,10 +302,10 @@ class Model
      * @param  $obj
      * @return $this
      */
-    public function leftJoin(JoinTableEntity $obj)
+    public function leftJoin(JoinTablePlan $obj)
     {
         $obj->setJoinType(ShardingConst::LEFT_JOIN);
-        $this->dao->addJoinEntityObj($obj);
+        $this->dao->addJoinPlanObj($obj);
         return $this;
     }
 
@@ -314,10 +314,10 @@ class Model
      * @param  $obj
      * @return $this
      */
-    public function rightJoin(JoinTableEntity $obj)
+    public function rightJoin(JoinTablePlan $obj)
     {
         $obj->setJoinType(ShardingConst::RIGHT_JOIN);
-        $this->dao->addJoinEntityObj($obj);
+        $this->dao->addJoinPlanObj($obj);
         return $this;
     }
 
@@ -353,11 +353,11 @@ class Model
     }
 
     /**
-     * join字段别名
+     * 获取join字段别名
      * @param string $key //字段名称
-     * @return string
+     * @return string  // 如 join_table_name_1.id
      */
-    public function getAliasKey($key)
+    public function getFieldAlias($key)
     {
         if (empty($this->dao->getTableAlias())) {
             return $key;
