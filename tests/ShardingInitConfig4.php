@@ -105,7 +105,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $tableRule->setLogicTable('category');
         $tableRule->setDatabaseShardingStrategyConfig(
             new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
-                return null;
+                return 0;
             }));
         $tableRule->setTableShardingStrategyConfig(
             new InlineShardingStrategyConfiguration('category', [], function ($condtion) {
