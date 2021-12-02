@@ -501,10 +501,6 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
         $this->assertEquals(!empty($list), true);
 
-
-
-
-
     }
 
     public function testLeftJoin(){
