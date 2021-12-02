@@ -447,7 +447,8 @@ $model->commit();
 
 ```
 
-### 4.Join用法(进阶型查询)
+### 4.Join用法
+> (进阶型查询)
 ```php
 <?php
 namespace PhpShardingPdo\Test;
