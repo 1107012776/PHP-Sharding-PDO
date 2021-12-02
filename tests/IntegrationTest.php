@@ -461,10 +461,10 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($list), true);
         $this->assertEquals(empty($articleModel1->sqlErrors()), true);
         //实行三表关联查询
-        $userModel = new UserModel();  //分类表
+        $userModel = new UserModel();  //用户表
         $articleModel1 = clone $articleModel; //文章表
         $cateModel1 = clone $cateModel;  //分类表
-        $userModel1 = clone $userModel;  //分类表
+        $userModel1 = clone $userModel;  //用户表
         $user_id = 1;
         $catePlan = $cateModel1->alias('cate')->where(['id' => 1])->getJoinTablePlan([
             'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
@@ -482,5 +482,24 @@ class IntegrationTest extends TestCase
         $this->assertEquals(isset($list[0]['a']) && $list[0]['a'] == 1, true);
         $this->assertEquals(isset($list[0]['b']) && $list[0]['b'] == 1, true);
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
+
+        //没有on条件的join
+        $articleModel1 = clone $articleModel; //文章表
+        $cateModel1 = clone $cateModel;  //分类表
+        $userModel1 = clone $userModel;  //用户表
+        $user_id = 1;
+        $catePlan = $cateModel1->alias('cate')->where(['id' => 1])->getJoinTablePlan([]);
+        $articlePlan = $articleModel1->alias('ar')->where(['cate_id' => 1])->getJoinTablePlan([]);
+        $list = $userModel1->alias('user')->field(['user.id', 'ar.article_title', 'ar.cate_id as a', 'cate.id as b', 'cate.name'])
+            ->innerJoin($catePlan)
+            ->innerJoin($articlePlan)
+            ->where([
+                'id' => $user_id
+            ])->findAll();
+        $this->assertEquals(empty($userModel1->sqlErrors()), true);
+        $this->assertEquals(!empty($list), true);
+
+
     }
 }
+
