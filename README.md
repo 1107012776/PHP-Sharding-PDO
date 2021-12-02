@@ -130,21 +130,6 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
                 ]]));
         $shardingRuleConfig = new ShardingRuleConfiguration();
         $shardingRuleConfig->add($tableRule);  //表1规则
-        
-       //自定义规则的写法如下   
-       /*   $tableRule->setDatabaseShardingStrategyConfig(
-              new InlineShardingStrategyConfiguration('db', [],function ($condition){  //自定义规则
-                             $user_id = $condition['user_id'];
-                             $num = $user_id % 4;
-                             return $num;
-                        }));
-            $tableRule->setTableShardingStrategyConfig(
-               new InlineShardingStrategyConfiguration('article_', [],function ($condition){
-                             $cate_id = $condition['cate_id'];
-                             $num = $cate_id % 2;
-                             return $num;                                   
-       }));*/
-                        
         //account
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('account');
@@ -159,7 +144,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
             new InlineShardingStrategyConfiguration('account_', [], function ($condtion) {
                 return 0;
             }));
-        $shardingRuleConfig->add($tableRule);  //表1规则
+        $shardingRuleConfig->add($tableRule);  //表2规则
         //user
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('user');
@@ -174,7 +159,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
             new InlineShardingStrategyConfiguration('user_', [], function ($condtion) {
                 return 0;
             }));
-        $shardingRuleConfig->add($tableRule);  //表2规则
+        $shardingRuleConfig->add($tableRule);  //表3规则
 
 
         //auto_distributed
@@ -191,7 +176,20 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
             new InlineShardingStrategyConfiguration('auto_distributed', [], function ($condtion) {
                 return '';
             }));
-        $shardingRuleConfig->add($tableRule);  //表3规则
+        $shardingRuleConfig->add($tableRule);  //表4规则
+
+        //category
+        $tableRule = new ShardingTableRuleConfig();
+        $tableRule->setLogicTable('category');
+        $tableRule->setDatabaseShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
+                return 0;
+            }));
+        $tableRule->setTableShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('category', [], function ($condtion) {
+                return '';
+            }));
+        $shardingRuleConfig->add($tableRule);  //表5规则
 
 
         return $shardingRuleConfig;
@@ -608,14 +606,10 @@ class IntegrationTest extends TestCase
         $this->assertEquals(count($list) == 1, true);
     }
 }
-    
-    
-    
-
 ```
 
 ### 本项目基于 Apache-2.0 License 协议
-> https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE
+[Apache-2.0](https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE)
 
 ### 更多请关注本人的博客
 > https://www.developzhe.com
