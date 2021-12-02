@@ -449,6 +449,8 @@ $model->commit();
 
 ### 4.Join用法
 > (进阶型查询)
+
+> Join只支持同个数据库的，不支持跨库
 ```php
 <?php
 namespace PhpShardingPdo\Test;
