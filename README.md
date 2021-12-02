@@ -540,10 +540,10 @@ class IntegrationTest extends TestCase
         $userModel1 = clone $userModel;  //用户表
         $user_id = 1;
         $catePlan = $cateModel1->alias('cate')->where(['id' => 1])->getJoinTablePlan([
-            'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
+            'cate.id' => $articleModel1->getFieldAlias('cate_id')
         ]);
         $articlePlan = $articleModel1->alias('ar')->where(['cate_id' => 1])->getJoinTablePlan([
-            'user.id' => ['findInSet', $articleModel1->getFieldAlias('user_id')]
+            'user.id' => $articleModel1->getFieldAlias('user_id')
         ]);
         $list = $userModel1->alias('user')->field(['user.id', 'ar.cate_id as a', 'cate.id as b'])
             ->innerJoin($catePlan)
@@ -581,7 +581,7 @@ class IntegrationTest extends TestCase
         $articleModel1 = clone $articleModel;
         $cateModel1 = clone $cateModel;
         $plan = $cateModel1->where(['cate_id' => 1])->getJoinTablePlan([
-            'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
+            'cate.id' => $articleModel1->getFieldAlias('cate_id')
         ]);
         $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->leftJoin($plan)
             ->where([$cateModel1->getFieldAlias('id') => 1])->findAll();
@@ -596,7 +596,7 @@ class IntegrationTest extends TestCase
         $articleModel1 = clone $articleModel;
         $cateModel1 = clone $cateModel;
         $plan = $cateModel1->where(['cate_id' => 1])->getJoinTablePlan([
-            'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
+            'cate.id' => $articleModel1->getFieldAlias('cate_id')
         ]);
         $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->rightJoin($plan)
             ->where([
