@@ -65,6 +65,8 @@ class IntegrationTest extends TestCase
         $this->testUpdateDelete();
         $this->testLike();
         $this->testJoin();
+        $this->testLeftJoin();
+        $this->testRightJoin();
     }
 
     /**
