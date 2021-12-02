@@ -58,6 +58,9 @@ class IntegrationCoroutineTest extends IntegrationTest
             $this->testSelectGroupOrderLimitFindAll();
             $this->testUpdateDelete();
             $this->testLike();
+            $this->testJoin();
+            $this->testLeftJoin();
+            $this->testRightJoin();
         });
         \Swoole\Event::wait(); //https://wiki.swoole.com/wiki/page/1081.html
     }
