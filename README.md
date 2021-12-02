@@ -387,6 +387,9 @@ var_dump($list);
 //like 查询
 $list = $model->renew()->where(['article_title' => ['like','某网络科技%'],'type' => 1])->findAll();  
 var_dump($list);
+//not like 查询
+$list = $model->renew()->where(['article_title' => ['notLike','某网络科技%'],'type' => 1])->findAll();  
+var_dump($list);
 //findInSet 查询
 $count = $model->renew()->where([
     'cate_id' => ['findInSet', 1]
