@@ -492,6 +492,7 @@ class IntegrationTest extends TestCase
             'cate.id' => $articleModel->getFieldAlias('cate_id')
         ]);
         $articleModel1 = clone $articleModel;
+        $this->assertEquals(!empty($plan), true);
         $list = $articleModel1->innerJoin($plan)
             ->where(['cate_id' => 1])->findAll();
         $this->assertEquals(count($list) == 2, true);
@@ -510,6 +511,7 @@ class IntegrationTest extends TestCase
         $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->getJoinTablePlan([
             'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
         ]);
+        $this->assertEquals(!empty($plan), true);
         $articleModel1 = clone $articleModel;
         $list = $articleModel1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
             ->where([$articleModel1->getFieldAlias('cate_id') => 1])->findAll();
@@ -520,6 +522,7 @@ class IntegrationTest extends TestCase
         $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->getJoinTablePlan([
             'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
         ]);
+        $this->assertEquals(!empty($plan), true);
         $list = $articleModel1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
             ->where([$cateModel1->getFieldAlias('id') => 1])->findAll();
         $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
@@ -529,6 +532,7 @@ class IntegrationTest extends TestCase
         $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->getJoinTablePlan([
             'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
         ]);
+        $this->assertEquals(!empty($plan), true);
         $list = $articleModel1->field(['ar.cate_id as a', 'cate.id as b'])->innerJoin($plan)
             ->where([$cateModel1->getFieldAlias('id') => 10])->findAll();
         $this->assertEquals(empty($list), true);
@@ -545,6 +549,8 @@ class IntegrationTest extends TestCase
         $articlePlan = $articleModel1->alias('ar')->where(['cate_id' => 1])->getJoinTablePlan([
             'user.id' => $articleModel1->getFieldAlias('user_id')
         ]);
+        $this->assertEquals(!empty($catePlan), true);
+        $this->assertEquals(!empty($articlePlan), true);
         $list = $userModel1->alias('user')->field(['user.id', 'ar.cate_id as a', 'cate.id as b'])
             ->innerJoin($catePlan)
             ->innerJoin($articlePlan)
@@ -563,6 +569,8 @@ class IntegrationTest extends TestCase
         $user_id = 1;
         $catePlan = $cateModel1->alias('cate')->where(['id' => 1])->getJoinTablePlan([]);
         $articlePlan = $articleModel1->alias('ar')->where(['cate_id' => 1])->getJoinTablePlan([]);
+        $this->assertEquals(!empty($catePlan), true);
+        $this->assertEquals(!empty($articlePlan), true);
         $list = $userModel1->alias('user')->field(['user.id', 'ar.article_title', 'ar.cate_id as a', 'cate.id as b', 'cate.name'])
             ->innerJoin($catePlan)
             ->innerJoin($articlePlan)
@@ -571,9 +579,11 @@ class IntegrationTest extends TestCase
             ])->findAll();
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
         $this->assertEquals(!empty($list), true);
+
     }
 
-    public function testLeftJoin(){
+    public function testLeftJoin()
+    {
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
         $articleModel->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
@@ -583,12 +593,14 @@ class IntegrationTest extends TestCase
         $plan = $cateModel1->where(['cate_id' => 1])->getJoinTablePlan([
             'cate.id' => $articleModel1->getFieldAlias('cate_id')
         ]);
+        $this->assertEquals(!empty($plan), true);
         $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->leftJoin($plan)
             ->where([$cateModel1->getFieldAlias('id') => 1])->findAll();
         $this->assertEquals(count($list) == 2, true);
     }
 
-    public function testRightJoin(){
+    public function testRightJoin()
+    {
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
         $articleModel->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
@@ -598,6 +610,7 @@ class IntegrationTest extends TestCase
         $plan = $cateModel1->where(['cate_id' => 1])->getJoinTablePlan([
             'cate.id' => $articleModel1->getFieldAlias('cate_id')
         ]);
+        $this->assertEquals(!empty($plan), true);
         $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->rightJoin($plan)
             ->where([
                 $articleModel1->getFieldAlias('cate_id') => 1,

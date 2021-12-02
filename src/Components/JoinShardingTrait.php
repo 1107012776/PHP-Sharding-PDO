@@ -36,8 +36,12 @@ trait JoinShardingTrait
     public function getJoinTablePlan($condition)
     {
         $obj = new JoinTablePlan();
+        $execTableName = $this->_getQpTableName();
+        if(empty($execTableName)){
+            return null;
+        }
         $obj->setTableNameAlias($this->getTableAlias());
-        $obj->setTableName($this->_getQpTableName());
+        $obj->setTableName($execTableName);
         $obj->setJoinCondition($condition); //on条件
         return $obj;
     }
@@ -110,6 +114,9 @@ trait JoinShardingTrait
      */
     public function addJoinPlanObj(JoinTablePlan $obj)
     {
+        if(empty($obj)){
+            return $this;  //为空则添加无效
+        }
         if (in_array($obj, $this->_joinEntityObjArr)) {
             return $this;
         }
