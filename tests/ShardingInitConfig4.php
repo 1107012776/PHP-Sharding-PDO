@@ -101,6 +101,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
             }));
         $shardingRuleConfig->add($tableRule);  //表4规则
 
+        //category
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('category');
         $tableRule->setDatabaseShardingStrategyConfig(
