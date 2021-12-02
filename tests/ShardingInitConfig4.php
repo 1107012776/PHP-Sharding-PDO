@@ -67,7 +67,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
             new InlineShardingStrategyConfiguration('account_', [], function ($condtion) {
                 return 0;
             }));
-        $shardingRuleConfig->add($tableRule);  //表1规则
+        $shardingRuleConfig->add($tableRule);  //表2规则
         //user
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('user');
@@ -82,7 +82,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
             new InlineShardingStrategyConfiguration('user_', [], function ($condtion) {
                 return 0;
             }));
-        $shardingRuleConfig->add($tableRule);  //表2规则
+        $shardingRuleConfig->add($tableRule);  //表3规则
 
 
         //auto_distributed
@@ -99,7 +99,20 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
             new InlineShardingStrategyConfiguration('auto_distributed', [], function ($condtion) {
                 return '';
             }));
-        $shardingRuleConfig->add($tableRule);  //表3规则
+        $shardingRuleConfig->add($tableRule);  //表4规则
+
+        //category
+        $tableRule = new ShardingTableRuleConfig();
+        $tableRule->setLogicTable('category');
+        $tableRule->setDatabaseShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
+                return 0;
+            }));
+        $tableRule->setTableShardingStrategyConfig(
+            new InlineShardingStrategyConfiguration('category', [], function ($condtion) {
+                return '';
+            }));
+        $shardingRuleConfig->add($tableRule);  //表5规则
 
 
         return $shardingRuleConfig;

@@ -11,10 +11,8 @@
 namespace PhpShardingPdo\Test;
 
 
-
 error_reporting(E_ALL); //显示所有错误信息
 use PhpShardingPdo\Common\ConfigEnv;
-
 
 
 $file_load_path = __DIR__ . '/../../../autoload.php';
@@ -30,10 +28,10 @@ ConfigEnv::loadFile(dirname(__FILE__) . '/Config/.env');  //加载配置
 
 /**
  *
-drop DATABASE phpshardingpdo1;
-drop DATABASE phpshardingpdo2;
-drop DATABASE phpshardingpdo3;
-drop DATABASE phpshardingpdo4;
+ * drop DATABASE phpshardingpdo1;
+ * drop DATABASE phpshardingpdo2;
+ * drop DATABASE phpshardingpdo3;
+ * drop DATABASE phpshardingpdo4;
  * 协程测试
  * php vendor/bin/phpunit tests/IntegrationCoroutineTest.php --filter testExecStart
  * Class IntegrationCoroutineTest
@@ -48,7 +46,7 @@ class IntegrationCoroutineTest extends IntegrationTest
      */
     public function testExecStart()
     {
-        go(function (){
+        go(function () {
             \Swoole\Runtime::enableCoroutine();
             $this->testBuild();
             $this->testInsert();
@@ -60,6 +58,9 @@ class IntegrationCoroutineTest extends IntegrationTest
             $this->testSelectGroupOrderLimitFindAll();
             $this->testUpdateDelete();
             $this->testLike();
+            $this->testJoin();
+            $this->testLeftJoin();
+            $this->testRightJoin();
         });
         \Swoole\Event::wait(); //https://wiki.swoole.com/wiki/page/1081.html
     }

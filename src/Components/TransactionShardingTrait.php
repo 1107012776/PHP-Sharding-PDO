@@ -176,7 +176,7 @@ trait TransactionShardingTrait
             $bVal = $this->_sqlAddslashes($bVal);
             $exeSql = str_replace($bKey, "'$bVal'", $exeSql);
         }
-        $newSql = date('Y-m-d H:i:s', time()) . '[' . $dsn . '][time]: ' . $exeSql . ';' . PHP_EOL;
+        $newSql = date('Y-m-d H:i:s', time()) . '[' . $dsn . ']: ' . PHP_EOL . $exeSql . ';' . PHP_EOL;
         $sqlLogPath = ConfigEnv::get('shardingPdo.sqlLogPath');
         $sqlLogOpen = ConfigEnv::get('shardingPdo.sqlLogOpen', false);
         if (!empty($sqlLogPath) && $sqlLogOpen) {
@@ -199,7 +199,7 @@ trait TransactionShardingTrait
             $bVal = $this->_sqlAddslashes($bVal);
             $exeSql = str_replace($bKey, "'$bVal'", $exeSql);
         }
-        $newSql = date('Y-m-d H:i:s', time()) . '[' . $dsn . '][time]: ' . $exeSql . ';' . PHP_EOL;
+        $newSql = date('Y-m-d H:i:s', time()) . '[' . $dsn . ']: ' . PHP_EOL . $exeSql . ';' . PHP_EOL;
         $sqlLogPath = ConfigEnv::get('shardingPdo.sqlLogPath');
         $sqlLogOpen = ConfigEnv::get('shardingPdo.sqlLogOpen', false);
         if (!empty($sqlLogPath) && $sqlLogOpen) {

@@ -10,6 +10,7 @@
 
 namespace PhpShardingPdo\Core;
 
+use PhpShardingPdo\Common\ShardingConst;
 use PhpShardingPdo\Inter\ShardingInitConfigInter;
 
 /**
@@ -272,6 +273,96 @@ class Model
         return $this;
     }
 
+
+    /**
+     * 获取join的计划实体
+     * @param array $condition //on条件比如 ['a.id' => 'b.product_id']
+     * @return JoinTablePlan
+     */
+    public function getJoinTablePlan($condition = [])
+    {
+        return $this->dao->getJoinTablePlan($condition);
+    }
+
+    /**
+     * 内连接
+     * @param  $obj
+     * @return $this
+     */
+    public function innerJoin(JoinTablePlan $obj)
+    {
+        $obj->setJoinType(ShardingConst::INNER_JOIN);
+        $this->dao->addJoinPlanObj($obj);
+        return $this;
+    }
+
+
+    /**
+     * 左连接
+     * @param  $obj
+     * @return $this
+     */
+    public function leftJoin(JoinTablePlan $obj)
+    {
+        $obj->setJoinType(ShardingConst::LEFT_JOIN);
+        $this->dao->addJoinPlanObj($obj);
+        return $this;
+    }
+
+    /**
+     * 右连接
+     * @param  $obj
+     * @return $this
+     */
+    public function rightJoin(JoinTablePlan $obj)
+    {
+        $obj->setJoinType(ShardingConst::RIGHT_JOIN);
+        $this->dao->addJoinPlanObj($obj);
+        return $this;
+    }
+
+
+    /**
+     * join之后的 where 条件，该方法不会使用占位符，避免直接传递不安全的输入
+     * @param $condition //请传递比如 ['table1.id' => 'table2.product_id']
+     * @return $this
+     */
+    public function joinWhereCondition($condition = [])
+    {
+        $this->dao->setJoinCondition($condition);
+        return $this;
+    }
+
+    /**
+     * 设置表别名
+     * @var $alias //别名
+     * @return Model
+     */
+    public function alias($alias = '')
+    {
+        $this->dao->setTableNameAlias($alias);
+        return $this;
+    }
+
+    /**
+     * 表别名
+     */
+    public function getTableAlias()
+    {
+        return $this->dao->getTableAlias();
+    }
+
+    /**
+     * 获取join字段别名
+     * @param string $key //字段名称
+     * @return string  // 如 join_table_name_1.id
+     */
+    public function getFieldAlias($key)
+    {
+        return $this->dao->getFieldAlias($key);
+    }
+
+
     public function __clone()
     {
         $this->dao = clone $this->dao;
@@ -283,6 +374,11 @@ class Model
      */
     protected function _init()
     {
-        method_exists($this, 'getSoftDeleteCondition') && $this->dao->where($this->getSoftDeleteCondition());
+        if (!method_exists($this, 'getSoftDeleteCondition')) {
+            return;
+        }
+        //软删除
+        $condition = $this->getSoftDeleteCondition();
+        $this->dao->where($condition);
     }
 }

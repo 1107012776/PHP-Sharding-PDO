@@ -283,29 +283,4 @@ trait  GroupByShardingTrait
     }
 
 
-    /**
-     * 分组搜索
-     * @return array|boolean
-     */
-    private function _groupSearch()
-    {
-        $sqlArr = [];
-        $groupField = $this->_getGroupField();
-        $intersect = array_intersect($groupField, $this->_field);
-        if (empty($intersect) && $this->_field_str != '*') {
-            $this->_field_str .= ',' . $groupField[0];
-        }
-        if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {  //全部扫描
-            $sql = 'select ' . $this->_field_str . ' from ' . '`' . $this->_table_name . '`' . $this->_condition_str . $this->_group_str . $this->_order_str;
-        } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {
-            foreach ($this->_table_name_index as $tableName) {
-                $sqlArr[] = 'select ' . $this->_field_str . ' from ' . '`' . $tableName . '`' . $this->_condition_str . $this->_group_str . $this->_order_str;
-            }
-        } else {
-            $sql = 'select ' . $this->_field_str . ' from ' . '`' . $this->_current_exec_table . '`' . $this->_condition_str . $this->_group_str . $this->_order_str;
-        }
-        empty($sql) && $sql = '';
-        return $this->_groupShardingSearch($sqlArr, $sql);
-    }
-
 }

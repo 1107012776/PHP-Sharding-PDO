@@ -28,6 +28,8 @@ class ShardingPdo
     use \PhpShardingPdo\Components\ReplaceIntoShardingTrait;
     use \PhpShardingPdo\Components\IncrDecrShardingTrait;
     use \PhpShardingPdo\Components\ParsingTrait;
+    use \PhpShardingPdo\Components\JoinShardingTrait;
+    use \PhpShardingPdo\Components\JoinParsingTrait;
     /**
      * @var ShardingRuleConfiguration
      */
@@ -77,6 +79,7 @@ class ShardingPdo
         $this->attr_cursor = \PDO::CURSOR_FWDONLY;
         $this->_incrOrDecrColumnStr = '';
         $this->_bind_index = 0;
+        $this->_table_alias = '';  //表别名
         return $this;
     }
 
@@ -438,7 +441,16 @@ class ShardingPdo
             if (empty($customizeCondition)) {  //自定义，却找不到条件
                 return null;  //返回这个代表没有规则，则需要全部表扫描了
             }
-            $number = $tableShardingStrategyConfig->getCustomizeNum($customizeCondition);  //自定义规则
+            $customizeConditionNew = [];
+            foreach ($customizeCondition as $key => $val){
+                strpos($key,'.') !== false && $keyArr = explode('.',$key);
+                if(!empty($keyArr) && $keyArr[0] == $this->getTableAlias()){
+                    $customizeConditionNew[$keyArr[1]] = $val;
+                }else{
+                    $customizeConditionNew[$key] = $val;
+                }
+            }
+            $number = $tableShardingStrategyConfig->getCustomizeNum($customizeConditionNew);  //自定义规则
             if ($number === null) {
                 return null;
             }
@@ -455,6 +467,8 @@ class ShardingPdo
             foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
                     $number = $tableShardingStrategyConfig->getNum($val);
+                }elseif($key == $this->getFieldAlias($name) && !is_array($val)){  //join的情况
+                    $number = $tableShardingStrategyConfig->getNum($val);
                 }
             }
         }
@@ -463,10 +477,6 @@ class ShardingPdo
         }
         return $tableShardingStrategyConfig->getFix() . $number;
     }
-
-
-
-
 
 
 }
