@@ -15,7 +15,7 @@ use PhpShardingPdo\Common\ShardingConst;
 use PhpShardingPdo\Components\JoinParsingTrait;
 
 /**
- * join 实体类
+ * join 计划
  * Class JoinTablePlan
  * @package PhpShardingPdo\Core
  */
