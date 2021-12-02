@@ -63,13 +63,18 @@ trait JoinShardingTrait
         if (empty($this->_joinEntityObjArr)) {
             return $sqlStr;
         }
+        $onStr = '';
         /**
          * @var JoinTablePlan $entityObj
          */
         foreach ($this->_joinEntityObjArr as $entityObj) {
-            $sqlStr .= $entityObj->getJoinTypeText() . $entityObj->getTableName() . ' as ' . $entityObj->getTableNameAlias() . $entityObj->getOnConditionStr();
+            $sqlStr .= $entityObj->getJoinTypeText() . $entityObj->getTableName() . ' as ' . $entityObj->getTableNameAlias();
+            $onStr .= $entityObj->getOnConditionStr();
         }
-        return $sqlStr;
+        if (empty($onStr)) {
+            return $sqlStr;
+        }
+        return $sqlStr . ' on ' . substr($onStr, 5, strlen($onStr) - 5);
     }
 
     /**
@@ -105,7 +110,7 @@ trait JoinShardingTrait
      */
     public function addJoinPlanObj(JoinTablePlan $obj)
     {
-        if(in_array($obj, $this->_joinEntityObjArr)){
+        if (in_array($obj, $this->_joinEntityObjArr)) {
             return $this;
         }
         $this->_joinEntityObjArr[] = $obj;
