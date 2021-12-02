@@ -458,6 +458,8 @@ class ShardingPdo
             foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
                     $number = $tableShardingStrategyConfig->getNum($val);
+                }elseif($key == $this->getFieldAlias($name) && !is_array($val)){  //join的情况
+                    $number = $tableShardingStrategyConfig->getNum($val);
                 }
             }
         }

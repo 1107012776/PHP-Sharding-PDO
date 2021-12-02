@@ -359,10 +359,7 @@ class Model
      */
     public function getFieldAlias($key)
     {
-        if (empty($this->dao->getTableAlias())) {
-            return $key;
-        }
-        return $this->dao->getTableAlias() . '.' . $key;
+        return $this->dao->getFieldAlias($key);
     }
 
 

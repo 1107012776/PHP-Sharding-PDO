@@ -531,8 +531,11 @@ class IntegrationTest extends TestCase
             'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
         ]);
         $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->rightJoin($plan)
-            ->where([$cateModel1->getFieldAlias('id') => 1])->findAll();
-        $this->assertEquals(count($list) == 2, true);
+            ->where([
+                $articleModel1->getFieldAlias('cate_id') => 1,
+                $articleModel1->getFieldAlias('user_id') => 1,
+            ])->findAll();
+        $this->assertEquals(count($list) == 1, true);
     }
 }
 
