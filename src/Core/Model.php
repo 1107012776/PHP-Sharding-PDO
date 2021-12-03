@@ -275,13 +275,13 @@ class Model
 
 
     /**
-     * 获取join的计划实体
+     * 创建一个join的计划实体
      * @param array $condition //on条件比如 ['a.id' => 'b.product_id']
      * @return JoinTablePlan
      */
-    public function getJoinTablePlan($condition = [])
+    public function createJoinTablePlan($condition = [])
     {
-        return $this->dao->getJoinTablePlan($condition);
+        return $this->dao->createJoinTablePlan($condition);
     }
 
     /**

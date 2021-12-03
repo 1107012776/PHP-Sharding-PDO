@@ -33,7 +33,7 @@ trait JoinShardingTrait
      * @return JoinTablePlan
      * @var $condition
      */
-    public function getJoinTablePlan($condition)
+    public function createJoinTablePlan($condition)
     {
         $obj = new JoinTablePlan();
         $execTableName = $this->_getQpTableName();
