@@ -58,6 +58,10 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
 host=localhost
 username=root
 password=testpassword
+[shardingPdo]
+#开启记录sql日志会影响性能
+sqlLogOpen=false
+sqlLogPath=sql.sql
 ```
 ### （2）然后执行如下脚本
 
