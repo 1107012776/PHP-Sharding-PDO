@@ -67,6 +67,9 @@ trait JoinParsingTrait
     {
         if (is_array($val)) {
             switch ($val[0]) {
+                case 'eq':
+                    $this->_join_condition_str .= ShardingConst::CONDITION_AND . $key . ' = ' . $val[1];
+                    break;
                 case 'neq':
                     if (!is_array($val[1])) {
                         $this->_join_condition_str .= ShardingConst::CONDITION_AND . $key . ' != ' . $val[1];

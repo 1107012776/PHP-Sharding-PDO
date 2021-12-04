@@ -31,6 +31,11 @@ trait ParsingTrait
         $zwKey = ':' . str_replace('.', '_', $key) . '_' . $this->_bind_index;  //占位符
         if (is_array($val)) {
             switch ($val[0]) {
+                case 'eq':
+                    $zwKey .= '_eq_0';
+                    $this->_condition_str .= ShardingConst::CONDITION_AND . $key . ' = ' . $zwKey;
+                    $this->_condition_bind[$zwKey] = $val[1];
+                    break;
                 case 'neq':
                     if (!is_array($val[1])) {
                         $zwKey .= '_neq_0';
