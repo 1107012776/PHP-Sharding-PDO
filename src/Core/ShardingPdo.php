@@ -380,7 +380,16 @@ class ShardingPdo
             if (empty($customizeCondition)) {  //自定义，却找不到条件
                 return null;  //返回这个代表没有规则，则需要全部db扫描了
             }
-            $number = $tableShardingStrategyConfig->getCustomizeNum($customizeCondition);  //自定义规则
+            $customizeConditionNew = [];
+            foreach ($customizeCondition as $key => $val){
+                strpos($key,'.') !== false && $keyArr = explode('.',$key);
+                if(!empty($keyArr) && $keyArr[0] == $this->getTableAlias()){
+                    $customizeConditionNew[$keyArr[1]] = $val;
+                }else{
+                    $customizeConditionNew[$key] = $val;
+                }
+            }
+            $number = $tableShardingStrategyConfig->getCustomizeNum($customizeConditionNew);  //自定义规则
             if ($number === null) {
                 return null;  //返回这个代表没有规则，则需要全部db扫描了
             }
@@ -397,6 +406,8 @@ class ShardingPdo
         } elseif (!empty($this->_condition)) {
             foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
+                    $number = $tableShardingStrategyConfig->getNum($val);
+                }elseif($key == $this->getFieldAlias($name) && !is_array($val)){  //join的情况
                     $number = $tableShardingStrategyConfig->getNum($val);
                 }
             }
