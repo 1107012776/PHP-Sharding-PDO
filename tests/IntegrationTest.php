@@ -417,7 +417,7 @@ class IntegrationTest extends TestCase
         $articleModel->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
         $cateModel1 = clone $cateModel;
-        $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->createJoinTablePlan([
+        $plan = $cateModel1->alias('cate')->where(['id' => 1])->createJoinTablePlan([
             'cate.id' => $articleModel->getFieldAlias('cate_id')
         ]);
         $articleModel1 = clone $articleModel;
@@ -437,7 +437,7 @@ class IntegrationTest extends TestCase
         $this->assertEquals(isset($list[1]['a']) && $list[1]['a'] == 1, true);
         $this->assertEquals(empty($articleModel1->sqlErrors()), true);
         $cateModel1 = clone $cateModel;
-        $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->createJoinTablePlan([
+        $plan = $cateModel1->alias('cate')->where(['id' => 1])->createJoinTablePlan([
             'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
         ]);
         $this->assertEquals(!empty($plan), true);
@@ -448,7 +448,7 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($articleModel1->sqlErrors()), true);
         $articleModel1 = clone $articleModel;
         $cateModel1 = clone $cateModel;
-        $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->createJoinTablePlan([
+        $plan = $cateModel1->alias('cate')->where(['id' => 1])->createJoinTablePlan([
             'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
         ]);
         $this->assertEquals(!empty($plan), true);
@@ -458,7 +458,7 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($articleModel1->sqlErrors()), true);
         $articleModel1 = clone $articleModel;
         $cateModel1 = clone $cateModel;
-        $plan = $cateModel1->alias('cate')->where(['cate_id' => 1])->createJoinTablePlan([
+        $plan = $cateModel1->alias('cate')->where(['id' => 1])->createJoinTablePlan([
             'cate.id' => ['findInSet', $articleModel1->getFieldAlias('cate_id')]
         ]);
         $this->assertEquals(!empty($plan), true);
@@ -519,7 +519,7 @@ class IntegrationTest extends TestCase
         $cateModel->alias('cate');
         $articleModel1 = clone $articleModel;
         $cateModel1 = clone $cateModel;
-        $plan = $cateModel1->where(['cate_id' => 1])->createJoinTablePlan([
+        $plan = $cateModel1->where(['id' => 1])->createJoinTablePlan([
             'cate.id' => $articleModel1->getFieldAlias('cate_id')
         ]);
         $this->assertEquals(!empty($plan), true);
@@ -536,7 +536,7 @@ class IntegrationTest extends TestCase
         $cateModel->alias('cate');
         $articleModel1 = clone $articleModel;
         $cateModel1 = clone $cateModel;
-        $plan = $cateModel1->where(['cate_id' => 1])->createJoinTablePlan([
+        $plan = $cateModel1->where(['id' => 1])->createJoinTablePlan([
             'cate.id' => $articleModel1->getFieldAlias('cate_id')
         ]);
         $this->assertEquals(!empty($plan), true);
