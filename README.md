@@ -8,7 +8,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
 
 - [三、注意](#注意)
 
-- [四、自动化测试](#自动化测试)
+- [四、单元测试](#单元测试)
 
 - [五、示例](#示例)
 
@@ -48,7 +48,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
 \PhpShardingPdo\Core\ShardingPdoContext::contextFreed();  
 
 ```
-# 自动化测试
+# 单元测试
 
 ### （1）先要配置tests/Config/.env ，测试环境数据库链接
 
