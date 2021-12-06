@@ -287,12 +287,9 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
 <?php
 
 namespace PhpShardingPdo\Test\Model;
-
-
 use PhpShardingPdo\Components\SoftDeleteTrait;
 use PhpShardingPdo\Core\Model;
 use PhpShardingPdo\Test\ShardingInitConfig4;
-
 Class ArticleModel extends Model
 {
     use SoftDeleteTrait; //软删除需要配置这个
@@ -302,8 +299,6 @@ Class ArticleModel extends Model
         //'range' => [1,2]  //范围
     ];
     protected $shardingInitConfigClass = ShardingInitConfig4::class;
-
-
 }
 
 ```
@@ -318,15 +313,11 @@ Class ArticleModel extends Model
  */
 
 namespace PhpShardingPdo\Test\Model;
-
-
 use PhpShardingPdo\Core\Model;
 use PhpShardingPdo\Test\ShardingInitConfig4;
-
 Class UserModel extends Model
 {
     protected $tableName = 'user';
-
     protected $shardingInitConfigClass = ShardingInitConfig4::class;
     protected $tableNameIndexConfig = [
         'index' => '0', //分表索引 index ,号分割
