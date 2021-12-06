@@ -492,7 +492,7 @@ class IntegrationTest extends TestCase
         $articleModel->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
         $cateModel1 = clone $cateModel;
-        //这边输入where条件是用来查询某个表名的，用于后续join
+        //这边输入where条件是用来查询具体表名的，用于后续join
         $plan = $cateModel1->alias('cate')->where([
             'id' => 1 
             ])->createJoinTablePlan([
