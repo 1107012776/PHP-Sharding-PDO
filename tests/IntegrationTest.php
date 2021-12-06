@@ -513,7 +513,8 @@ class IntegrationTest extends TestCase
 
     }
 
-    public function testOrderByJoin(){
+    public function testOrderByJoin()
+    {
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
         $articleModel->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
@@ -545,7 +546,8 @@ class IntegrationTest extends TestCase
     }
 
 
-    public function testGroupByJoin(){
+    public function testGroupByJoin()
+    {
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
         $articleModel->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
