@@ -492,11 +492,14 @@ class IntegrationTest extends TestCase
         $articleModel->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
         $cateModel1 = clone $cateModel;
-        $plan = $cateModel1->alias('cate')->where(['id' => 1])->createJoinTablePlan([
-            'cate.id' => $articleModel->getFieldAlias('cate_id')
+        $plan = $cateModel1->alias('cate')->where([
+            'id' => 1  //这边输入的条件是用来查询某个表名的，用于后续join ，我们是分表所以，plan的计划就是为了找到表和添加一个on条件
+            ])->createJoinTablePlan([
+            'cate.id' => $articleModel->getFieldAlias('cate_id') //这边是on条件 用于关联
         ]);
+        //plan计划失败，其实就是找不到后续要用到的具体join表名，而表名由分表规则及输入where条件决定
+        $this->assertEquals(!empty($plan), true); 
         $articleModel1 = clone $articleModel;
-        $this->assertEquals(!empty($plan), true);
         $list = $articleModel1->innerJoin($plan)
             ->where(['cate_id' => 1])->findAll();
         $this->assertEquals(count($list) == 2, true);
