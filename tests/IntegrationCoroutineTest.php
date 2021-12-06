@@ -61,6 +61,8 @@ class IntegrationCoroutineTest extends IntegrationTest
             $this->testJoin();
             $this->testLeftJoin();
             $this->testRightJoin();
+            $this->testOrderByJoin();
+            $this->testGroupByJoin();
         });
         \Swoole\Event::wait(); //https://wiki.swoole.com/wiki/page/1081.html
     }

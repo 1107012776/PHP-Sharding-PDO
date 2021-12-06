@@ -32,9 +32,12 @@ trait  GroupByShardingTrait
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
                 $res = $statement->execute($this->_condition_bind);
                 $this->_addSelectSql($sql, $this->_condition_bind, $this->_current_exec_db);
+                if (empty($res)) {
+                    $this->_sqlErrors[] = $statement->errorInfo();
+                }
                 return $res;
             }
             /**
@@ -47,6 +50,9 @@ trait  GroupByShardingTrait
                 $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res[$key] = $statement->execute($this->_condition_bind);
                 $this->_addSelectSql($sql, $this->_condition_bind, $db);
+                if (empty($res[$key])) {
+                    $this->_sqlErrors[] = $statement->errorInfo();
+                }
             }
             return $res;
         };

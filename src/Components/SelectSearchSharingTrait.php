@@ -59,6 +59,9 @@ trait SelectSearchSharingTrait
                     $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                     $res[$key] = $statement->execute($this->_condition_bind);
                     $this->_addSelectSql($sql, $this->_condition_bind, $db);
+                    if (empty($res[$key])) {
+                        $this->_sqlErrors[] = $statement->errorInfo();
+                    }
                 }
             };
             if (!empty($sqlArr)) {  //扫描多张表
@@ -91,6 +94,9 @@ trait SelectSearchSharingTrait
                 $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($this->_condition_bind);
                 $this->_addSelectSql($sql, $this->_condition_bind, $this->_current_exec_db);
+                if (empty($res)) {
+                    $this->_sqlErrors[] = $statement->errorInfo();
+                }
             }
             if (count($statementArr) > 1) {
                 if (!empty($limit = $this->_getLimitReCount())) {
@@ -126,13 +132,13 @@ trait SelectSearchSharingTrait
             $this->_field_str .= ',' . $groupField[0];
         }
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {  //全部扫描
-            $sql = 'select ' . $this->_field_str . ' from ' . '`' . $this->_table_name . '`' . $this->_condition_str . $this->_group_str . $this->_order_str;
+            $sql = 'select ' . $this->_field_str . ' from ' . $this->getExecSelectString($this->_table_name) . $this->_condition_str . $this->_group_str . $this->_order_str;
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {
             foreach ($this->_table_name_index as $tableName) {
-                $sqlArr[] = 'select ' . $this->_field_str . ' from ' . '`' . $tableName . '`' . $this->_condition_str . $this->_group_str . $this->_order_str;
+                $sqlArr[] = 'select ' . $this->_field_str . ' from ' . $this->getExecSelectString($tableName) . $this->_condition_str . $this->_group_str . $this->_order_str;
             }
         } else {
-            $sql = 'select ' . $this->_field_str . ' from ' . '`' . $this->_current_exec_table . '`' . $this->_condition_str . $this->_group_str . $this->_order_str;
+            $sql = 'select ' . $this->_field_str . ' from ' . $this->getExecSelectString($this->_current_exec_table) . $this->_condition_str . $this->_group_str . $this->_order_str;
         }
         empty($sql) && $sql = '';
         return $this->_groupShardingSearch($sqlArr, $sql);
