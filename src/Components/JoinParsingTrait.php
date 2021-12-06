@@ -108,14 +108,14 @@ trait JoinParsingTrait
                     $this->_join_condition_str .= ShardingConst::CONDITION_AND . $key . ' not in (' . $zwKeyIn . ')';
                     break;
                 case 'between':
-                    $zwKeyMin = min($val[1]);
-                    $zwKeyMax = max($val[1]);
+                    $zwKeyMin = $val[1][0];
+                    $zwKeyMax = $val[1][1];
                     $this->_join_condition_str .= ShardingConst::CONDITION_AND . $key . ' <= ' . $zwKeyMax;
                     $this->_join_condition_str .= ShardingConst::CONDITION_AND . $key . ' >= ' . $zwKeyMin;
                     break;
                 case 'notBetween':
-                    $zwKeyMin = min($val[1]);
-                    $zwKeyMax = max($val[1]);
+                    $zwKeyMin = $val[1][0];
+                    $zwKeyMax = $val[1][1];
                     $this->_join_condition_str .= ShardingConst::CONDITION_AND . $key . ' > ' . $zwKeyMax;
                     $this->_join_condition_str .= ShardingConst::CONDITION_AND . $key . ' < ' . $zwKeyMin;
                     break;
