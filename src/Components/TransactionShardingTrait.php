@@ -156,7 +156,8 @@ trait TransactionShardingTrait
         $uniqid = spl_object_hash($this) . uniqid();
         $objHash = md5($uniqid) . sha1($uniqid);  //加上这个避免串事务
         $_exeSqlXaUniqidFilePath = ShardingPdoContext::getValue(self::$_exeSqlXaUniqidFilePath);
-        $filePath = str_replace('.log', ShardingPdoContext::getCid() . '-' . $objHash . '-' . date('Y-m-d_H_i_s') . '.log', $_exeSqlXaUniqidFilePath);
+        $ext = pathinfo($_exeSqlXaUniqidFilePath, PATHINFO_EXTENSION);
+        $filePath = preg_replace('/\.' . $ext . '$/i', ShardingPdoContext::getCid() . '-' . $objHash . '-' . date('Y-m-d_H_i_s') . '.' . $ext, $_exeSqlXaUniqidFilePath);
         ShardingPdoContext::array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
         file_put_contents($filePath, $log . PHP_EOL . 'END' . PHP_EOL, FILE_APPEND);
         ShardingPdoContext::setValue(self::$_exeSqlArr, []);
@@ -180,7 +181,8 @@ trait TransactionShardingTrait
         $sqlLogPath = ConfigEnv::get('shardingPdo.sqlLogPath');
         $sqlLogOpen = ConfigEnv::get('shardingPdo.sqlLogOpen', false);
         if (!empty($sqlLogPath) && $sqlLogOpen) {
-            @file_put_contents(str_replace('.sql', date('YmdH') . '.sql', $sqlLogPath), $newSql, FILE_APPEND);
+            $ext = pathinfo($sqlLogPath, PATHINFO_EXTENSION);
+            @file_put_contents(preg_replace('/\.' . $ext . '$/i', date('YmdH') . '.' . $ext, $sqlLogPath), $newSql, FILE_APPEND);
         }
     }
 
@@ -203,7 +205,8 @@ trait TransactionShardingTrait
         $sqlLogPath = ConfigEnv::get('shardingPdo.sqlLogPath');
         $sqlLogOpen = ConfigEnv::get('shardingPdo.sqlLogOpen', false);
         if (!empty($sqlLogPath) && $sqlLogOpen) {
-            @file_put_contents(str_replace('.sql', date('YmdH') . '.sql', $sqlLogPath), $newSql, FILE_APPEND);
+            $ext = pathinfo($sqlLogPath, PATHINFO_EXTENSION);
+            @file_put_contents(preg_replace('/\.' . $ext . '$/i', date('YmdH') . '.' . $ext, $sqlLogPath), $newSql, FILE_APPEND);
         }
         ShardingPdoContext::array_push(self::$_exeSqlArr, $newSql);
     }
