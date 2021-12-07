@@ -80,6 +80,7 @@ class ShardingPdo
         $this->_incrOrDecrColumnStr = '';
         $this->_bind_index = 0;
         $this->_table_alias = '';  //表别名
+        $this->_joinEntityObjArr = [];
         return $this;
     }
 
