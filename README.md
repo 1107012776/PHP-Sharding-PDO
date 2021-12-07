@@ -80,6 +80,7 @@ sqlLogPath=sql.sql
 ### 1.我们需要配置一下基本的分块规则配置类
 ```php
 <?php
+
 namespace PhpShardingPdo\Test;
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Core\ShardingTableRuleConfig;
