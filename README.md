@@ -51,7 +51,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
 # 单元测试
 > git clone https://github.com/1107012776/PHP-Sharding-PDO.git
 
-> composer install
+> cd PHP-Sharding-PDO && composer install
 ### （1）先要配置tests/Config/.env ，测试环境数据库链接
 
 > .env文件
