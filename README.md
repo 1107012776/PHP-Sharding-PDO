@@ -37,10 +37,13 @@ composer require lys/php-sharding-pdo
 
 # 注意
 ###### （1）协程模式必须在主进程开启这个东西，否则会出现死锁
-> \Swoole\Runtime::enableCoroutine(); 
+```bash
+\Swoole\Runtime::enableCoroutine(); 
+```
 ###### （2）协程中不能使用pdo长连接，在高并发的情况下，会出现如下异常
-> PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to another coroutine#2, reading of the same socket in coroutine#4 at the same time is not allowed
-
+```bash
+PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to another coroutine#2, reading of the same socket in coroutine#4 at the same time is not allowed
+```
 ###### （3）Replace into自增主键，并发量大的时候可能出现返回false和死锁的，所以不适合高并发项目的使用，高并发，请使用雪花算法等一些分布式主键方案
 
 ###### （4）非协程情况下，并且常驻内存，如workerman框架请使用如下代码释放上下文，上下文管理为单例，所以需要该方法释放单例实例，一般是在一个请求结束，或者一个任务结束，释放完上下文，请重新new Model实例才行，因为释放上下文，清理了上下文中的PDO实例，方法如下:
