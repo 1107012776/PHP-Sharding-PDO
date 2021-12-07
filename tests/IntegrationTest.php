@@ -597,7 +597,7 @@ class IntegrationTest extends TestCase
             ])->order('user.id desc')->group('user.id')->findAll();
         $this->assertEquals(empty($list), true);
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
-
+        $this->testRenewJoin();
     }
 
     public function testLeftJoin()
