@@ -36,7 +36,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
 # 注意
 ###### （1）协程模式必须在主进程开启这个东西，否则会出现死锁
 > \Swoole\Runtime::enableCoroutine(); 
-###### （2）协程中不能使用pdo长链接，在高并发的情况下，会出现如下异常
+###### （2）协程中不能使用pdo长连接，在高并发的情况下，会出现如下异常
 > PHP Fatal error:  Uncaught Swoole\Error: Socket#30 has already been bound to another coroutine#2, reading of the same socket in coroutine#4 at the same time is not allowed
 
 ###### （3）Replace into自增主键，并发量大的时候可能出现返回false和死锁的，所以不适合高并发项目的使用，高并发，请使用雪花算法等一些分布式主键方案
@@ -49,7 +49,9 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
 
 ```
 # 单元测试
+> git clone https://github.com/1107012776/PHP-Sharding-PDO.git
 
+> composer install
 ### （1）先要配置tests/Config/.env ，测试环境数据库链接
 
 > .env文件
