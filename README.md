@@ -80,23 +80,13 @@ sqlLogPath=sql.sql
 ### 1.我们需要配置一下基本的分块规则配置类
 ```php
 <?php
-
 namespace PhpShardingPdo\Test;
-
-
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Core\ShardingTableRuleConfig;
 use PhpShardingPdo\Core\InlineShardingStrategyConfiguration;
 use PhpShardingPdo\Core\ShardingRuleConfiguration;
 use PhpShardingPdo\Inter\ShardingInitConfigInter;
 use PhpShardingPdo\Test\Migrate\build\DatabaseCreate;
-
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/7/24
- * Time: 18:48
- */
 class ShardingInitConfig4 extends ShardingInitConfigInter
 {
     /**
@@ -305,12 +295,6 @@ Class ArticleModel extends Model
 
 ```php
 <?php
-/**
- * Created by PhpStorm.
- * User: 11070
- * Date: 2020/3/29
- * Time: 21:28
- */
 
 namespace PhpShardingPdo\Test\Model;
 use PhpShardingPdo\Core\Model;
