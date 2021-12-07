@@ -592,7 +592,7 @@ class IntegrationTest extends TestCase
             ->innerJoin($articlePlan)
             ->where([
                 'id' => $user_id
-            ])->joinWhereCondition([  //这边存在注入的肯能，因为不会使用呢占位符，请确保你传入的值是安全的
+            ])->joinWhereCondition([  //这边存在注入的可能，因为不会使用占位符，请确保你传入的值是安全的
                 $userModel1->getFieldAlias('id') => ['neq', 'ar.cate_id']
             ])->order('user.id desc')->group('user.id')->findAll();
         $this->assertEquals(empty($list), true);
