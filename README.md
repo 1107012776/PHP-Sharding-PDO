@@ -27,7 +27,9 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
     - [删除](#删除)
   - [4.Join用法](#4Join用法)  
 # 安装
-> composer require lys/php-sharding-pdo
+```bash
+composer require lys/php-sharding-pdo
+```
 
 # 说明
 ###### （1）已支持协程，使用协程必须在主进程开启   \Swoole\Runtime::enableCoroutine(); 
@@ -70,13 +72,13 @@ sqlLogPath=sql.sql
 ### （2）然后执行如下脚本
 
 #### 非协程
-
-> php vendor/bin/phpunit tests/IntegrationTest.php --filter testExecStart
-
+```bash
+php vendor/bin/phpunit tests/IntegrationTest.php --filter testExecStart
+```
 #### 协程
-
-> php vendor/bin/phpunit tests/IntegrationCoroutineTest.php --filter testExecStart
-
+```bash
+php vendor/bin/phpunit tests/IntegrationCoroutineTest.php --filter testExecStart
+```
 
 
 # 示例 
