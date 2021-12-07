@@ -576,6 +576,28 @@ class IntegrationTest extends TestCase
         $this->assertEquals(isset($list[0]['a']) && $list[0]['a'] == 1, true);
         $this->assertEquals(isset($list[0]['b']) && $list[0]['b'] == 1, true);
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
+        $articleModel1 = clone $articleModel;
+        $cateModel1 = clone $cateModel;
+        $userModel1 = clone $userModel;
+        $catePlan = $cateModel1->alias('cate')->where(['id' => 1])->createJoinTablePlan([
+            'cate.id' => $articleModel1->getFieldAlias('cate_id')
+        ]);
+        $articlePlan = $articleModel1->alias('ar')->where(['cate_id' => 1])->createJoinTablePlan([
+            'user.id' => $articleModel1->getFieldAlias('user_id')
+        ]);
+        $this->assertEquals(!empty($catePlan), true);
+        $this->assertEquals(!empty($articlePlan), true);
+        $list = $userModel1->field(['user.id', 'ar.cate_id as a', 'cate.id as b'])
+            ->innerJoin($catePlan)
+            ->innerJoin($articlePlan)
+            ->where([
+                'id' => $user_id
+            ])->joinWhereCondition([  //这边存在注入的肯能，因为不会使用呢占位符，请确保你传入的值是安全的
+                $userModel1->getFieldAlias('id') => ['neq', 'ar.cate_id']
+            ])->order('user.id desc')->group('user.id')->findAll();
+        $this->assertEquals(empty($list), true);
+        $this->assertEquals(empty($userModel1->sqlErrors()), true);
+
     }
 
     public function testLeftJoin()
