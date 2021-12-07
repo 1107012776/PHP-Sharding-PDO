@@ -593,7 +593,7 @@ class IntegrationTest extends TestCase
             ->where([
                 'id' => $user_id
             ])->joinWhereCondition([  //这边存在注入的可能，因为不会使用占位符，请确保你传入的值是安全的
-                $userModel1->getFieldAlias('id') => ['neq', 'ar.cate_id']
+                $userModel1->getFieldAlias('id') => ['neq', 'ar.cate_id'] //请传递比如 ['user.id' => 'ar.cate_id']
             ])->order('user.id desc')->group('user.id')->findAll();
         $this->assertEquals(empty($list), true);
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
