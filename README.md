@@ -28,16 +28,16 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
   - [4.Join用法](#4Join用法)  
 # 安装
 
-- PHP >= 7.2
-
 ```bash
 composer require lys/php-sharding-pdo
 ```
 
 # 说明
+
 ###### （1）已支持协程，使用协程必须在主进程开启   \Swoole\Runtime::enableCoroutine(); 
 ###### （2）支持分片规则自定义，支持实现复杂的分片，分片规则是依赖输入的where条件或者insert插入的数据来的
-
+###### （3）环境
+- PHP >= 7.2
 # 注意
 ###### （1）协程模式必须在主进程开启这个东西，否则会出现死锁
 ```bash
