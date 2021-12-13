@@ -24,9 +24,9 @@ trait JoinShardingTrait
     private $_table_alias = ''; //表别名
 
     /**
-     * @var array $_joinEntityObjArr
+     * @var array $_joinTablePlanObjArr
      */
-    private $_joinEntityObjArr = []; //join的JoinTablePlan对象
+    private $_joinTablePlanObjArr = []; //join的JoinTablePlan对象数组
 
 
     /**
@@ -64,14 +64,14 @@ trait JoinShardingTrait
     protected function getExecSelectString($execTableName)
     {
         $sqlStr = $this->getExecStringTableAlias($execTableName);
-        if (empty($this->_joinEntityObjArr)) {
+        if (empty($this->_joinTablePlanObjArr)) {
             return $sqlStr;
         }
         $onStr = '';
         /**
          * @var JoinTablePlan $entityObj
          */
-        foreach ($this->_joinEntityObjArr as $entityObj) {
+        foreach ($this->_joinTablePlanObjArr as $entityObj) {
             $sqlStr .= $entityObj->getJoinTypeText() . $entityObj->getTableName() . ' as ' . $entityObj->getTableNameAlias();
             $onStr .= $entityObj->getOnConditionStr();
         }
@@ -117,10 +117,10 @@ trait JoinShardingTrait
         if(empty($obj)){
             return $this;  //为空则添加无效
         }
-        if (in_array($obj, $this->_joinEntityObjArr)) {
+        if (in_array($obj, $this->_joinTablePlanObjArr)) {
             return $this;
         }
-        $this->_joinEntityObjArr[] = $obj;
+        $this->_joinTablePlanObjArr[] = $obj;
         return $this;
     }
 
