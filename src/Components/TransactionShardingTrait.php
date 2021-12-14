@@ -286,6 +286,9 @@ trait TransactionShardingTrait
      */
     public function endXa()
     {
+        if (ShardingPdoContext::getValue(self::$_startTransCount) > 1) {
+            return true;
+        }
         $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
         $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
         /**
@@ -307,6 +310,9 @@ trait TransactionShardingTrait
      */
     public function prepareXa()
     {
+        if (ShardingPdoContext::getValue(self::$_startTransCount) > 1) {
+            return true;
+        }
         $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
         $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
         /**
