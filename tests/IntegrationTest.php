@@ -686,6 +686,10 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
     }
 
+    /**
+     * xa 事务测试
+     * @throws \Exception
+     */
     public function testXaTransaction(){
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
         $data = [
@@ -709,7 +713,20 @@ class IntegrationTest extends TestCase
         $articleModel->prepareXa();
         $articleModel->commit();
         $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
+        var_dump($articleModel->sqlErrors());
         $this->assertEquals(!empty($row), true);
+
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+        $data['id'] = $this->testGetId(2);
+        $articleModel->startTrans($articleModel->getXid());
+        $res = $articleModel->renew()->insert($data);
+        var_dump($articleModel->sqlErrors());
+        $this->assertEquals(!empty($res), true);
+        $articleModel->endXa();
+        $articleModel->prepareXa();
+        $articleModel->rollback();
+        $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
+        $this->assertEquals(empty($row), true);
     }
 }
 
