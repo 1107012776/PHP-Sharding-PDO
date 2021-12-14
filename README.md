@@ -27,7 +27,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
     - [删除](#删除)
   - [4.Join用法](#4Join用法)  
   
-  - [5.MysqlXa](#5MysqlXa)  
+  - [5.MysqlXa](#5Mysql Xa)  
   
 # 环境要求
 - PHP >= 7.2
