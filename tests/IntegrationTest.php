@@ -690,7 +690,6 @@ class IntegrationTest extends TestCase
 
     /**
      * xa 事务测试
-     * @throws \Exception
      */
     public function testXaTransaction()
     {
