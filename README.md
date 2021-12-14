@@ -27,7 +27,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
     - [删除](#删除)
   - [4.Join用法](#4Join用法)  
   
-  - [5.MysqlXa](#5Mysql Xa)  
+  - [5.Mysql使用Xa](#5Mysql的Xa用法)  
   
 # 环境要求
 - PHP >= 7.2
@@ -562,7 +562,7 @@ class IntegrationTest extends TestCase
 }
 ```
 
-### 5.Mysql Xa
+### 5.Mysql的Xa用法
 
 
 # License
