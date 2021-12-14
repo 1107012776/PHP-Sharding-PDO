@@ -111,6 +111,7 @@ trait TransactionShardingTrait
             }
         }
         $this->setXid('');
+        $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
         return true;
     }
 
@@ -262,9 +263,7 @@ trait TransactionShardingTrait
         if (!empty($xid)) {
             return $xid;
         }
-        $xid = uniqid('xid');
-        ShardingPdoContext::setValue(self::$_exeXaXid, $xid);
-        return $xid;
+        return '';
     }
 
     /**
@@ -289,7 +288,7 @@ trait TransactionShardingTrait
          * @var SPDO $db
          */
         foreach ($useDatabaseArr as $db) {
-            list($res, $statement) = static::exec($db, "xa end $xid;");
+            list($res, $statement) = static::exec($db, "xa end '$xid';");
             if (empty($res)) {
                 $this->_sqlErrors = $statement->errorInfo();
                 return false;

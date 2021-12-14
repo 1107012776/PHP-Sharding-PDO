@@ -25,7 +25,8 @@ trait SoftXaTrait
      */
     public function getXid()
     {
-        return $this->dao->getXid();
+        $xid = uniqid('xid');
+        return $xid;
     }
 
     /**

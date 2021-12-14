@@ -69,6 +69,7 @@ class IntegrationTest extends TestCase
         $this->testRightJoin();
         $this->testOrderByJoin();
         $this->testGroupByJoin();
+        $this->testXaTransaction();  //xa事务测试
     }
 
     /**
@@ -640,7 +641,8 @@ class IntegrationTest extends TestCase
     /**
      * Join model的renew操作
      */
-    public function testRenewJoin(){
+    public function testRenewJoin()
+    {
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
         $articleModel->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
@@ -690,7 +692,8 @@ class IntegrationTest extends TestCase
      * xa 事务测试
      * @throws \Exception
      */
-    public function testXaTransaction(){
+    public function testXaTransaction()
+    {
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
         $data = [
             'article_descript' => '测试数据article_descript',
@@ -713,14 +716,11 @@ class IntegrationTest extends TestCase
         $articleModel->prepareXa();
         $articleModel->commit();
         $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
-        var_dump($articleModel->sqlErrors());
         $this->assertEquals(!empty($row), true);
-
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
         $data['id'] = $this->testGetId(2);
         $articleModel->startTrans($articleModel->getXid());
         $res = $articleModel->renew()->insert($data);
-        var_dump($articleModel->sqlErrors());
         $this->assertEquals(!empty($res), true);
         $articleModel->endXa();
         $articleModel->prepareXa();
