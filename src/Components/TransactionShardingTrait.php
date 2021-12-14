@@ -30,7 +30,7 @@ trait TransactionShardingTrait
     private static $_exeSqlArr = 'transactionSharding_exeSqlArr';  //事务中执行的sql
     private static $_exeSqlXaUniqidFilePath = 'transactionSharding_exeSqlXaUniqidFilePath';  //事务sql文件，用户分布式事务中错误之后的排查
     private static $_exeSqlXaUniqidFilePathArr = 'transactionSharding_exeSqlXaUniqidFilePathArr'; //真实允许中生成的xa文件路径，上面那个非
-    private static $_exeXaXid = 'transactionSharding__exeXaXid'; //xa xid
+    private static $_exeXaXid = 'transactionSharding_exeXaXid'; //xa xid
 
     public function initTrans()
     {
