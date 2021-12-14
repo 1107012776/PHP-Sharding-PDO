@@ -82,6 +82,7 @@ trait TransactionShardingTrait
                 $this->commitXa($db);
             }
         }
+        $this->setXid('');
         $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
         return true;
     }
@@ -109,6 +110,7 @@ trait TransactionShardingTrait
                 $this->rollbackXa($db);
             }
         }
+        $this->setXid('');
         return true;
     }
 
