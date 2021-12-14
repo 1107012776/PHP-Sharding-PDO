@@ -572,9 +572,6 @@ error_reporting(E_ALL); //显示所有错误信息
 ini_set('date.timezone', 'Asia/Shanghai');
 
 use PhpShardingPdo\Common\ConfigEnv;
-use PhpShardingPdo\Test\Migrate\Migrate;
-use PhpShardingPdo\Test\Model\ArticleModel;
-use PhpShardingPdo\Test\Model\UserModel;
 use PHPUnit\Framework\TestCase;
 
 $file_load_path = __DIR__ . '/../../../autoload.php';
