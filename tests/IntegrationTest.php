@@ -722,8 +722,15 @@ class IntegrationTest extends TestCase
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
         $data['id'] = $this->testGetId(2);
         $articleModel->startTrans($articleModel->createXid());
+        $articleModel->startTrans($articleModel->createXid());
         $res = $articleModel->renew()->where(['id' => $row['id']])->delete();
         $this->assertEquals(!empty($res), true);
+        $articleModel->endXa();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
+        $articleModel->prepareXa();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
+        $articleModel->rollback();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $res = $articleModel->renew()->insert($data);
         $this->assertEquals(!empty($res), true);
         $articleModel->endXa();
