@@ -77,7 +77,7 @@ trait ReplaceIntoShardingTrait
         $rowsCount = 0;
         $searchFunc = function ($sql) use (&$statementArr, $bindParams, &$rowsCount) {
             if (!empty($this->_current_exec_db)) {  //有找到具体的库
-                self::setUseDatabaseArr($this->_current_exec_db);
+                $this->setUseDatabaseArr($this->_current_exec_db);
                 /**
                  * @var \PDOStatement $statement
                  */

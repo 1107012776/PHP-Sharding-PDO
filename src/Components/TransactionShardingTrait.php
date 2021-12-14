@@ -13,6 +13,7 @@ namespace PhpShardingPdo\Components;
 
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Core\ShardingPdoContext;
+use PhpShardingPdo\Core\SPDO;
 
 
 /**
@@ -29,6 +30,7 @@ trait TransactionShardingTrait
     private static $_exeSqlArr = 'transactionSharding_exeSqlArr';  //事务中执行的sql
     private static $_exeSqlXaUniqidFilePath = 'transactionSharding_exeSqlXaUniqidFilePath';  //事务sql文件，用户分布式事务中错误之后的排查
     private static $_exeSqlXaUniqidFilePathArr = 'transactionSharding_exeSqlXaUniqidFilePathArr'; //真实允许中生成的xa文件路径，上面那个非
+    private static $_exeXaXid = 'transactionSharding__exeXaXid'; //xa xid
 
     public function initTrans()
     {
@@ -37,6 +39,7 @@ trait TransactionShardingTrait
         ShardingPdoContext::setValue(self::$_exeSqlArr, []);
         ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);
         ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePath, '');
+        ShardingPdoContext::setValue(self::$_exeXaXid, '');
     }
 
     /**
@@ -44,10 +47,11 @@ trait TransactionShardingTrait
      * @access public
      * @return void
      */
-    public function startTrans()
+    public function startTrans($xid = '')
     {
         if (ShardingPdoContext::getValue(self::$_startTransCount) <= 0) {  //发现是第一次开启事务，而非嵌套
             ShardingPdoContext::setValue(self::$_exeSqlArr, []);  //在事务开启前，清理旧的sql执行记录
+            $this->setXid($xid);
         }
         ShardingPdoContext::incrValue(self::$_startTransCount);
         return;
@@ -72,8 +76,13 @@ trait TransactionShardingTrait
         foreach ($useDatabaseArr as $db) {
             ShardingPdoContext::array_shift(self::$_useDatabaseArr);
 //          throw new \Exception('中断则事务异常，产生xa日志');
-            $db->commit();
+            if (empty($this->getXid())) {
+                $db->commit();
+            } else {
+                $this->commitXa($db);
+            }
         }
+        $this->setXid('');
         $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
         return true;
     }
@@ -95,8 +104,14 @@ trait TransactionShardingTrait
          */
         foreach ($useDatabaseArr as $db) {
             ShardingPdoContext::array_shift(self::$_useDatabaseArr);
-            $db->rollBack();
+            if (empty($this->getXid())) {
+                $db->rollBack();
+            } else {
+                $this->rollbackXa($db);
+            }
         }
+        $this->setXid('');
+        $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
         return true;
     }
 
@@ -110,10 +125,10 @@ trait TransactionShardingTrait
 
     /**
      * 设置使用的数据库pdo
+     * @param \PDO $db
      * @return array|boolean
-     * @var \PDO $db
      */
-    public static function setUseDatabaseArr($db)
+    public function setUseDatabaseArr($db)
     {
         if (ShardingPdoContext::getValue(self::$_startTransCount) <= 0) {  //未开启事务
             return false;
@@ -121,8 +136,24 @@ trait TransactionShardingTrait
         if (in_array($db, self::getUseDatabaseArr())) {
             return self::getUseDatabaseArr();
         }
-        $db->beginTransaction();
         ShardingPdoContext::array_push(self::$_useDatabaseArr, $db);
+        /**
+        * @var SPDO $db
+        */
+        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        if (empty($xid)) {
+            $db->beginTransaction();
+        } else {
+            $xidStr = $xid.$db->getDatabaseName();
+            /**
+             * @var SPDO $db
+             */
+            list($res, $statement) = static::exec($db, "xa start '$xidStr';");
+            if (empty($res)) {
+                $this->_sqlErrors[] = $statement->errorInfo();
+                return false;
+            }
+        }
         return ShardingPdoContext::getValue(self::$_useDatabaseArr);
     }
 
@@ -161,6 +192,7 @@ trait TransactionShardingTrait
         ShardingPdoContext::array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
         file_put_contents($filePath, $log . PHP_EOL . 'END' . PHP_EOL, FILE_APPEND);
         ShardingPdoContext::setValue(self::$_exeSqlArr, []);
+
     }
 
     /**
@@ -223,5 +255,144 @@ trait TransactionShardingTrait
             @unlink($filePath);
         }
         ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);
+    }
+
+
+    /**
+     * 获取xid
+     */
+    public function getXid()
+    {
+        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        if (!empty($xid)) {
+            return $xid;
+        }
+        return '';
+    }
+
+    /**
+     * 设置xid
+     * @param $setXid
+     * @return string
+     */
+    public function setXid($setXid = '')
+    {
+        ShardingPdoContext::setValue(self::$_exeXaXid, $setXid);
+        return $setXid;
+    }
+
+    /**
+     * xa将事务置于IDLE状态，表示事务内的SQL操作完成
+     */
+    public function endXa()
+    {
+        $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
+        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        /**
+         * @var SPDO $db
+         */
+        foreach ($useDatabaseArr as $index => $db) {
+            $xidStr = $xid.$db->getDatabaseName();
+            list($res, $statement) = static::exec($db, "xa end '{$xidStr}';");
+            if (empty($res)) {
+                $this->_sqlErrors[] = $statement->errorInfo();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * xa预提交
+     */
+    public function prepareXa()
+    {
+        $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
+        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        /**
+         *
+         * @var SPDO $db
+         */
+        foreach ($useDatabaseArr as $db) {
+            $xidStr = $xid.$db->getDatabaseName();
+            list($res, $statement) = static::exec($db, "xa prepare '$xidStr';");
+            if (empty($res)) {
+                $this->_sqlErrors[] = $statement->errorInfo();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function commitXa($db)
+    {
+        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        /**
+         * @var SPDO $db
+         */
+        $xidStr = $xid.$db->getDatabaseName();
+        list($res, $statement) = static::exec($db, sprintf("xa commit '%s';", $xidStr));
+        if (empty($res)) {
+            $this->_sqlErrors[] = $statement->errorInfo();
+            return false;
+        }
+        return true;
+    }
+
+    public function rollbackXa($db)
+    {
+        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        /**
+         * @var SPDO $db
+         */
+        $xidStr = $xid.$db->getDatabaseName();
+        list($res, $statement) = static::exec($db, sprintf("xa rollback '%s';", $xidStr));
+        if (empty($res)) {
+            $this->_sqlErrors[] = $statement->errorInfo();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 查看MySQL中存在的PREPARED状态的xa事务
+     */
+    public function recover()
+    {
+        $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
+        $data = [];
+        /**
+         * @var SPDO $db
+         */
+        foreach ($useDatabaseArr as $db) {
+            list($res, $statement) = static::exec($db, 'xa recover;');
+            /**
+             * @var \PDOStatement $statement
+             */
+            if (empty($res)) {
+                $this->_sqlErrors[] = $statement->errorInfo();
+                return false;
+            }
+            $data[$db->getDsn()] = $statement->fetchAll();
+        }
+        return $data;
+    }
+
+    /**
+     * @param SPDO $db
+     * @param $sql
+     * @return array
+     */
+    public static function exec(SPDO $db, $sql)
+    {
+        $statement = $db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+        /**
+         * @var \PDOStatement $statement
+         */
+        $res = $statement->execute();
+        if (empty($res)) {
+            return [false, $statement];
+        }
+        return [true, $statement];
     }
 }

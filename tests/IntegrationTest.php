@@ -69,6 +69,7 @@ class IntegrationTest extends TestCase
         $this->testRightJoin();
         $this->testOrderByJoin();
         $this->testGroupByJoin();
+        $this->testXaTransaction();  //xa事务测试
     }
 
     /**
@@ -640,7 +641,8 @@ class IntegrationTest extends TestCase
     /**
      * Join model的renew操作
      */
-    public function testRenewJoin(){
+    public function testRenewJoin()
+    {
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
         $articleModel->alias('ar');
         $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
@@ -684,6 +686,48 @@ class IntegrationTest extends TestCase
         $this->assertEquals(isset($list[0]['id']) && $list[0]['id'] == 4, true);
         $this->assertEquals(isset($list[0]['a']) && $list[0]['a'] == 3, true);
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
+    }
+
+    /**
+     * xa 事务测试
+     */
+    public function testXaTransaction()
+    {
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+        $data = [
+            'article_descript' => 'xa测试数据article_descript',
+            'article_img' => '/upload/2021110816311943244.jpg',
+            'article_keyword' => 'xa测试数据article_keyword',
+            'article_title' => $this->article_title2,
+            'author' => '学者',
+            'cate_id' => 3,
+            'content' => '<p>xa测试数据</p><br/>',
+            'content_md' => 'xa测试数据',
+            'create_time' => date('Y-m-d H:i:s'),
+            'update_time' => date('Y-m-d H:i:s'),
+            'user_id' => $this->testUserId(),
+        ];
+        $data['id'] = $this->testGetId(2);
+        $articleModel->startTrans($articleModel->createXid());
+        $res = $articleModel->renew()->insert($data);
+        $this->assertEquals(!empty($res), true);
+        $articleModel->endXa();
+        $articleModel->prepareXa();
+        $articleModel->commit();
+        $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
+        $this->assertEquals(!empty($row), true);
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+        $data['id'] = $this->testGetId(2);
+        $articleModel->startTrans($articleModel->createXid());
+        $res = $articleModel->renew()->where(['id' => $row['id']])->delete();
+        $this->assertEquals(!empty($res), true);
+        $res = $articleModel->renew()->insert($data);
+        $this->assertEquals(!empty($res), true);
+        $articleModel->endXa();
+        $articleModel->prepareXa();
+        $articleModel->rollback();
+        $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
+        $this->assertEquals(empty($row), true);
     }
 }
 

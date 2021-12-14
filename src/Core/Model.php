@@ -30,7 +30,7 @@ class Model
     /**
      * @var ShardingPdo $dao
      */
-    private $dao;
+    protected $dao;
 
     /**
      * Model constructor.
@@ -190,9 +190,9 @@ class Model
      * @access public
      * @return void
      */
-    public function startTrans()
+    public function startTrans($xid = '')
     {
-        $this->dao->startTrans();
+        $this->dao->startTrans($xid);
         return;
     }
 
