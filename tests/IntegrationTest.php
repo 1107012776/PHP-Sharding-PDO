@@ -712,8 +712,11 @@ class IntegrationTest extends TestCase
         $res = $articleModel->renew()->insert($data);
         $this->assertEquals(!empty($res), true);
         $articleModel->endXa();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $articleModel->prepareXa();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $articleModel->commit();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
         $this->assertEquals(!empty($row), true);
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
@@ -724,8 +727,11 @@ class IntegrationTest extends TestCase
         $res = $articleModel->renew()->insert($data);
         $this->assertEquals(!empty($res), true);
         $articleModel->endXa();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $articleModel->prepareXa();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $articleModel->rollback();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
         $this->assertEquals(empty($row), true);
     }
