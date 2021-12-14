@@ -63,6 +63,7 @@ class IntegrationCoroutineTest extends IntegrationTest
             $this->testRightJoin();
             $this->testOrderByJoin();
             $this->testGroupByJoin();
+            $this->testXaTransaction();  //xa事务测试
         });
         \Swoole\Event::wait(); //https://wiki.swoole.com/wiki/page/1081.html
     }
