@@ -695,14 +695,14 @@ class IntegrationTest extends TestCase
     {
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
         $data = [
-            'article_descript' => '测试数据article_descript',
+            'article_descript' => 'xa测试数据article_descript',
             'article_img' => '/upload/2021110816311943244.jpg',
-            'article_keyword' => '测试数据article_keyword',
+            'article_keyword' => 'xa测试数据article_keyword',
             'article_title' => $this->article_title2,
             'author' => '学者',
             'cate_id' => 3,
-            'content' => '<p>测试数据</p><br/>',
-            'content_md' => '测试数据',
+            'content' => '<p>xa测试数据</p><br/>',
+            'content_md' => 'xa测试数据',
             'create_time' => "2021-11-08 16:31:20",
             'update_time' => "2021-11-08 16:31:20",
             'user_id' => $this->testUserId(),
@@ -719,6 +719,8 @@ class IntegrationTest extends TestCase
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
         $data['id'] = $this->testGetId(2);
         $articleModel->startTrans($articleModel->createXid());
+        $res = $articleModel->renew()->where(['id' => $row['id']])->delete();
+        $this->assertEquals(!empty($res), true);
         $res = $articleModel->renew()->insert($data);
         $this->assertEquals(!empty($res), true);
         $articleModel->endXa();
