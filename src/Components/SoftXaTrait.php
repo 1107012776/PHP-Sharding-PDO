@@ -9,38 +9,46 @@
  */
 
 namespace PhpShardingPdo\Components;
+
+use PhpShardingPdo\Core\ShardingPdo;
+
 /**
  * Xa事务
  * Class SoftXaTrait
  * @package PhpShardingPdo\Components
+ * @property ShardingPdo $dao
  */
 trait SoftXaTrait
 {
     /**
      * 获取xid
      */
-    public function getXid(){
-
+    public function getXid()
+    {
+        return $this->dao->getXid();
     }
 
     /**
      * xa将事务置于IDLE状态，表示事务内的SQL操作完成
      */
-    public function endXa(){
-
+    public function endXa()
+    {
+        return $this->dao->endXa();
     }
 
     /**
      * xa预提交
      */
-    public function prepareXa(){
-
+    public function prepareXa()
+    {
+        return $this->dao->prepareXa();
     }
 
     /**
      * 查看MySQL中存在的PREPARED状态的xa事务
      */
-    public function recover(){
-
+    public function recover()
+    {
+        return $this->dao->recover();
     }
 }

@@ -133,14 +133,18 @@ trait TransactionShardingTrait
         if (in_array($db, self::getUseDatabaseArr())) {
             return self::getUseDatabaseArr();
         }
-        $db->beginTransaction();
+
         $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
-        /**
-         * @var SPDO $db
-         */
-        list($res, $statement) = static::exec($db, 'xa start ' . $xid);
-        if (empty($res)) {
-            return false;
+        if(empty($xid)){
+            $db->beginTransaction();
+        }else{
+            /**
+             * @var SPDO $db
+             */
+            list($res, $statement) = static::exec($db, 'xa start ' . $xid);
+            if (empty($res)) {
+                return false;
+            }
         }
         ShardingPdoContext::array_push(self::$_useDatabaseArr, $db);
         return ShardingPdoContext::getValue(self::$_useDatabaseArr);

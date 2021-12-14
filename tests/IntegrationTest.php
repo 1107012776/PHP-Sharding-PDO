@@ -685,5 +685,31 @@ class IntegrationTest extends TestCase
         $this->assertEquals(isset($list[0]['a']) && $list[0]['a'] == 3, true);
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
     }
+
+    public function testXaTransaction(){
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+        $data = [
+            'article_descript' => '测试数据article_descript',
+            'article_img' => '/upload/2021110816311943244.jpg',
+            'article_keyword' => '测试数据article_keyword',
+            'article_title' => $this->article_title2,
+            'author' => '学者',
+            'cate_id' => 3,
+            'content' => '<p>测试数据</p><br/>',
+            'content_md' => '测试数据',
+            'create_time' => "2021-11-08 16:31:20",
+            'update_time' => "2021-11-08 16:31:20",
+            'user_id' => $this->testUserId(),
+        ];
+        $data['id'] = $this->testGetId(2);
+        $articleModel->startTrans($articleModel->getXid());
+        $res = $articleModel->renew()->insert($data);
+        $this->assertEquals(!empty($res), true);
+        $articleModel->endXa();
+        $articleModel->prepareXa();
+        $articleModel->commit();
+        $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
+        $this->assertEquals(!empty($row), true);
+    }
 }
 

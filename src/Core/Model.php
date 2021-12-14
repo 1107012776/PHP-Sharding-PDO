@@ -30,7 +30,7 @@ class Model
     /**
      * @var ShardingPdo $dao
      */
-    private $dao;
+    protected $dao;
 
     /**
      * Model constructor.
