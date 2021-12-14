@@ -27,7 +27,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
     - [删除](#删除)
   - [4.Join用法](#4Join用法)  
   
-  - [5.Mysql使用Xa](#5Mysql的Xa用法)  
+  - [5.XA用法](#XA用法)  
   
 # 环境要求
 - PHP >= 7.2
@@ -562,78 +562,47 @@ class IntegrationTest extends TestCase
 }
 ```
 
-### 5.Mysql的Xa用法
+### 5.XA用法
 ```php
 <?php
-namespace PhpShardingPdo\Test;
-ini_set("display_errors", "On");
 
-error_reporting(E_ALL); //显示所有错误信息
-ini_set('date.timezone', 'Asia/Shanghai');
-
-use PhpShardingPdo\Common\ConfigEnv;
-use PHPUnit\Framework\TestCase;
-
-$file_load_path = __DIR__ . '/../../../autoload.php';
-if (file_exists($file_load_path)) {
-    require_once $file_load_path;
-} else {
-    $vendor = __DIR__ . '/../vendor/autoload.php';
-    require_once $vendor;
-}
-
-ConfigEnv::loadFile(dirname(__FILE__) . '/Config/.env');  //加载配置
-
-/**
-* @method assertEquals($a, $b)
-*/
-class IntegrationTest extends TestCase
-{
-    /**
-     * xa 事务测试
-     */
-    public function testXaTransaction()
-    {
-        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
-        $data = [
-            'article_descript' => 'xa测试数据article_descript',
-            'article_img' => '/upload/2021110816311943244.jpg',
-            'article_keyword' => 'xa测试数据article_keyword',
-            'article_title' => $this->article_title2,
-            'author' => '学者',
-            'cate_id' => 3,
-            'content' => '<p>xa测试数据</p><br/>',
-            'content_md' => 'xa测试数据',
-            'create_time' => date('Y-m-d H:i:s'),
-            'update_time' => date('Y-m-d H:i:s'),
-            'user_id' => $this->testUserId(),
-        ];
-        $data['id'] = $this->testGetId(2);
-        $articleModel->startTrans($articleModel->createXid());
-        $res = $articleModel->renew()->insert($data);
-        $this->assertEquals(!empty($res), true);
-        $articleModel->endXa();
-        $articleModel->prepareXa();
-        $articleModel->commit();
-        $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
-        $this->assertEquals(!empty($row), true);
-        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
-        $data['id'] = $this->testGetId(2);
-        $articleModel->startTrans($articleModel->createXid());
-        $res = $articleModel->renew()->where(['id' => $row['id']])->delete();
-        $this->assertEquals(!empty($res), true);
-        $res = $articleModel->renew()->insert($data);
-        $this->assertEquals(!empty($res), true);
-        $articleModel->endXa();
-        $articleModel->prepareXa();
-        $articleModel->rollback();
-        $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
-        $this->assertEquals(empty($row), true);
-    }
-}
+$articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+$data = [
+    'article_descript' => 'xa测试数据article_descript',
+    'article_img' => '/upload/2021110816311943244.jpg',
+    'article_keyword' => 'xa测试数据article_keyword',
+    'article_title' => $this->article_title2,
+    'author' => '学者',
+    'cate_id' => 3,
+    'content' => '<p>xa测试数据</p><br/>',
+    'content_md' => 'xa测试数据',
+    'create_time' => date('Y-m-d H:i:s'),
+    'update_time' => date('Y-m-d H:i:s'),
+    'user_id' => $this->testUserId(),
+];
+$data['id'] = $this->testGetId(2);
+$articleModel->startTrans($articleModel->createXid());
+$res = $articleModel->renew()->insert($data);
+$this->assertEquals(!empty($res), true);
+$articleModel->endXa();
+$articleModel->prepareXa();
+$articleModel->commit();
+$row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
+$this->assertEquals(!empty($row), true);
+$articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+$data['id'] = $this->testGetId(2);
+$articleModel->startTrans($articleModel->createXid());
+$res = $articleModel->renew()->where(['id' => $row['id']])->delete();
+$this->assertEquals(!empty($res), true);
+$res = $articleModel->renew()->insert($data);
+$this->assertEquals(!empty($res), true);
+$articleModel->endXa();
+$articleModel->prepareXa();
+$articleModel->rollback();
+$row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
+$this->assertEquals(empty($row), true);
 
 ```
-
 # License
 [Apache-2.0](https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE)
 
