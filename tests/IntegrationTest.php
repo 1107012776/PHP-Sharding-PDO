@@ -709,7 +709,7 @@ class IntegrationTest extends TestCase
             'user_id' => $this->testUserId(),
         ];
         $data['id'] = $this->testGetId(2);
-        $articleModel->startTrans($articleModel->getXid());
+        $articleModel->startTrans($articleModel->createXid());
         $res = $articleModel->renew()->insert($data);
         $this->assertEquals(!empty($res), true);
         $articleModel->endXa();
@@ -719,7 +719,7 @@ class IntegrationTest extends TestCase
         $this->assertEquals(!empty($row), true);
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
         $data['id'] = $this->testGetId(2);
-        $articleModel->startTrans($articleModel->getXid());
+        $articleModel->startTrans($articleModel->createXid());
         $res = $articleModel->renew()->insert($data);
         $this->assertEquals(!empty($res), true);
         $articleModel->endXa();

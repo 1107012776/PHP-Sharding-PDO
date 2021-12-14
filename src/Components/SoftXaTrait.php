@@ -23,7 +23,7 @@ trait SoftXaTrait
     /**
      * 获取xid
      */
-    public function getXid()
+    public function createXid()
     {
         $xid = uniqid('xid');
         return $xid;
