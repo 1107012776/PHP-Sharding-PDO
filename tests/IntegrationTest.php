@@ -726,9 +726,7 @@ class IntegrationTest extends TestCase
         $articleModel->endXa();
         $articleModel->prepareXa();
         $articleModel->rollback();
-        var_dump($articleModel->sqlErrors());
         $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
-        var_dump($row);
         $this->assertEquals(empty($row), true);
     }
 }
