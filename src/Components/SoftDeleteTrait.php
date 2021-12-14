@@ -11,7 +11,7 @@
 namespace PhpShardingPdo\Components;
 /**
  * 软删除
- * Class CommonSoftDeleteTrait
+ * Class SoftDeleteTrait
  * @package PhpShardingPdo\Components
  */
 trait SoftDeleteTrait
