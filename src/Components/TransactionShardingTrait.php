@@ -137,14 +137,18 @@ trait TransactionShardingTrait
             return self::getUseDatabaseArr();
         }
         ShardingPdoContext::array_push(self::$_useDatabaseArr, $db);
+        /**
+        * @var SPDO $db
+        */
         $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
         if (empty($xid)) {
             $db->beginTransaction();
         } else {
+            $xidStr = $xid.$db->getDatabaseName();
             /**
              * @var SPDO $db
              */
-            list($res, $statement) = static::exec($db, "xa start '$xid';");
+            list($res, $statement) = static::exec($db, "xa start '$xidStr';");
             if (empty($res)) {
                 $this->_sqlErrors[] = $statement->errorInfo();
                 return false;
@@ -287,8 +291,9 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        foreach ($useDatabaseArr as $db) {
-            list($res, $statement) = static::exec($db, "xa end '$xid';");
+        foreach ($useDatabaseArr as $index => $db) {
+            $xidStr = $xid.$db->getDatabaseName();
+            list($res, $statement) = static::exec($db, "xa end '{$xidStr}';");
             if (empty($res)) {
                 $this->_sqlErrors[] = $statement->errorInfo();
                 return false;
@@ -309,7 +314,8 @@ trait TransactionShardingTrait
          * @var SPDO $db
          */
         foreach ($useDatabaseArr as $db) {
-            list($res, $statement) = static::exec($db, "xa prepare '$xid';");
+            $xidStr = $xid.$db->getDatabaseName();
+            list($res, $statement) = static::exec($db, "xa prepare '$xidStr';");
             if (empty($res)) {
                 $this->_sqlErrors[] = $statement->errorInfo();
                 return false;
@@ -324,7 +330,8 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        list($res, $statement) = static::exec($db, sprintf("xa commit '%s';", $xid));
+        $xidStr = $xid.$db->getDatabaseName();
+        list($res, $statement) = static::exec($db, sprintf("xa commit '%s';", $xidStr));
         if (empty($res)) {
             $this->_sqlErrors[] = $statement->errorInfo();
             return false;
@@ -338,7 +345,8 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        list($res, $statement) = static::exec($db, sprintf("xa rollback '%s';", $xid));
+        $xidStr = $xid.$db->getDatabaseName();
+        list($res, $statement) = static::exec($db, sprintf("xa rollback '%s';", $xidStr));
         if (empty($res)) {
             $this->_sqlErrors[] = $statement->errorInfo();
             return false;

@@ -703,8 +703,8 @@ class IntegrationTest extends TestCase
             'cate_id' => 3,
             'content' => '<p>xa测试数据</p><br/>',
             'content_md' => 'xa测试数据',
-            'create_time' => "2021-11-08 16:31:20",
-            'update_time' => "2021-11-08 16:31:20",
+            'create_time' => date('Y-m-d H:i:s'),
+            'update_time' => date('Y-m-d H:i:s'),
             'user_id' => $this->testUserId(),
         ];
         $data['id'] = $this->testGetId(2);
@@ -726,7 +726,9 @@ class IntegrationTest extends TestCase
         $articleModel->endXa();
         $articleModel->prepareXa();
         $articleModel->rollback();
+        var_dump($articleModel->sqlErrors());
         $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
+        var_dump($row);
         $this->assertEquals(empty($row), true);
     }
 }
