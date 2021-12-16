@@ -34,6 +34,7 @@ class SPDO extends \PDO
          * @var SPDO $db
          */
         $dbArr = explode(';', $this->getDsn());
+        $dbArr = explode('=', $dbArr[1]);
         return $dbArr[1];
     }
 }
