@@ -744,7 +744,7 @@ class IntegrationTest extends TestCase
     }
 
     /**
-     * xa 事务测试
+     * xa 事务测试Recover
      */
     public function testXaTransactionRecover()
     {
