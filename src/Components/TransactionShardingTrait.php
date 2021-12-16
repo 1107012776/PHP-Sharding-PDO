@@ -154,13 +154,15 @@ trait TransactionShardingTrait
         if (empty($xid)) {
             $db->beginTransaction();
         } else {
-            $xidStr = $xid . $db->getDatabaseName();
+            $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
+            $sql = "xa start '$xidStr'";
+            $this->_addExeSql($sql, [], $db);
             /**
              * @var SPDO $db
              */
-            list($res, $statement) = static::exec($db, "xa start '$xidStr';");
+            list($res, $statement) = static::exec($db, $sql);
             if (empty($res)) {
-                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
                 return false;
             }
         }
@@ -305,10 +307,12 @@ trait TransactionShardingTrait
          * @var SPDO $db
          */
         foreach ($useDatabaseArr as $index => $db) {
-            $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid .'_'. $db->getDatabaseName() : $xid;
-            list($res, $statement) = static::exec($db, "xa end '{$xidStr}';");
+            $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
+            $sql = "xa end '{$xidStr}'";
+            $this->_addExeSql($sql, [], $db);
+            list($res, $statement) = static::exec($db, $sql);
             if (empty($res)) {
-                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
                 return false;
             }
         }
@@ -330,10 +334,12 @@ trait TransactionShardingTrait
          * @var SPDO $db
          */
         foreach ($useDatabaseArr as $db) {
-            $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid .'_'. $db->getDatabaseName() : $xid;
-            list($res, $statement) = static::exec($db, "xa prepare '$xidStr';");
+            $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
+            $sql = "xa prepare '$xidStr'";
+            $this->_addExeSql($sql, [], $db);
+            list($res, $statement) = static::exec($db, $sql);
             if (empty($res)) {
-                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
                 return false;
             }
         }
@@ -346,10 +352,12 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid  .'_'.  $db->getDatabaseName() : $xid;
-        list($res, $statement) = static::exec($db, sprintf("xa commit '%s';", $xidStr));
+        $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
+        $sql = sprintf("xa commit '%s'", $xidStr);
+        $this->_addExeSql($sql, [], $db);
+        list($res, $statement) = static::exec($db, $sql);
         if (empty($res)) {
-            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
             return false;
         }
         return true;
@@ -361,10 +369,12 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid  .'_'.  $db->getDatabaseName() : $xid;
-        list($res, $statement) = static::exec($db, sprintf("xa rollback '%s';", $xidStr));
+        $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
+        $sql = sprintf("xa rollback '%s'", $xidStr);
+        $this->_addExeSql($sql, [], $db);
+        list($res, $statement) = static::exec($db, $sql);
         if (empty($res)) {
-            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
             return false;
         }
         return true;
@@ -383,7 +393,7 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        list($res, $statement) = static::exec($db, 'xa recover;');
+        list($res, $statement) = static::exec($db, 'xa recover');
         /**
          * @var \PDOStatement $statement
          */
