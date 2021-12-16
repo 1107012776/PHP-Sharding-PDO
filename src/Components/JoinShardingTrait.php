@@ -37,7 +37,7 @@ trait JoinShardingTrait
     {
         $obj = new JoinTablePlan();
         $execTableName = $this->_getQpTableName();
-        if(empty($execTableName)){
+        if (empty($execTableName)) {
             return null;
         }
         $obj->setTableNameAlias($this->getTableAlias());
@@ -114,7 +114,7 @@ trait JoinShardingTrait
      */
     public function addJoinPlanObj(JoinTablePlan $obj)
     {
-        if(empty($obj)){
+        if (empty($obj)) {
             return $this;  //为空则添加无效
         }
         if (in_array($obj, $this->_joinTablePlanObjArr)) {

@@ -60,7 +60,7 @@ trait SelectSearchSharingTrait
                     $res[$key] = $statement->execute($this->_condition_bind);
                     $this->_addSelectSql($sql, $this->_condition_bind, $db);
                     if (empty($res[$key])) {
-                        $this->_sqlErrors[] = $statement->errorInfo();
+                        $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
                     }
                 }
             };
@@ -95,7 +95,7 @@ trait SelectSearchSharingTrait
                 $res = $statement->execute($this->_condition_bind);
                 $this->_addSelectSql($sql, $this->_condition_bind, $this->_current_exec_db);
                 if (empty($res)) {
-                    $this->_sqlErrors[] = $statement->errorInfo();
+                    $this->_sqlErrors[] = [$this->_current_exec_db->getDsn() => $statement->errorInfo()];
                 }
             }
             if (count($statementArr) > 1) {

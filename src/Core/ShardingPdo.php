@@ -382,11 +382,11 @@ class ShardingPdo
                 return null;  //返回这个代表没有规则，则需要全部db扫描了
             }
             $customizeConditionNew = [];
-            foreach ($customizeCondition as $key => $val){
-                strpos($key,'.') !== false && $keyArr = explode('.',$key);
-                if(!empty($keyArr) && $keyArr[0] == $this->getTableAlias()){
+            foreach ($customizeCondition as $key => $val) {
+                strpos($key, '.') !== false && $keyArr = explode('.', $key);
+                if (!empty($keyArr) && $keyArr[0] == $this->getTableAlias()) {
                     $customizeConditionNew[$keyArr[1]] = $val;
-                }else{
+                } else {
                     $customizeConditionNew[$key] = $val;
                 }
             }
@@ -408,7 +408,7 @@ class ShardingPdo
             foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
                     $number = $tableShardingStrategyConfig->getNum($val);
-                }elseif($key == $this->getFieldAlias($name) && !is_array($val)){  //join的情况
+                } elseif ($key == $this->getFieldAlias($name) && !is_array($val)) {  //join的情况
                     $number = $tableShardingStrategyConfig->getNum($val);
                 }
             }
@@ -454,11 +454,11 @@ class ShardingPdo
                 return null;  //返回这个代表没有规则，则需要全部表扫描了
             }
             $customizeConditionNew = [];
-            foreach ($customizeCondition as $key => $val){
-                strpos($key,'.') !== false && $keyArr = explode('.',$key);
-                if(!empty($keyArr) && $keyArr[0] == $this->getTableAlias()){
+            foreach ($customizeCondition as $key => $val) {
+                strpos($key, '.') !== false && $keyArr = explode('.', $key);
+                if (!empty($keyArr) && $keyArr[0] == $this->getTableAlias()) {
                     $customizeConditionNew[$keyArr[1]] = $val;
-                }else{
+                } else {
                     $customizeConditionNew[$key] = $val;
                 }
             }
@@ -479,7 +479,7 @@ class ShardingPdo
             foreach ($this->_condition as $key => $val) {
                 if ($key == $name && !is_array($val)) {
                     $number = $tableShardingStrategyConfig->getNum($val);
-                }elseif($key == $this->getFieldAlias($name) && !is_array($val)){  //join的情况
+                } elseif ($key == $this->getFieldAlias($name) && !is_array($val)) {  //join的情况
                     $number = $tableShardingStrategyConfig->getNum($val);
                 }
             }

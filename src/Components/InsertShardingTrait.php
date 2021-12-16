@@ -71,7 +71,7 @@ trait InsertShardingTrait
                 $rowsCount += $statement->rowCount();
                 $this->_last_insert_id = $this->_current_exec_db->lastInsertId();
                 if (empty($res)) {
-                    $this->_sqlErrors[] = $statement->errorInfo();
+                    $this->_sqlErrors[] = [$this->_current_exec_db->getDsn() => $statement->errorInfo()];
                 }
                 return $res;
             }

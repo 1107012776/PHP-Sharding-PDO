@@ -28,11 +28,12 @@ class SPDO extends \PDO
         return $this->dsn;
     }
 
-    public function getDatabaseName(){
+    public function getDatabaseName()
+    {
         /**
          * @var SPDO $db
          */
-        $dbArr = explode(';',$this->getDsn());
+        $dbArr = explode(';', $this->getDsn());
         return $dbArr[1];
     }
 }

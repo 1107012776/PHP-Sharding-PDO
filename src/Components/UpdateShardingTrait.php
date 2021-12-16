@@ -66,7 +66,7 @@ trait UpdateShardingTrait
                 $this->_addExeSql($sql, $bindParams, $this->_current_exec_db);
                 $rowsCount += $statement->rowCount();
                 if (empty($res)) {
-                    $this->_sqlErrors[] = $statement->errorInfo();
+                    $this->_sqlErrors[] = [$this->_current_exec_db->getDsn() => $statement->errorInfo()];
                 }
                 return $res;
             }
@@ -83,7 +83,7 @@ trait UpdateShardingTrait
                 $this->_addExeSql($sql, $bindParams, $db);
                 $rowsCount += $statement->rowCount();
                 if (empty($res[$key])) {
-                    $this->_sqlErrors[] = $statement->errorInfo();
+                    $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
                 }
             }
             return !in_array(false, $res) ? true : false;

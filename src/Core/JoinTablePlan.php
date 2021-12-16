@@ -94,13 +94,13 @@ class JoinTablePlan
             return '';
         }
         if (!empty($this->_join_condition_str)) {
-            return  $this->_join_condition_str;
+            return $this->_join_condition_str;
         }
         foreach ($this->_join_condition as $key => $val) {  //join on 的形式
             $this->_bindOn($key, $val);
         }
         if (!empty($this->_join_condition_str)) {
-            return  $this->_join_condition_str;
+            return $this->_join_condition_str;
         }
         return '';
     }

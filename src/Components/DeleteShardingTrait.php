@@ -48,7 +48,7 @@ trait DeleteShardingTrait
                     $statement = $statementArr[] = $db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                     $res[$key] = $statement->execute($this->_condition_bind);
                     if (empty($res[$key])) {
-                        $this->_sqlErrors[] = $statement->errorInfo();
+                        $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
                     }
                     $this->_addExeSql($sql, $this->_condition_bind, $db);
                 }
@@ -79,7 +79,7 @@ trait DeleteShardingTrait
                 $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($this->_condition_bind);
                 if (empty($res)) {
-                    $this->_sqlErrors[] = $statement->errorInfo();
+                    $this->_sqlErrors[] = [$this->_current_exec_db->getDsn() => $statement->errorInfo()];
                 }
                 $this->_addExeSql($sql, $this->_condition_bind, $this->_current_exec_db);
             }
