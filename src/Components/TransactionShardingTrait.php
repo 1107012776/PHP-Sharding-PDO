@@ -70,6 +70,7 @@ trait TransactionShardingTrait
         }
         $this->_prepareSubmit(); //预提交事务
         $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
+        $resArr = [];
         /**
          * @var \PDO $db
          */
@@ -79,14 +80,15 @@ trait TransactionShardingTrait
             if (empty($this->getXid())) {
                 $db->commit();
             } else {
-                $res = $this->commitXa($db);
-                if(empty($res)){
-                    return false;
-                }
+                $resArr[] = $this->commitXa($db);
             }
         }
         $this->setXid('');
-        $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
+        if (!in_array(false, $resArr)) {
+            $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
+        } else {
+            return false;
+        }
         return true;
     }
 
@@ -102,6 +104,7 @@ trait TransactionShardingTrait
             return true;
         }
         $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
+        $resArr = [];
         /**
          * @var \PDO $db
          */
@@ -110,14 +113,15 @@ trait TransactionShardingTrait
             if (empty($this->getXid())) {
                 $db->rollBack();
             } else {
-                $res = $this->rollbackXa($db);
-                if(empty($res)){
-                    return false;
-                }
+                $resArr[] = $this->rollbackXa($db);
             }
         }
         $this->setXid('');
-        $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
+        if (!in_array(false, $resArr)) {
+            $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
+        } else {
+            return false;
+        }
         return true;
     }
 
@@ -144,19 +148,19 @@ trait TransactionShardingTrait
         }
         ShardingPdoContext::array_push(self::$_useDatabaseArr, $db);
         /**
-        * @var SPDO $db
-        */
+         * @var SPDO $db
+         */
         $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
         if (empty($xid)) {
             $db->beginTransaction();
         } else {
-            $xidStr = $xid.$db->getDatabaseName();
+            $xidStr = $xid . $db->getDatabaseName();
             /**
              * @var SPDO $db
              */
             list($res, $statement) = static::exec($db, "xa start '$xidStr';");
             if (empty($res)) {
-                $this->_sqlErrors[] = $statement->errorInfo();
+                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
                 return false;
             }
         }
@@ -301,10 +305,10 @@ trait TransactionShardingTrait
          * @var SPDO $db
          */
         foreach ($useDatabaseArr as $index => $db) {
-            $xidStr = $xid.$db->getDatabaseName();
+            $xidStr = $xid . $db->getDatabaseName();
             list($res, $statement) = static::exec($db, "xa end '{$xidStr}';");
             if (empty($res)) {
-                $this->_sqlErrors[] = $statement->errorInfo();
+                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
                 return false;
             }
         }
@@ -326,10 +330,10 @@ trait TransactionShardingTrait
          * @var SPDO $db
          */
         foreach ($useDatabaseArr as $db) {
-            $xidStr = $xid.$db->getDatabaseName();
+            $xidStr = $xid . $db->getDatabaseName();
             list($res, $statement) = static::exec($db, "xa prepare '$xidStr';");
             if (empty($res)) {
-                $this->_sqlErrors[] = $statement->errorInfo();
+                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
                 return false;
             }
         }
@@ -342,10 +346,10 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        $xidStr = $xid.$db->getDatabaseName();
+        $xidStr = $xid . $db->getDatabaseName();
         list($res, $statement) = static::exec($db, sprintf("xa commit '%s';", $xidStr));
         if (empty($res)) {
-            $this->_sqlErrors[] = $statement->errorInfo();
+            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
             return false;
         }
         return true;
@@ -357,10 +361,10 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        $xidStr = $xid.$db->getDatabaseName();
+        $xidStr = $xid . $db->getDatabaseName();
         list($res, $statement) = static::exec($db, sprintf("xa rollback '%s';", $xidStr));
         if (empty($res)) {
-            $this->_sqlErrors[] = $statement->errorInfo();
+            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
             return false;
         }
         return true;
@@ -382,7 +386,7 @@ trait TransactionShardingTrait
              * @var \PDOStatement $statement
              */
             if (empty($res)) {
-                $this->_sqlErrors[] = $statement->errorInfo();
+                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
                 return false;
             }
             $data[$db->getDsn()] = $statement->fetchAll();
