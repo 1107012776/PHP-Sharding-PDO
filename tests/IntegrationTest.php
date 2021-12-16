@@ -742,5 +742,20 @@ class IntegrationTest extends TestCase
         $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
         $this->assertEquals(empty($row), true);
     }
+
+    /**
+     * xa 事务测试
+     */
+    public function testXaTransactionRecover()
+    {
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+        $res = $articleModel->where(['user_id' => 1, 'cate_id' => 1])->recover();
+        var_dump($res['list']['0']['data']);
+        $articleModel->setXid($res['list']['0']['data']);
+        $res = $articleModel->commit();
+        var_dump($res, $articleModel->sqlErrors());
+    }
+
+
 }
 
