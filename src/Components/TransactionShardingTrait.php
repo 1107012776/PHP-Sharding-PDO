@@ -191,9 +191,13 @@ trait TransactionShardingTrait
             return false;
         }
         ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
+        $sqlArr = ShardingPdoContext::getValue(self::$_exeSqlArr);
+        if(empty($sqlArr)){
+            return false;
+        }
         $log = 'START' . PHP_EOL;
         $log .= PHP_EOL;
-        foreach (ShardingPdoContext::getValue(self::$_exeSqlArr) as $sql) {
+        foreach ($sqlArr as $sql) {
             $log .= $sql;
         }
         $uniqid = spl_object_hash($this) . uniqid();
@@ -204,7 +208,6 @@ trait TransactionShardingTrait
         ShardingPdoContext::array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
         file_put_contents($filePath, $log . PHP_EOL . 'END' . PHP_EOL, FILE_APPEND);
         ShardingPdoContext::setValue(self::$_exeSqlArr, []);
-
     }
 
     /**

@@ -741,7 +741,6 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
         $this->assertEquals(empty($row), true);
-        $this->testXaTransactionRecover();
     }
 
     /**
@@ -772,10 +771,17 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $articleModel->prepareXa();
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
+        unset($articleModel);
         ShardingPdoContext::contextFreed(); //强制释放实例
+        $this->testXaRecover();
+    }
+
+    public function testXaRecover(){
+        $xid = '213123123213';
         $xid .= '_phpshardingpdo2';
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
         $res = $articleModel->where(['user_id' => 1, 'cate_id' => 1])->recover();
+        var_dump($res);
         $this->assertEquals(!empty($res['list']), true);
         $isset = false;
         foreach ($res['list'] as $item) {
@@ -786,10 +792,10 @@ class IntegrationTest extends TestCase
         $this->assertEquals($isset, true);
         $articleModel->setXid($xid);
         $res = $articleModel->commit();
+        var_dump($articleModel->sqlErrors());
         $this->assertEquals($res, true);
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
     }
-
 
 }
 

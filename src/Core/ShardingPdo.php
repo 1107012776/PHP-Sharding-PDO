@@ -81,7 +81,14 @@ class ShardingPdo
         $this->_bind_index = 0;
         $this->_table_alias = '';  //表别名
         $this->_joinTablePlanObjArr = [];
+        $this->freeExecDb();
+        $this->_current_exec_table = '';
         return $this;
+    }
+
+    public function freeExecDb()
+    {
+        $this->_current_exec_db = null;
     }
 
     /**
@@ -490,5 +497,9 @@ class ShardingPdo
         return $tableShardingStrategyConfig->getFix() . $number;
     }
 
+    public function __destruct()
+    {
+        $this->freeExecDb();
+    }
 
 }
