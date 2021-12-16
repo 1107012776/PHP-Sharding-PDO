@@ -79,7 +79,10 @@ trait TransactionShardingTrait
             if (empty($this->getXid())) {
                 $db->commit();
             } else {
-                $this->commitXa($db);
+                $res = $this->commitXa($db);
+                if(empty($res)){
+                    return false;
+                }
             }
         }
         $this->setXid('');
@@ -107,7 +110,10 @@ trait TransactionShardingTrait
             if (empty($this->getXid())) {
                 $db->rollBack();
             } else {
-                $this->rollbackXa($db);
+                $res = $this->rollbackXa($db);
+                if(empty($res)){
+                    return false;
+                }
             }
         }
         $this->setXid('');
