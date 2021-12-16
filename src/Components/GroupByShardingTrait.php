@@ -51,7 +51,7 @@ trait  GroupByShardingTrait
                 $res[$key] = $statement->execute($this->_condition_bind);
                 $this->_addSelectSql($sql, $this->_condition_bind, $db);
                 if (empty($res[$key])) {
-                    $this->_sqlErrors[] = [$this->_current_exec_db->getDsn() => $statement->errorInfo()];
+                    $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
                 }
             }
             return $res;
