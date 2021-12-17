@@ -741,6 +741,7 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
         $this->assertEquals(empty($row), true);
+        $this->testXaTransactionRecover();
     }
 
     /**
