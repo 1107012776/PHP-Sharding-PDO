@@ -634,7 +634,9 @@ $articleModel->endXa();
 $this->assertEquals(empty($articleModel->sqlErrors()), true);
 $articleModel->prepareXa(); //预提交
 $this->assertEquals(empty($articleModel->sqlErrors()), true);
-\PhpShardingPdo\Core\ShardingPdoContext::contextFreed(); //强制释放实例，做一个断开连接，下面的recover才能使用恢复xa
+ //强制释放实例，做断开当前PDO连接
+ //发现只有断开原始xa session PDO连接，新session才能使用恢复xa commit 或者 xa rollback
+\PhpShardingPdo\Core\ShardingPdoContext::contextFreed();
   
 $xid = '213123123213';
 $xid .= '_phpshardingpdo2';
