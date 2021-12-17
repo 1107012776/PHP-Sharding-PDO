@@ -28,15 +28,15 @@ trait  GroupByShardingTrait
         empty($sqlArr) && $sqlArr = [$sql];
         $statementArr = [];
         $searchFunc = function ($sql) use (&$statementArr) {
-            if (!empty($this->_current_exec_db)) {  //有找到具体的库
+            if (!empty($this->getCurrentExecDb())) {  //有找到具体的库
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $statement = $statementArr[] = $this->getCurrentExecDb()->prepare($sql, array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
                 $res = $statement->execute($this->_condition_bind);
-                $this->_addSelectSql($sql, $this->_condition_bind, $this->_current_exec_db);
+                $this->_addSelectSql($sql, $this->_condition_bind, $this->getCurrentExecDb());
                 if (empty($res)) {
-                    $this->_sqlErrors[] = [$this->_current_exec_db->getDsn() => $statement->errorInfo()];
+                    $this->_sqlErrors[] = [$this->getCurrentExecDb()->getDsn() => $statement->errorInfo()];
                 }
                 return $res;
             }
@@ -56,7 +56,7 @@ trait  GroupByShardingTrait
             }
             return $res;
         };
-        if (count($sqlArr) <= 1 && !empty($this->_current_exec_db)) {  //查找到具体的表和库了
+        if (count($sqlArr) <= 1 && !empty($this->getCurrentExecDb())) {  //查找到具体的表和库了
             $sqlArr[0] = $sqlArr[0] . $this->_limit_str;
         }
         foreach ($sqlArr as $sql) {

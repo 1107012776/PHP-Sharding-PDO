@@ -771,7 +771,6 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $articleModel->prepareXa();
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
-        unset($articleModel);  //该实例有一个PDO实例，所以需要释放
         ShardingPdoContext::contextFreed(); //强制释放实例
         $this->testXaRecover();
     }

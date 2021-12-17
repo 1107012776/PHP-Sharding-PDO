@@ -88,17 +88,15 @@ class ShardingPdo
 
     public function freeExecDb()
     {
-        $this->_current_exec_db = null;
+        $this->_current_exec_db_index = null;
     }
 
     /**
      * @var string
      */
     private $_current_exec_table = '';  //具体执行的表
-    /**
-     * @var \PDO
-     */
-    private $_current_exec_db = ''; //具体执行的库
+
+    private $_current_exec_db_index = null; //具体执行的库 index
 
     /**
      * @param string $configDatabasePdoInstanceMapName
@@ -298,7 +296,7 @@ class ShardingPdo
     {
         $this->clearSqlErrors();
         $this->_insert_data = $data;
-        $this->_current_exec_db = $this->_getQpDb();
+        $this->_getQpDb();
         $this->_current_exec_table = $this->_getQpTableName();
         return $this->_insertSharding();
     }
@@ -316,7 +314,7 @@ class ShardingPdo
     {
         $this->clearSqlErrors();
         $this->_insert_data = $data;
-        $this->_current_exec_db = $this->_getQpDb();
+        $this->_getQpDb();
         $this->_current_exec_table = $this->_getQpTableName();
         return $this->_replaceIntoSharding();
     }
@@ -402,6 +400,7 @@ class ShardingPdo
                 return null;  //返回这个代表没有规则，则需要全部db扫描了
             }
             $index = $tableShardingStrategyConfig->getFix() . $number;
+            $this->_current_exec_db_index = $index;
             return isset($map[$index]) ? $map[$index] : null;
         }
         $name = $tableShardingStrategyConfig->getName();
@@ -428,6 +427,16 @@ class ShardingPdo
             return null;  //返回这个代表没有规则，则需要全部db扫描了
         }
         $index = $tableShardingStrategyConfig->getFix() . $number;
+        $this->_current_exec_db_index = $index;
+        return isset($map[$index]) ? $map[$index] : null;
+    }
+
+    protected function getCurrentExecDb($index = ''){
+        empty($index) && $index = $this->_current_exec_db_index;
+        if(empty($index)){
+            return null;
+        }
+        $map = $this->_databasePdoInstanceMap();
         return isset($map[$index]) ? $map[$index] : null;
     }
 

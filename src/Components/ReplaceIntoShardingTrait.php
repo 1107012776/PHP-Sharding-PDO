@@ -76,18 +76,18 @@ trait ReplaceIntoShardingTrait
         $statementArr = [];
         $rowsCount = 0;
         $searchFunc = function ($sql) use (&$statementArr, $bindParams, &$rowsCount) {
-            if (!empty($this->_current_exec_db)) {  //有找到具体的库
-                $this->setUseDatabaseArr($this->_current_exec_db);
+            if (!empty($this->getCurrentExecDb())) {  //有找到具体的库
+                $this->setUseDatabaseArr($this->getCurrentExecDb());
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
+                $statement = $statementArr[] = $this->getCurrentExecDb()->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($bindParams);
-                $this->_addExeSql($sql, $bindParams, $this->_current_exec_db);
+                $this->_addExeSql($sql, $bindParams, $this->getCurrentExecDb());
                 $rowsCount += $statement->rowCount();
-                $this->_last_insert_id = $this->_current_exec_db->lastInsertId();
+                $this->_last_insert_id = $this->getCurrentExecDb()->lastInsertId();
                 if (empty($res)) {
-                    $this->_sqlErrors[] = [$this->_current_exec_db->getDsn() => $statement->errorInfo()];
+                    $this->_sqlErrors[] = [$this->getCurrentExecDb()->getDsn() => $statement->errorInfo()];
                 }
                 return $res;
             }

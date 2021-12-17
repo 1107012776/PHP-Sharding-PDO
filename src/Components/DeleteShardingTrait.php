@@ -38,7 +38,7 @@ trait DeleteShardingTrait
             $sql = 'delete ' . ' from ' . '`' . $this->_current_exec_table . '`' . $this->_condition_str . $this->_order_str . $this->_limit_str;
         }
         $statementArr = [];
-        if (empty($this->_current_exec_db)) {  //没有找到数据库
+        if (empty($this->getCurrentExecDb())) {  //没有找到数据库
             $deleteFunc = function ($sql) use (&$statementArr) {
                 foreach ($this->_databasePdoInstanceMap() as $key => $db) {
                     /**
@@ -76,12 +76,12 @@ trait DeleteShardingTrait
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
+                $statement = $statementArr[] = $this->getCurrentExecDb()->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($this->_condition_bind);
                 if (empty($res)) {
-                    $this->_sqlErrors[] = [$this->_current_exec_db->getDsn() => $statement->errorInfo()];
+                    $this->_sqlErrors[] = [$this->getCurrentExecDb()->getDsn() => $statement->errorInfo()];
                 }
-                $this->_addExeSql($sql, $this->_condition_bind, $this->_current_exec_db);
+                $this->_addExeSql($sql, $this->_condition_bind, $this->getCurrentExecDb());
             }
             /**
              * @var \PDOStatement $s

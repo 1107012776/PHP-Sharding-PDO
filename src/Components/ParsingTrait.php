@@ -188,7 +188,7 @@ trait ParsingTrait
         if (!empty($this->_field)) {
             $this->_field_str = implode(',', $this->_field);
         }
-        $this->_current_exec_db = $this->_getQpDb();
+        $this->_getQpDb();
         $this->_current_exec_table = $this->_getQpTableName();
     }
 
