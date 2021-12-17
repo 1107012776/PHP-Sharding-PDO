@@ -392,7 +392,9 @@ trait TransactionShardingTrait
         if (empty($db)) {
             return false;
         }
-        ShardingPdoContext::array_push(self::$_useDatabaseArr, $db);
+        if (!in_array($db, self::getUseDatabaseArr())) {
+            ShardingPdoContext::array_push(self::$_useDatabaseArr, $db);
+        }
         /**
          * @var SPDO $db
          */
