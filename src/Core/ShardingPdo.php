@@ -81,17 +81,22 @@ class ShardingPdo
         $this->_bind_index = 0;
         $this->_table_alias = '';  //表别名
         $this->_joinTablePlanObjArr = [];
+        $this->freeExecDb();
+        $this->_current_exec_table = '';
         return $this;
+    }
+
+    public function freeExecDb()
+    {
+        $this->_current_exec_db_index = null;
     }
 
     /**
      * @var string
      */
     private $_current_exec_table = '';  //具体执行的表
-    /**
-     * @var \PDO
-     */
-    private $_current_exec_db = ''; //具体执行的库
+
+    private $_current_exec_db_index = null; //具体执行的库 index
 
     /**
      * @param string $configDatabasePdoInstanceMapName
@@ -291,7 +296,7 @@ class ShardingPdo
     {
         $this->clearSqlErrors();
         $this->_insert_data = $data;
-        $this->_current_exec_db = $this->_getQpDb();
+        $this->_getQpDb();
         $this->_current_exec_table = $this->_getQpTableName();
         return $this->_insertSharding();
     }
@@ -309,7 +314,7 @@ class ShardingPdo
     {
         $this->clearSqlErrors();
         $this->_insert_data = $data;
-        $this->_current_exec_db = $this->_getQpDb();
+        $this->_getQpDb();
         $this->_current_exec_table = $this->_getQpTableName();
         return $this->_replaceIntoSharding();
     }
@@ -369,6 +374,7 @@ class ShardingPdo
         if (empty($this->_tableRuleList[0])) {
             if (count($map) == 1) {  //只有一个数据库，那就是当前
                 $mapValues = array_values($map);
+                $this->_current_exec_db_index = array_keys($map)[0];
                 return $mapValues[0];
             }
             return null;  //返回这个代表没有规则，则需要全部db扫描了
@@ -395,6 +401,7 @@ class ShardingPdo
                 return null;  //返回这个代表没有规则，则需要全部db扫描了
             }
             $index = $tableShardingStrategyConfig->getFix() . $number;
+            $this->_current_exec_db_index = $index;
             return isset($map[$index]) ? $map[$index] : null;
         }
         $name = $tableShardingStrategyConfig->getName();
@@ -416,11 +423,23 @@ class ShardingPdo
         if ($number === null) {
             if (count($map) == 1) {  //只有一个数据库，那就是当前
                 $mapValues = array_values($map);
+                $this->_current_exec_db_index = array_keys($map)[0];
                 return $mapValues[0];
             }
             return null;  //返回这个代表没有规则，则需要全部db扫描了
         }
         $index = $tableShardingStrategyConfig->getFix() . $number;
+        $this->_current_exec_db_index = $index;
+        return isset($map[$index]) ? $map[$index] : null;
+    }
+
+    protected function getCurrentExecDb($index = '')
+    {
+        empty($index) && $index = $this->_current_exec_db_index;
+        if (empty($index)) {
+            return null;
+        }
+        $map = $this->_databasePdoInstanceMap();
         return isset($map[$index]) ? $map[$index] : null;
     }
 
@@ -490,5 +509,9 @@ class ShardingPdo
         return $tableShardingStrategyConfig->getFix() . $number;
     }
 
+    public function __destruct()
+    {
+        $this->freeExecDb();
+    }
 
 }

@@ -110,7 +110,7 @@ trait TransactionShardingTrait
          */
         foreach ($useDatabaseArr as $db) {
             ShardingPdoContext::array_shift(self::$_useDatabaseArr);
-            if (empty($this->getXid())) {
+            if (empty($this->getXid()) && empty($xid)) {
                 $db->rollBack();
             } else {
                 $resArr[] = $this->rollbackXa($db);
@@ -154,13 +154,15 @@ trait TransactionShardingTrait
         if (empty($xid)) {
             $db->beginTransaction();
         } else {
-            $xidStr = $xid . $db->getDatabaseName();
+            $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
+            $sql = "xa start '$xidStr'";
+            $this->_addExeSql($sql, [], $db);
             /**
              * @var SPDO $db
              */
-            list($res, $statement) = static::exec($db, "xa start '$xidStr';");
+            list($res, $statement) = static::exec($db, $sql);
             if (empty($res)) {
-                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
                 return false;
             }
         }
@@ -189,9 +191,13 @@ trait TransactionShardingTrait
             return false;
         }
         ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
+        $sqlArr = ShardingPdoContext::getValue(self::$_exeSqlArr);
+        if (empty($sqlArr)) {
+            return false;
+        }
         $log = 'START' . PHP_EOL;
         $log .= PHP_EOL;
-        foreach (ShardingPdoContext::getValue(self::$_exeSqlArr) as $sql) {
+        foreach ($sqlArr as $sql) {
             $log .= $sql;
         }
         $uniqid = spl_object_hash($this) . uniqid();
@@ -202,7 +208,6 @@ trait TransactionShardingTrait
         ShardingPdoContext::array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
         file_put_contents($filePath, $log . PHP_EOL . 'END' . PHP_EOL, FILE_APPEND);
         ShardingPdoContext::setValue(self::$_exeSqlArr, []);
-
     }
 
     /**
@@ -305,10 +310,12 @@ trait TransactionShardingTrait
          * @var SPDO $db
          */
         foreach ($useDatabaseArr as $index => $db) {
-            $xidStr = $xid . $db->getDatabaseName();
-            list($res, $statement) = static::exec($db, "xa end '{$xidStr}';");
+            $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
+            $sql = "xa end '{$xidStr}'";
+            $this->_addExeSql($sql, [], $db);
+            list($res, $statement) = static::exec($db, $sql);
             if (empty($res)) {
-                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
                 return false;
             }
         }
@@ -324,16 +331,18 @@ trait TransactionShardingTrait
             return true;
         }
         $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
-        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        empty($xid) && $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
         /**
          *
          * @var SPDO $db
          */
         foreach ($useDatabaseArr as $db) {
-            $xidStr = $xid . $db->getDatabaseName();
-            list($res, $statement) = static::exec($db, "xa prepare '$xidStr';");
+            $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
+            $sql = "xa prepare '$xidStr'";
+            $this->_addExeSql($sql, [], $db);
+            list($res, $statement) = static::exec($db, $sql);
             if (empty($res)) {
-                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
                 return false;
             }
         }
@@ -346,10 +355,12 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        $xidStr = $xid . $db->getDatabaseName();
-        list($res, $statement) = static::exec($db, sprintf("xa commit '%s';", $xidStr));
+        $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
+        $sql = sprintf("xa commit '%s'", $xidStr);
+        $this->_addExeSql($sql, [], $db);
+        list($res, $statement) = static::exec($db, $sql);
         if (empty($res)) {
-            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
             return false;
         }
         return true;
@@ -361,10 +372,12 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        $xidStr = $xid . $db->getDatabaseName();
-        list($res, $statement) = static::exec($db, sprintf("xa rollback '%s';", $xidStr));
+        $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
+        $sql = sprintf("xa rollback '%s'", $xidStr);
+        $this->_addExeSql($sql, [], $db);
+        list($res, $statement) = static::exec($db, $sql);
         if (empty($res)) {
-            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
             return false;
         }
         return true;
@@ -375,22 +388,24 @@ trait TransactionShardingTrait
      */
     public function recover()
     {
-        $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
-        $data = [];
+        $db = $this->_getQpDb();
+        if (empty($db)) {
+            return false;
+        }
+        ShardingPdoContext::array_push(self::$_useDatabaseArr, $db);
         /**
          * @var SPDO $db
          */
-        foreach ($useDatabaseArr as $db) {
-            list($res, $statement) = static::exec($db, 'xa recover;');
-            /**
-             * @var \PDOStatement $statement
-             */
-            if (empty($res)) {
-                $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
-                return false;
-            }
-            $data[$db->getDsn()] = $statement->fetchAll();
+        list($res, $statement) = static::exec($db, 'xa recover');
+        /**
+         * @var \PDOStatement $statement
+         */
+        if (empty($res)) {
+            $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo()];
+            return false;
         }
+        $data['list'] = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        !empty($data['list']) && $data['dsn'] = $db->getDsn();
         return $data;
     }
 

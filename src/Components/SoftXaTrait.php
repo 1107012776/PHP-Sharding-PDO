@@ -30,6 +30,16 @@ trait SoftXaTrait
     }
 
     /**
+     * 设置xid
+     */
+    public function setXid($xid)
+    {
+        $this->dao->setXid($xid);
+        return $xid;
+    }
+
+
+    /**
      * xa将事务置于IDLE状态，表示事务内的SQL操作完成
      */
     public function endXa()

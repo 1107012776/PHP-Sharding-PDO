@@ -15,6 +15,7 @@ error_reporting(E_ALL); //显示所有错误信息
 ini_set('date.timezone', 'Asia/Shanghai');
 
 use PhpShardingPdo\Common\ConfigEnv;
+use PhpShardingPdo\Core\ShardingPdoContext;
 use PhpShardingPdo\Test\Migrate\Migrate;
 use PhpShardingPdo\Test\Model\ArticleModel;
 use PhpShardingPdo\Test\Model\UserModel;
@@ -39,16 +40,6 @@ class IntegrationTest extends TestCase
     private $article_title2 = '测试数据article_title2';
 
     /**
-     * 重新构建数据库
-     * php vendor/bin/phpunit tests/IntegrationTest.php --filter testBuild
-     */
-    public function testBuild()
-    {
-        $res = Migrate::build();
-        $this->assertEquals($res, true);
-    }
-
-    /**
      * 一键启动测试
      * php vendor/bin/phpunit tests/IntegrationTest.php --filter testExecStart
      */
@@ -70,6 +61,16 @@ class IntegrationTest extends TestCase
         $this->testOrderByJoin();
         $this->testGroupByJoin();
         $this->testXaTransaction();  //xa事务测试
+    }
+
+    /**
+     * 重新构建数据库
+     * php vendor/bin/phpunit tests/IntegrationTest.php --filter testBuild
+     */
+    public function testBuild()
+    {
+        $res = Migrate::build();
+        $this->assertEquals($res, true);
     }
 
     /**
@@ -106,21 +107,6 @@ class IntegrationTest extends TestCase
         return $data['id'];
     }
 
-    public function testGetId($stub = 1)
-    {
-        $autoModel = new \PhpShardingPdo\Test\Model\AutoDistributedModel();
-        while (true) {
-            $resReplaceInto = $autoModel->replaceInto(['stub' => $stub]);
-            if (empty($resReplaceInto)) {
-                usleep(50);
-                continue;
-            }
-            break;
-        }
-        $this->assertEquals($autoModel->getLastInsertId() > 0, true);
-        return $autoModel->getLastInsertId();
-    }
-
     public function testUserId()
     {
         $model = new \PhpShardingPdo\Test\Model\UserModel();
@@ -152,6 +138,21 @@ class IntegrationTest extends TestCase
         $this->assertEquals(!empty($res), true);
         $model->commit();
         return $id;
+    }
+
+    public function testGetId($stub = 1)
+    {
+        $autoModel = new \PhpShardingPdo\Test\Model\AutoDistributedModel();
+        while (true) {
+            $resReplaceInto = $autoModel->replaceInto(['stub' => $stub]);
+            if (empty($resReplaceInto)) {
+                usleep(50);
+                continue;
+            }
+            break;
+        }
+        $this->assertEquals($autoModel->getLastInsertId() > 0, true);
+        return $autoModel->getLastInsertId();
     }
 
     public function testSelectFind()
@@ -514,6 +515,43 @@ class IntegrationTest extends TestCase
 
     }
 
+    public function testLeftJoin()
+    {
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $articleModel->alias('ar');
+        $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
+        $cateModel->alias('cate');
+        $articleModel1 = clone $articleModel;
+        $cateModel1 = clone $cateModel;
+        $plan = $cateModel1->where(['id' => 1])->createJoinTablePlan([
+            'cate.id' => $articleModel1->getFieldAlias('cate_id')
+        ]);
+        $this->assertEquals(!empty($plan), true);
+        $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->leftJoin($plan)
+            ->where([$cateModel1->getFieldAlias('id') => 1])->findAll();
+        $this->assertEquals(count($list) == 2, true);
+    }
+
+    public function testRightJoin()
+    {
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $articleModel->alias('ar');
+        $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
+        $cateModel->alias('cate');
+        $articleModel1 = clone $articleModel;
+        $cateModel1 = clone $cateModel;
+        $plan = $cateModel1->where(['id' => 1])->createJoinTablePlan([
+            'cate.id' => $articleModel1->getFieldAlias('cate_id')
+        ]);
+        $this->assertEquals(!empty($plan), true);
+        $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->rightJoin($plan)
+            ->where([
+                $articleModel1->getFieldAlias('cate_id') => 1,
+                $articleModel1->getFieldAlias('user_id') => 1,
+            ])->findAll();
+        $this->assertEquals(count($list) == 1, true);
+    }
+
     public function testOrderByJoin()
     {
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
@@ -545,7 +583,6 @@ class IntegrationTest extends TestCase
         $this->assertEquals(isset($list[0]['b']) && $list[0]['b'] == 1, true);
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
     }
-
 
     public function testGroupByJoin()
     {
@@ -599,43 +636,6 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($list), true);
         $this->assertEquals(empty($userModel1->sqlErrors()), true);
         $this->testRenewJoin();
-    }
-
-    public function testLeftJoin()
-    {
-        $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
-        $articleModel->alias('ar');
-        $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
-        $cateModel->alias('cate');
-        $articleModel1 = clone $articleModel;
-        $cateModel1 = clone $cateModel;
-        $plan = $cateModel1->where(['id' => 1])->createJoinTablePlan([
-            'cate.id' => $articleModel1->getFieldAlias('cate_id')
-        ]);
-        $this->assertEquals(!empty($plan), true);
-        $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->leftJoin($plan)
-            ->where([$cateModel1->getFieldAlias('id') => 1])->findAll();
-        $this->assertEquals(count($list) == 2, true);
-    }
-
-    public function testRightJoin()
-    {
-        $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
-        $articleModel->alias('ar');
-        $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
-        $cateModel->alias('cate');
-        $articleModel1 = clone $articleModel;
-        $cateModel1 = clone $cateModel;
-        $plan = $cateModel1->where(['id' => 1])->createJoinTablePlan([
-            'cate.id' => $articleModel1->getFieldAlias('cate_id')
-        ]);
-        $this->assertEquals(!empty($plan), true);
-        $list = $articleModel1->field(['ar.*', 'cate.name as cate_name'])->rightJoin($plan)
-            ->where([
-                $articleModel1->getFieldAlias('cate_id') => 1,
-                $articleModel1->getFieldAlias('user_id') => 1,
-            ])->findAll();
-        $this->assertEquals(count($list) == 1, true);
     }
 
     /**
@@ -741,6 +741,58 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
         $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
         $this->assertEquals(empty($row), true);
+        $this->testXaTransactionRecover();
+    }
+
+    /**
+     * xa 事务测试Recover
+     */
+    public function testXaTransactionRecover()
+    {
+        $xid = '213123123213';
+        $data = [
+            'article_descript' => 'xa测试数据article_descript',
+            'article_img' => '/upload/2021110816311943244.jpg',
+            'article_keyword' => 'xa测试数据article_keyword',
+            'article_title' => $this->article_title2,
+            'author' => '学者',
+            'cate_id' => 1,
+            'content' => '<p>xa测试数据</p><br/>',
+            'content_md' => 'xa测试数据',
+            'create_time' => date('Y-m-d H:i:s'),
+            'update_time' => date('Y-m-d H:i:s'),
+            'user_id' => 1,
+        ];
+        $data['id'] = $this->testGetId(2);
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+        $articleModel->startTrans($xid);
+        $res = $articleModel->renew()->insert($data);
+        $this->assertEquals(!empty($res), true);
+        $articleModel->endXa();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
+        $articleModel->prepareXa();
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
+        ShardingPdoContext::contextFreed(); //强制释放实例
+        $this->testXaRecover();
+    }
+
+    public function testXaRecover(){
+        $xid = '213123123213';
+        $xid .= '_phpshardingpdo2';
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+        $res = $articleModel->where(['user_id' => 1, 'cate_id' => 1])->recover();
+        $this->assertEquals(!empty($res['list']), true);
+        $isset = false;
+        foreach ($res['list'] as $item) {
+            if ($item['data'] == $xid) {
+                $isset = true;
+            }
+        }
+        $this->assertEquals($isset, true);
+        $articleModel->setXid($xid);
+        $res = $articleModel->commit();
+        $this->assertEquals($res, true);
+        $this->assertEquals(empty($articleModel->sqlErrors()), true);
     }
 }
 

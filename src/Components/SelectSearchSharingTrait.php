@@ -33,7 +33,7 @@ trait SelectSearchSharingTrait
         $sqlArr = [];
         if (!empty($this->offset)  //存在偏移的时候，需要特殊处理
             && (
-                empty($this->_current_exec_db)  //没有找到具体库
+                empty($this->getCurrentExecDb())  //没有找到具体库
                 || empty($this->_current_exec_table)  //没有找到具体表
             )
         ) {
@@ -49,7 +49,7 @@ trait SelectSearchSharingTrait
             $sql = 'select ' . $this->_field_str . ' from ' . $this->getExecSelectString($this->_current_exec_table) . $this->_condition_str . $this->_group_str . $this->_order_str . $this->_limit_str;
         }
         $statementArr = [];
-        if (empty($this->_current_exec_db)) {  //没有找到数据库
+        if (empty($this->getCurrentExecDb())) {  //没有找到数据库
             $searchFunc = function ($sql) use (&$statementArr) {
                 foreach ($this->_databasePdoInstanceMap() as $key => $db) {
                     /**
@@ -91,11 +91,11 @@ trait SelectSearchSharingTrait
                 /**
                  * @var \PDOStatement $statement
                  */
-                $statement = $statementArr[] = $this->_current_exec_db->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
+                $statement = $statementArr[] = $this->getCurrentExecDb()->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($this->_condition_bind);
-                $this->_addSelectSql($sql, $this->_condition_bind, $this->_current_exec_db);
+                $this->_addSelectSql($sql, $this->_condition_bind, $this->getCurrentExecDb());
                 if (empty($res)) {
-                    $this->_sqlErrors[] = [$this->_current_exec_db->getDsn() => $statement->errorInfo()];
+                    $this->_sqlErrors[] = [$this->getCurrentExecDb()->getDsn() => $statement->errorInfo()];
                 }
             }
             if (count($statementArr) > 1) {
