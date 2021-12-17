@@ -641,7 +641,7 @@ $this->assertEquals(empty($articleModel->sqlErrors()), true);
 $xid = '213123123213';
 $xid .= '_phpshardingpdo2';
 $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
-$res = $articleModel->where(['user_id' => 1, 'cate_id' => 1])->recover();  //恢复recover xa 
+$res = $articleModel->where(['user_id' => 1, 'cate_id' => 1])->recover();  //获取recover xa list
 $this->assertEquals(!empty($res['list']), true);
 $isset = false;
 foreach ($res['list'] as $item) {
