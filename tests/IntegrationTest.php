@@ -780,7 +780,6 @@ class IntegrationTest extends TestCase
         $xid .= '_phpshardingpdo2';
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
         $res = $articleModel->where(['user_id' => 1, 'cate_id' => 1])->recover();
-        var_dump($res);
         $this->assertEquals(!empty($res['list']), true);
         $isset = false;
         foreach ($res['list'] as $item) {
@@ -791,68 +790,8 @@ class IntegrationTest extends TestCase
         $this->assertEquals($isset, true);
         $articleModel->setXid($xid);
         $res = $articleModel->commit();
-        var_dump($articleModel->sqlErrors());
         $this->assertEquals($res, true);
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
     }
-
-    public function testRc(){
-        $this->testXaTransactionRecover1();
-        $this->testXaRecover1();
-    }
-
-
-    /**
-     * xa 事务测试Recover
-     */
-    public function testXaTransactionRecover1()
-    {
-        $xid = '213123123213';
-        $data = [
-            'article_descript' => 'xa测试数据article_descript',
-            'article_img' => '/upload/2021110816311943244.jpg',
-            'article_keyword' => 'xa测试数据article_keyword',
-            'article_title' => $this->article_title2,
-            'author' => '学者',
-            'cate_id' => 1,
-            'content' => '<p>xa测试数据</p><br/>',
-            'content_md' => 'xa测试数据',
-            'create_time' => date('Y-m-d H:i:s'),
-            'update_time' => date('Y-m-d H:i:s'),
-            'user_id' => 1,
-        ];
-        $data['id'] = $this->testGetId(2);
-        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
-        $articleModel->startTrans($xid);
-        $res = $articleModel->renew()->insert($data);
-        $this->assertEquals(!empty($res), true);
-        $articleModel->endXa();
-        $this->assertEquals(empty($articleModel->sqlErrors()), true);
-        $articleModel->prepareXa();
-        $this->assertEquals(empty($articleModel->sqlErrors()), true);
-        ShardingPdoContext::contextFreed();
-    }
-
-    public function testXaRecover1(){
-        $xid = '213123123213';
-        $xid .= '_phpshardingpdo2';
-        $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
-        $res = $articleModel->where(['user_id' => 1, 'cate_id' => 1])->recover();
-        var_dump($res);
-        $this->assertEquals(!empty($res['list']), true);
-        $isset = false;
-        foreach ($res['list'] as $item) {
-            if ($item['data'] == $xid) {
-                $isset = true;
-            }
-        }
-        $this->assertEquals($isset, true);
-        $articleModel->setXid($xid);
-        $res = $articleModel->commit();
-        var_dump($articleModel->sqlErrors());
-        $this->assertEquals($res, true);
-        $this->assertEquals(empty($articleModel->sqlErrors()), true);
-    }
-
 }
 
