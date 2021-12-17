@@ -608,6 +608,51 @@ $this->assertEquals(empty($articleModel->sqlErrors()), true);
 $row = $articleModel->where(['id' => $articleModel->getLastInsertId()])->find();
 $this->assertEquals(empty($row), true);
 
+/**
+* xa 事务Recover测试 (具体看tests目录里面的测试用例)
+*/
+$xid = '213123123213';
+$data = [
+    'article_descript' => 'xa测试数据article_descript',
+    'article_img' => '/upload/2021110816311943244.jpg',
+    'article_keyword' => 'xa测试数据article_keyword',
+    'article_title' => $this->article_title2,
+    'author' => '学者',
+    'cate_id' => 1,
+    'content' => '<p>xa测试数据</p><br/>',
+    'content_md' => 'xa测试数据',
+    'create_time' => date('Y-m-d H:i:s'),
+    'update_time' => date('Y-m-d H:i:s'),
+    'user_id' => 1,
+];
+$data['id'] = $this->testGetId(2);
+$articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+$articleModel->startTrans($xid);
+$res = $articleModel->renew()->insert($data);
+$this->assertEquals(!empty($res), true);
+$articleModel->endXa();
+$this->assertEquals(empty($articleModel->sqlErrors()), true);
+$articleModel->prepareXa(); //预提交
+$this->assertEquals(empty($articleModel->sqlErrors()), true);
+\PhpShardingPdo\Core\ShardingPdoContext::contextFreed(); //强制释放实例，做一个断开连接，下面的recover才能使用恢复xa
+  
+$xid = '213123123213';
+$xid .= '_phpshardingpdo2';
+$articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
+$res = $articleModel->where(['user_id' => 1, 'cate_id' => 1])->recover();  //恢复recover xa 
+$this->assertEquals(!empty($res['list']), true);
+$isset = false;
+foreach ($res['list'] as $item) {
+    if ($item['data'] == $xid) {
+        $isset = true;
+    }
+}
+$this->assertEquals($isset, true);
+$articleModel->setXid($xid);
+$res = $articleModel->commit();
+$this->assertEquals($res, true);
+$this->assertEquals(empty($articleModel->sqlErrors()), true);
+
 ```
 # License
 [Apache-2.0](https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE)
