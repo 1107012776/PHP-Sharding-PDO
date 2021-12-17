@@ -374,6 +374,7 @@ class ShardingPdo
         if (empty($this->_tableRuleList[0])) {
             if (count($map) == 1) {  //只有一个数据库，那就是当前
                 $mapValues = array_values($map);
+                $this->_current_exec_db_index = array_keys($map)[0];
                 return $mapValues[0];
             }
             return null;  //返回这个代表没有规则，则需要全部db扫描了
@@ -422,6 +423,7 @@ class ShardingPdo
         if ($number === null) {
             if (count($map) == 1) {  //只有一个数据库，那就是当前
                 $mapValues = array_values($map);
+                $this->_current_exec_db_index = array_keys($map)[0];
                 return $mapValues[0];
             }
             return null;  //返回这个代表没有规则，则需要全部db扫描了
