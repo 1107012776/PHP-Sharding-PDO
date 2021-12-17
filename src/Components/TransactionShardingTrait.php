@@ -192,7 +192,7 @@ trait TransactionShardingTrait
         }
         ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
         $sqlArr = ShardingPdoContext::getValue(self::$_exeSqlArr);
-        if(empty($sqlArr)){
+        if (empty($sqlArr)) {
             return false;
         }
         $log = 'START' . PHP_EOL;

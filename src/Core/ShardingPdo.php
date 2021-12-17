@@ -433,9 +433,10 @@ class ShardingPdo
         return isset($map[$index]) ? $map[$index] : null;
     }
 
-    protected function getCurrentExecDb($index = ''){
+    protected function getCurrentExecDb($index = '')
+    {
         empty($index) && $index = $this->_current_exec_db_index;
-        if(empty($index)){
+        if (empty($index)) {
             return null;
         }
         $map = $this->_databasePdoInstanceMap();
