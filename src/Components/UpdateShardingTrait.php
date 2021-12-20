@@ -15,7 +15,6 @@ namespace PhpShardingPdo\Components;
  * Date: 2019/8/1
  * Time: 17:03
  * @var \PhpShardingPdo\Core\ShardingPdo $this
-
  */
 trait UpdateShardingTrait
 {
