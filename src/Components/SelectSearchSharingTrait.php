@@ -17,7 +17,7 @@ use \PhpShardingPdo\Core\StatementShardingPdo;
  * User: linyushan
  * Date: 2019/8/2
  * Time: 14:57
- * @property \PDO $_current_exec_db
+
  */
 trait SelectSearchSharingTrait
 {

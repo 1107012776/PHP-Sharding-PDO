@@ -18,7 +18,7 @@ use PhpShardingPdo\Core\StatementShardingPdo;
  * Date: 2019/8/1
  * Time: 11:51
  * @var \PhpShardingPdo\Core\ShardingPdo $this
- * @property \PDO $_current_exec_db
+
  */
 trait  GroupByShardingTrait
 {
