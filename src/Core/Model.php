@@ -281,6 +281,15 @@ class Model
      */
     public function createJoinTablePlan($condition = [])
     {
+        if (method_exists($this, 'getSoftDeleteCondition')) {
+            //软删除
+            $softCondition = $this->getSoftDeleteCondition();
+            $softConditionNew = [];
+            foreach ($softCondition as $key => $val){
+                $softConditionNew[$this->getFieldAlias($key)] = $val;
+            }
+            $condition = array_merge($softConditionNew, $condition);
+        }
         return $this->dao->createJoinTablePlan($condition);
     }
 
