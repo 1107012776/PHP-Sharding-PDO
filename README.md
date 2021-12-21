@@ -276,7 +276,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
     }
 
     /**
-     * 获取sql执行xa日志路径，当xa提交失败的时候会出现该日志
+     * 获取sql执行xa日志路径，当xa提交失败的时候会出现该日志（事务日志，非xa提交失败也有该日志）
      * @return string
      */
     protected function getExecXaSqlLogFilePath()
