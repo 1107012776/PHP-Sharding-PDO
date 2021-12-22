@@ -46,6 +46,18 @@ trait JoinShardingTrait
         return $obj;
     }
 
+    /**
+     * 获取join字段别名
+     * @param string $key //字段名称
+     * @return string  // 如 join_table_name_1.id
+     */
+    public function getFieldAlias($key)
+    {
+        if (empty($this->getTableAlias())) {
+            return $key;
+        }
+        return $this->getTableAlias() . '.' . $key;
+    }
 
     /**
      * 获取表别名
