@@ -18,31 +18,6 @@ namespace PhpShardingPdo\Core;
 class ShardingRuleConfiguration
 {
     private $_tableRuleList = [];
-    private $_actualDataNodesArr = [];
-
-    /**
-     * 配置分库分表的规则和查询范围
-     * $databaseRule = [
-     * 'name' => 'db',  //数据库名称
-     * 'index' => '1,2',  //分库index
-     * 'range' => [1,2] //范围
-     * ];
-     * $tableRule = [
-     * 'name' => 't_order',  //数据库名称
-     * 'index' => '1,2',  //分表index
-     * 'range' => [1,2] //范围
-     * ];
-     * @描述 index 和 range 二者取一，存在index则优先取index
-     * @param array $databaseRule
-     * @param array $tableRule
-     */
-    public function setActualDataNodes($databaseRule = [], $tableRule = [])
-    {
-        $this->_actualDataNodesArr[] = [
-            'databaseRule' => $databaseRule,
-            'tableRule' => $tableRule,
-        ];
-    }
 
     /**
      * 设置分表分库规则
