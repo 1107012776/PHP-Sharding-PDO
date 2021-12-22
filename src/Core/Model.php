@@ -285,7 +285,7 @@ class Model
             //软删除
             $softCondition = $this->getSoftDeleteCondition();
             $softConditionNew = [];
-            foreach ($softCondition as $key => $val){
+            foreach ($softCondition as $key => $val) {
                 $softConditionNew[$this->getFieldAlias($key)] = $val;
             }
             $condition = array_merge($softConditionNew, $condition);
