@@ -107,7 +107,7 @@ class ShardingPdo
     {
         $this->initTrans();
         $this->_configDatabasePdoInstanceMapName = $configDatabasePdoInstanceMapName;
-        ShardingPdoContext::setValue(self::$_execSqlXaUniqidFilePath, $exeSqlXaUniqidFilePath);
+        ShardingPdoContext::setValue(self::$_execSqlTransactionUniqidFilePath, $exeSqlXaUniqidFilePath);
         $this->_shardingRuleConfiguration = $config;
     }
 

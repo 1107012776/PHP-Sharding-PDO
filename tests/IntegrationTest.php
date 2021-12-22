@@ -776,7 +776,8 @@ class IntegrationTest extends TestCase
         $this->testXaRecover();
     }
 
-    public function testXaRecover(){
+    public function testXaRecover()
+    {
         $xid = '213123123213';
         $xid .= '_phpshardingpdo2';
         $articleModel = new \PhpShardingPdo\Test\Model\ArticleXaModel();
