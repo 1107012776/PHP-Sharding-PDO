@@ -27,19 +27,19 @@ trait TransactionShardingTrait
 
     private static $_startTransCount = 'transactionSharding_startTransCount'; //事务开启统计
     private static $_useDatabaseArr = 'transactionSharding_useDatabase';  //已被使用的数据库PDO对象source,用于事务操作
-    private static $_exeSqlArr = 'transactionSharding_exeSqlArr';  //事务中执行的sql
-    private static $_exeSqlXaUniqidFilePath = 'transactionSharding_exeSqlXaUniqidFilePath';  //事务sql文件，用户分布式事务中错误之后的排查
-    private static $_exeSqlXaUniqidFilePathArr = 'transactionSharding_exeSqlXaUniqidFilePathArr'; //真实允许中生成的xa文件路径，上面那个非
-    private static $_exeXaXid = 'transactionSharding_exeXaXid'; //xa xid
+    private static $_execSqlArr = 'transactionSharding_execSqlArr';  //事务中执行的sql
+    private static $_execSqlXaUniqidFilePath = 'transactionSharding_execSqlXaUniqidFilePath';  //事务sql文件，用户分布式事务中错误之后的排查
+    private static $_execSqlXaUniqidFilePathArr = 'transactionSharding_execSqlXaUniqidFilePathArr'; //真实允许中生成的xa文件路径，上面那个非
+    private static $_execXaXid = 'transactionSharding_execXaXid'; //xa xid
 
     public function initTrans()
     {
         ShardingPdoContext::setValue(self::$_startTransCount, 0);
         ShardingPdoContext::setValue(self::$_useDatabaseArr, []);
-        ShardingPdoContext::setValue(self::$_exeSqlArr, []);
-        ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);
-        ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePath, '');
-        ShardingPdoContext::setValue(self::$_exeXaXid, '');
+        ShardingPdoContext::setValue(self::$_execSqlArr, []);
+        ShardingPdoContext::setValue(self::$_execSqlXaUniqidFilePathArr, []);
+        ShardingPdoContext::setValue(self::$_execSqlXaUniqidFilePath, '');
+        ShardingPdoContext::setValue(self::$_execXaXid, '');
     }
 
     /**
@@ -50,7 +50,7 @@ trait TransactionShardingTrait
     public function startTrans($xid = '')
     {
         if (ShardingPdoContext::getValue(self::$_startTransCount) <= 0) {  //发现是第一次开启事务，而非嵌套
-            ShardingPdoContext::setValue(self::$_exeSqlArr, []);  //在事务开启前，清理旧的sql执行记录
+            ShardingPdoContext::setValue(self::$_execSqlArr, []);  //在事务开启前，清理旧的sql执行记录
             $this->setXid($xid);
         }
         ShardingPdoContext::incrValue(self::$_startTransCount);
@@ -150,7 +150,7 @@ trait TransactionShardingTrait
         /**
          * @var SPDO $db
          */
-        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        $xid = ShardingPdoContext::getValue(self::$_execXaXid);
         if (empty($xid)) {
             $db->beginTransaction();
         } else {
@@ -187,11 +187,11 @@ trait TransactionShardingTrait
      */
     private function _prepareSubmit()
     {
-        if (empty(ShardingPdoContext::getValue(self::$_exeSqlXaUniqidFilePath))) { //为空则不记录xa提交日志
+        if (empty(ShardingPdoContext::getValue(self::$_execSqlXaUniqidFilePath))) { //为空则不记录xa提交日志
             return false;
         }
-        ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
-        $sqlArr = ShardingPdoContext::getValue(self::$_exeSqlArr);
+        ShardingPdoContext::setValue(self::$_execSqlXaUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
+        $sqlArr = ShardingPdoContext::getValue(self::$_execSqlArr);
         if (empty($sqlArr)) {
             return false;
         }
@@ -202,12 +202,12 @@ trait TransactionShardingTrait
         }
         $uniqid = spl_object_hash($this) . uniqid();
         $objHash = md5($uniqid) . sha1($uniqid);  //加上这个避免串事务
-        $_exeSqlXaUniqidFilePath = ShardingPdoContext::getValue(self::$_exeSqlXaUniqidFilePath);
-        $ext = pathinfo($_exeSqlXaUniqidFilePath, PATHINFO_EXTENSION);
-        $filePath = preg_replace('/\.' . $ext . '$/i', ShardingPdoContext::getCid() . '-' . $objHash . '-' . date('Y-m-d_H_i_s') . '.' . $ext, $_exeSqlXaUniqidFilePath);
-        ShardingPdoContext::array_push(self::$_exeSqlXaUniqidFilePathArr, $filePath);
+        $_execSqlXaUniqidFilePath = ShardingPdoContext::getValue(self::$_execSqlXaUniqidFilePath);
+        $ext = pathinfo($_execSqlXaUniqidFilePath, PATHINFO_EXTENSION);
+        $filePath = preg_replace('/\.' . $ext . '$/i', ShardingPdoContext::getCid() . '-' . $objHash . '-' . date('Y-m-d_H_i_s') . '.' . $ext, $_execSqlXaUniqidFilePath);
+        ShardingPdoContext::array_push(self::$_execSqlXaUniqidFilePathArr, $filePath);
         file_put_contents($filePath, $log . PHP_EOL . 'END' . PHP_EOL, FILE_APPEND);
-        ShardingPdoContext::setValue(self::$_exeSqlArr, []);
+        ShardingPdoContext::setValue(self::$_execSqlArr, []);
     }
 
     /**
@@ -255,7 +255,7 @@ trait TransactionShardingTrait
             $ext = pathinfo($sqlLogPath, PATHINFO_EXTENSION);
             @file_put_contents(preg_replace('/\.' . $ext . '$/i', date('YmdH') . '.' . $ext, $sqlLogPath), $newSql, FILE_APPEND);
         }
-        ShardingPdoContext::array_push(self::$_exeSqlArr, $newSql);
+        ShardingPdoContext::array_push(self::$_execSqlArr, $newSql);
     }
 
 
@@ -264,12 +264,12 @@ trait TransactionShardingTrait
      */
     private function _delExeSqlLog()
     {
-        ShardingPdoContext::setValue(self::$_exeSqlArr, []);
-        $_exeSqlXaUniqidFilePathArr = ShardingPdoContext::getValue(self::$_exeSqlXaUniqidFilePathArr);
-        foreach ($_exeSqlXaUniqidFilePathArr as $filePath) {
+        ShardingPdoContext::setValue(self::$_execSqlArr, []);
+        $_execSqlXaUniqidFilePathArr = ShardingPdoContext::getValue(self::$_execSqlXaUniqidFilePathArr);
+        foreach ($_execSqlXaUniqidFilePathArr as $filePath) {
             @unlink($filePath);
         }
-        ShardingPdoContext::setValue(self::$_exeSqlXaUniqidFilePathArr, []);
+        ShardingPdoContext::setValue(self::$_execSqlXaUniqidFilePathArr, []);
     }
 
 
@@ -278,7 +278,7 @@ trait TransactionShardingTrait
      */
     public function getXid()
     {
-        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        $xid = ShardingPdoContext::getValue(self::$_execXaXid);
         if (!empty($xid)) {
             return $xid;
         }
@@ -292,7 +292,7 @@ trait TransactionShardingTrait
      */
     public function setXid($setXid = '')
     {
-        ShardingPdoContext::setValue(self::$_exeXaXid, $setXid);
+        ShardingPdoContext::setValue(self::$_execXaXid, $setXid);
         return $setXid;
     }
 
@@ -305,7 +305,7 @@ trait TransactionShardingTrait
             return true;
         }
         $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
-        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        $xid = ShardingPdoContext::getValue(self::$_execXaXid);
         /**
          * @var SPDO $db
          */
@@ -331,7 +331,7 @@ trait TransactionShardingTrait
             return true;
         }
         $useDatabaseArr = ShardingPdoContext::getValue(self::$_useDatabaseArr);
-        empty($xid) && $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        empty($xid) && $xid = ShardingPdoContext::getValue(self::$_execXaXid);
         /**
          *
          * @var SPDO $db
@@ -351,7 +351,7 @@ trait TransactionShardingTrait
 
     public function commitXa($db)
     {
-        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        $xid = ShardingPdoContext::getValue(self::$_execXaXid);
         /**
          * @var SPDO $db
          */
@@ -368,7 +368,7 @@ trait TransactionShardingTrait
 
     public function rollbackXa($db)
     {
-        $xid = ShardingPdoContext::getValue(self::$_exeXaXid);
+        $xid = ShardingPdoContext::getValue(self::$_execXaXid);
         /**
          * @var SPDO $db
          */
