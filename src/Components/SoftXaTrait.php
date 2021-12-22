@@ -25,7 +25,7 @@ trait SoftXaTrait
      */
     public function createXid()
     {
-        $xid = date('YmdHis').uniqid('xid');
+        $xid = date('YmdHis', time()) . uniqid('xid');
         return $xid;
     }
 
