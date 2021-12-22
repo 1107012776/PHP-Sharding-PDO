@@ -76,7 +76,7 @@ trait TransactionShardingTrait
          */
         foreach ($useDatabaseArr as $db) {
             ShardingPdoContext::array_shift(self::$_useDatabaseArr);
-//          throw new \Exception('中断则事务异常，产生xa日志');
+//          throw new \Exception('中断则事务异常，产生事务日志');
             if (empty($this->getXid())) {
                 $db->commit();
             } else {
@@ -183,11 +183,11 @@ trait TransactionShardingTrait
     }
 
     /**
-     * xa事务中预提交事务
+     * 事务中预提交事务
      */
     private function _prepareSubmit()
     {
-        if (empty(ShardingPdoContext::getValue(self::$_execSqlTransactionUniqidFilePath))) { //为空则不记录xa提交日志
+        if (empty(ShardingPdoContext::getValue(self::$_execSqlTransactionUniqidFilePath))) { //为空则不记录事务提交日志
             return false;
         }
         ShardingPdoContext::setValue(self::$_execSqlTransactionUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
