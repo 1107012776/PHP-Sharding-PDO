@@ -30,11 +30,11 @@ class ShardingDataSourceFactory
      */
     public static function createDataSource($databasePdoInstanceMapName, ShardingRuleConfiguration $config, $execSqlTransactionFilePath = '')
     {
-        $_shardingPdo = ShardingPdoContext::getValue(self::$_shardingPdo . $databasePdoInstanceMapName);
-        if (empty($_shardingPdo)) {
-            $_shardingPdo = new ShardingPdo($databasePdoInstanceMapName, $config, $execSqlTransactionFilePath);
-            ShardingPdoContext::setValue(self::$_shardingPdo . $databasePdoInstanceMapName, $_shardingPdo);
+        $shardingPdo = ShardingPdoContext::getValue(self::$_shardingPdo . $databasePdoInstanceMapName);
+        if (empty($shardingPdo)) {
+            $shardingPdo = new ShardingPdo($databasePdoInstanceMapName, $config, $execSqlTransactionFilePath);
+            ShardingPdoContext::setValue(self::$_shardingPdo . $databasePdoInstanceMapName, $shardingPdo);
         }
-        return clone $_shardingPdo;
+        return clone $shardingPdo;
     }
 }
