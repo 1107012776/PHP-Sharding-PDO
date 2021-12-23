@@ -26,7 +26,7 @@ class ShardingDataSourceFactory
      * @param string $databasePdoInstanceMapName
      * @param ShardingRuleConfiguration $config
      * @param $execSqlTransactionFilePath
-     * @return ShardingPdo $share
+     * @return ShardingPdo
      */
     public static function createDataSource($databasePdoInstanceMapName, ShardingRuleConfiguration $config, $execSqlTransactionFilePath = '')
     {
