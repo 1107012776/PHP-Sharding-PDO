@@ -61,6 +61,8 @@ reading of the same socket in coroutine#4 at the same time is not allowed
 ```bash
 git clone https://github.com/1107012776/PHP-Sharding-PDO.git
 
+cd PHP-Sharding-PDO
+
 composer install
 ```
 ### （1）先要配置tests/Config/.env ，测试环境数据库链接
