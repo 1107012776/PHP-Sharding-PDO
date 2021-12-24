@@ -130,7 +130,11 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            die();
+            if (self::getCid() > -1) {
+                \Swoole\Event::exit();
+            }else{
+                die();
+            }
         }
     }
 
@@ -145,7 +149,11 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            die();
+            if (self::getCid() > -1) {
+                \Swoole\Event::exit();
+            }else{
+                die();
+            }
         }
     }
 
@@ -160,7 +168,11 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            die();
+            if (self::getCid() > -1) {
+                \Swoole\Event::exit();
+            }else{
+                die();
+            }
         }
     }
 
@@ -176,7 +188,11 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            die();
+            if (self::getCid() > -1) {
+                \Swoole\Event::exit();
+            }else{
+                die();
+            }
         }
     }
 
