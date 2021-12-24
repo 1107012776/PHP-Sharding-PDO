@@ -82,7 +82,7 @@ trait ReplaceIntoShardingTrait
                  */
                 $statement = $statementArr[] = $this->getCurrentExecDb()->prepare($sql, array(\PDO::ATTR_CURSOR => $this->attr_cursor));
                 $res = $statement->execute($bindParams);
-                $this->_addExeSql($sql, $bindParams, $this->getCurrentExecDb());
+                $this->_addExecSql($sql, $bindParams, $this->getCurrentExecDb());
                 $rowsCount += $statement->rowCount();
                 $this->_last_insert_id = $this->getCurrentExecDb()->lastInsertId();
                 if (empty($res)) {

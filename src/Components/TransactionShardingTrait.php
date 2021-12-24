@@ -85,7 +85,7 @@ trait TransactionShardingTrait
         }
         $this->setXid('');
         if (!in_array(false, $resArr)) {
-            $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
+            $this->_delExecSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
         } else {
             return false;
         }
@@ -118,7 +118,7 @@ trait TransactionShardingTrait
         }
         $this->setXid('');
         if (!in_array(false, $resArr)) {
-            $this->_delExeSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
+            $this->_delExecSqlLog(); //提交成功删除事务记录文件，如果没有删除成功，则说明中间存在事务提交失败
         } else {
             return false;
         }
@@ -156,7 +156,7 @@ trait TransactionShardingTrait
         } else {
             $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
             $sql = "xa start '$xidStr'";
-            $this->_addExeSql($sql, [], $db);
+            $this->_addExecSql($sql, [], $db);
             /**
              * @var SPDO $db
              */
@@ -237,7 +237,7 @@ trait TransactionShardingTrait
     /**
      * 添加执行的sql
      */
-    private function _addExeSql($sql, $bindParams, $pdoObj = null)
+    private function _addExecSql($sql, $bindParams, $pdoObj = null)
     {
         /**
          * @var \PhpShardingPdo\Core\SPDO $pdoObj
@@ -262,7 +262,7 @@ trait TransactionShardingTrait
     /**
      * 删除事务日志
      */
-    private function _delExeSqlLog()
+    private function _delExecSqlLog()
     {
         ShardingPdoContext::setValue(self::$_execSqlArr, []);
         $_execSqlTransactionUniqidFilePathArr = ShardingPdoContext::getValue(self::$_execSqlTransactionUniqidFilePathArr);
@@ -312,7 +312,7 @@ trait TransactionShardingTrait
         foreach ($useDatabaseArr as $index => $db) {
             $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
             $sql = "xa end '{$xidStr}'";
-            $this->_addExeSql($sql, [], $db);
+            $this->_addExecSql($sql, [], $db);
             list($res, $statement) = static::exec($db, $sql);
             if (empty($res)) {
                 $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
@@ -339,7 +339,7 @@ trait TransactionShardingTrait
         foreach ($useDatabaseArr as $db) {
             $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
             $sql = "xa prepare '$xidStr'";
-            $this->_addExeSql($sql, [], $db);
+            $this->_addExecSql($sql, [], $db);
             list($res, $statement) = static::exec($db, $sql);
             if (empty($res)) {
                 $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
@@ -357,7 +357,7 @@ trait TransactionShardingTrait
          */
         $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
         $sql = sprintf("xa commit '%s'", $xidStr);
-        $this->_addExeSql($sql, [], $db);
+        $this->_addExecSql($sql, [], $db);
         list($res, $statement) = static::exec($db, $sql);
         if (empty($res)) {
             $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
@@ -374,7 +374,7 @@ trait TransactionShardingTrait
          */
         $xidStr = !strstr($xid, $db->getDatabaseName()) ? $xid . '_' . $db->getDatabaseName() : $xid;
         $sql = sprintf("xa rollback '%s'", $xidStr);
-        $this->_addExeSql($sql, [], $db);
+        $this->_addExecSql($sql, [], $db);
         list($res, $statement) = static::exec($db, $sql);
         if (empty($res)) {
             $this->_sqlErrors[] = [$db->getDsn() => $statement->errorInfo(), 'xid' => $xidStr];
