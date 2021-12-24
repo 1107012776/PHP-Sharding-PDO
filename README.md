@@ -98,7 +98,7 @@ namespace PhpShardingPdo\Test;
 use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Core\ShardingTableRuleConfig;
 use PhpShardingPdo\Core\InlineShardingStrategyConfiguration;
-use PhpShardingPdo\Core\ShardingRuleConfiguration;
+use PhpShardingPdo\Core\ShardingPdoContext;
 use PhpShardingPdo\Inter\ShardingInitConfigInter;
 use PhpShardingPdo\Test\Migrate\build\DatabaseCreate;
 class ShardingInitConfig4 extends ShardingInitConfigInter
@@ -215,7 +215,11 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            die();
+            if (ShardingPdoContext::getCid() > -1) {
+                \Swoole\Event::exit();
+            }else{
+                die();
+            }
         }
     }
 
@@ -230,7 +234,11 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            die();
+            if (ShardingPdoContext::getCid() > -1) {
+                \Swoole\Event::exit();
+            }else{
+                die();
+            }
         }
     }
 
@@ -245,7 +253,11 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            die();
+            if (ShardingPdoContext::getCid() > -1) {
+                \Swoole\Event::exit();
+            }else{
+                die();
+            }
         }
     }
 
@@ -261,7 +273,11 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            die();
+            if (ShardingPdoContext::getCid() > -1) {
+                \Swoole\Event::exit();
+            }else{
+                die();
+            }           
         }
     }
 

@@ -4,6 +4,7 @@ namespace PhpShardingPdo\Test;
 
 
 use PhpShardingPdo\Common\ConfigEnv;
+use PhpShardingPdo\Core\ShardingPdoContext;
 use PhpShardingPdo\Core\ShardingTableRuleConfig;
 use PhpShardingPdo\Core\InlineShardingStrategyConfiguration;
 use PhpShardingPdo\Core\ShardingRuleConfiguration;
@@ -130,7 +131,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            if (self::getCid() > -1) {
+            if (ShardingPdoContext::getCid() > -1) {
                 \Swoole\Event::exit();
             }else{
                 die();
@@ -149,7 +150,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            if (self::getCid() > -1) {
+            if (ShardingPdoContext::getCid() > -1) {
                 \Swoole\Event::exit();
             }else{
                 die();
@@ -168,7 +169,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            if (self::getCid() > -1) {
+            if (ShardingPdoContext::getCid() > -1) {
                 \Swoole\Event::exit();
             }else{
                 die();
@@ -188,7 +189,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
-            if (self::getCid() > -1) {
+            if (ShardingPdoContext::getCid() > -1) {
                 \Swoole\Event::exit();
             }else{
                 die();
