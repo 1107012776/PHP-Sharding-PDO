@@ -101,6 +101,7 @@ use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Core\ShardingTableRuleConfig;
 use PhpShardingPdo\Core\InlineShardingStrategyConfiguration;
 use PhpShardingPdo\Core\ShardingPdoContext;
+use PhpShardingPdo\Core\ShardingRuleConfiguration;
 use PhpShardingPdo\Inter\ShardingInitConfigInter;
 use PhpShardingPdo\Test\Migrate\build\DatabaseCreate;
 class ShardingInitConfig4 extends ShardingInitConfigInter
