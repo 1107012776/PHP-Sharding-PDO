@@ -152,6 +152,7 @@ class ShardingPdo
     public function where($condition = [])
     {
         foreach ($condition as $key => $val) {
+            $key = trim($key);  //去空格
             if (in_array($key, ['more', 'limit']) //发现是条件关键词，则不允许，不然有注入风险
                 || strpos($key, ' ') !== false //条件里面不能存在空格
             ) {
