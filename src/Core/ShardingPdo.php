@@ -151,8 +151,8 @@ class ShardingPdo
      */
     public function where($condition = [])
     {
-        $keywords = [
-            'more', 'limit'
+        $keywords = [  //这边关键词不想限制太死了，不然有些时候输入关键词，会被过滤掉，导致开发者无法及时察觉错误
+            'more'
         ];
         foreach ($condition as $key => $val) {
             $key = trim($key);  //去空格
