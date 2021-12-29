@@ -158,6 +158,7 @@ class ShardingPdo
             $key = trim($key);  //去空格
             if (in_array(strtolower($key), $keywords) //发现是条件关键词，则不允许
                 || strpos($key, ' ') !== false //条件的key不能存在空格
+                || strpos($key, ';') !== false //条件的key不能存在;
             ) {
                 continue;
             }
