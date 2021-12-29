@@ -152,9 +152,7 @@ class ShardingPdo
     public function where($condition = [])
     {
         $keywords = [
-            'more', 'limit', 'order',
-            'as', 'select', 'insert', 'group',
-            'having',
+            'more', 'limit'
         ];
         foreach ($condition as $key => $val) {
             $key = trim($key);  //去空格
