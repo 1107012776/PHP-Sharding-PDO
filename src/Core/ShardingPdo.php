@@ -152,8 +152,8 @@ class ShardingPdo
     public function where($condition = [])
     {
         $keywords = [
-            'more', 'limit', 'order', 'count',
-            'sum', 'as', 'select', 'insert', 'group',
+            'more', 'limit', 'order',
+            'as', 'select', 'insert', 'group',
             'having',
         ];
         foreach ($condition as $key => $val) {
