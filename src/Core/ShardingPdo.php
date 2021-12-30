@@ -101,13 +101,13 @@ class ShardingPdo
     /**
      * @param string $configDatabasePdoInstanceMapName
      * @param ShardingRuleConfiguration $config
-     * @param string $exeSqlXaUniqidFilePath //xa提交失败日志记录
+     * @param string $execSqlTransactionUniqidFilePath //事务执行日志记录
      */
-    public function __construct($configDatabasePdoInstanceMapName, ShardingRuleConfiguration $config, $exeSqlXaUniqidFilePath = '')
+    public function __construct($configDatabasePdoInstanceMapName, ShardingRuleConfiguration $config, $execSqlTransactionUniqidFilePath = '')
     {
         $this->initTrans();
         $this->_configDatabasePdoInstanceMapName = $configDatabasePdoInstanceMapName;
-        ShardingPdoContext::setValue(self::$_execSqlTransactionUniqidFilePath, $exeSqlXaUniqidFilePath);
+        ShardingPdoContext::setValue(self::$_execSqlTransactionUniqidFilePath, $execSqlTransactionUniqidFilePath);
         $this->_shardingRuleConfiguration = $config;
     }
 
