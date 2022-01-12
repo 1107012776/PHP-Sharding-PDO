@@ -29,9 +29,9 @@ trait IncrDecrShardingTrait
     {
         $this->clearSqlErrors();
         if (empty($field) || empty($number) || (
-              !is_float($number)
-              && !is_int($number)
-              && !is_double($number)
+                !is_float($number)
+                && !is_int($number)
+                && !is_double($number)
             )
         ) {
             return false;

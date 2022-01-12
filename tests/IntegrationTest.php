@@ -423,12 +423,12 @@ class IntegrationTest extends TestCase
         $res = $model->renew()->where([
             'id' => $id,
             'article_title' => $title
-        ])->decr('is_push',1);
+        ])->decr('is_push', 1);
         $this->assertEquals(!empty($res), true);
         $res = $model->renew()->where([
             'id' => $id,
             'article_title' => $title
-        ])->incr('is_push',2);
+        ])->incr('is_push', 2);
         $this->assertEquals(!empty($res), true);
         $res = $model->renew()->where([
             'id' => $id,

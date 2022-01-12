@@ -133,7 +133,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         } catch (\PDOException $e) {
             if (ShardingPdoContext::getCid() > -1) {
                 \Swoole\Event::exit();
-            }else{
+            } else {
                 die();
             }
         }
@@ -152,7 +152,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         } catch (\PDOException $e) {
             if (ShardingPdoContext::getCid() > -1) {
                 \Swoole\Event::exit();
-            }else{
+            } else {
                 die();
             }
         }
@@ -171,7 +171,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         } catch (\PDOException $e) {
             if (ShardingPdoContext::getCid() > -1) {
                 \Swoole\Event::exit();
-            }else{
+            } else {
                 die();
             }
         }
@@ -191,7 +191,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         } catch (\PDOException $e) {
             if (ShardingPdoContext::getCid() > -1) {
                 \Swoole\Event::exit();
-            }else{
+            } else {
                 die();
             }
         }
