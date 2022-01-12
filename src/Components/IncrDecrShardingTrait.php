@@ -20,25 +20,45 @@ trait IncrDecrShardingTrait
 {
     private $_incrOrDecrColumnStr = '';
 
+    /**
+     * @param $field
+     * @param int|float $number
+     * @return bool
+     */
     public function incr($field, $number)
     {
         $this->clearSqlErrors();
-        if (empty($field) || empty($number)) {
+        if (empty($field) || empty($number) || (
+              !is_float($number)
+              && !is_int($number)
+              && !is_double($number)
+            )
+        ) {
             return false;
         }
         $this->_pare();
-        $this->_incrOrDecrColumnStr = $field . ' = ' . $field . ' + ' . intval($number);
+        $this->_incrOrDecrColumnStr = $field . ' = ' . $field . ' + ' . $number;
         return $this->_updateSharding();
     }
 
+    /**
+     * @param $field
+     * @param int|float $number
+     * @return bool
+     */
     public function decr($field, $number)
     {
         $this->clearSqlErrors();
-        if (empty($field) || empty($number)) {
+        if (empty($field) || empty($number) || (
+                !is_float($number)
+                && !is_int($number)
+                && !is_double($number)
+            )
+        ) {
             return false;
         }
         $this->_pare();
-        $this->_incrOrDecrColumnStr = $field . ' = ' . $field . ' - ' . intval($number);
+        $this->_incrOrDecrColumnStr = $field . ' = ' . $field . ' - ' . $number;
         return $this->_updateSharding();
     }
 }

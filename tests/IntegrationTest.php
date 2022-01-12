@@ -366,6 +366,7 @@ class IntegrationTest extends TestCase
             'article_title' => $this->article_title2
         ])->delete(true);
         $this->assertEquals(!empty($res), true);
+        $this->testIncrDecr();
     }
 
 
@@ -410,6 +411,32 @@ class IntegrationTest extends TestCase
         ])->delete();
         $this->assertEquals(!empty($res), true);
     }
+
+    /**
+     * php vendor/bin/phpunit tests/IntegrationTest.php --filter testIncrDecr
+     */
+    public function testIncrDecr()
+    {
+        $model = new ArticleModel();
+        $title = '张三是某网络科技的呀testIncrDecr';
+        $id = $this->insert(3, $title);
+        $res = $model->renew()->where([
+            'id' => $id,
+            'article_title' => $title
+        ])->decr('is_push',1);
+        $this->assertEquals(!empty($res), true);
+        $res = $model->renew()->where([
+            'id' => $id,
+            'article_title' => $title
+        ])->incr('is_push',2);
+        $this->assertEquals(!empty($res), true);
+        $res = $model->renew()->where([
+            'id' => $id,
+            'article_title' => $title
+        ])->delete(true);
+        $this->assertEquals(!empty($res), true);
+    }
+
 
     /**
      * join查询测试
