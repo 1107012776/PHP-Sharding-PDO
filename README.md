@@ -680,3 +680,6 @@ $this->assertEquals(empty($articleModel->sqlErrors()), true);
 
 # 更多请关注本人的博客
 https://www.developzhe.com
+
+# Page visitor counter
+![visitor counter](https://profile-counter.glitch.me/1107012776_PHP-Sharding-PDO/count.svg)
