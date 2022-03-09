@@ -187,7 +187,12 @@ trait TransactionShardingTrait
      */
     private function _prepareSubmit()
     {
-        if (empty(ShardingPdoContext::getValue(self::$_execSqlTransactionUniqidFilePath))) { //为空则不记录事务提交日志
+        $_execSqlTransactionUniqidFilePath = ShardingPdoContext::getValue(self::$_execSqlTransactionUniqidFilePath);
+        if (empty($_execSqlTransactionUniqidFilePath)) { //为空则不记录事务提交日志
+            return false;
+        }
+        $dir = dirname($_execSqlTransactionUniqidFilePath);
+        if(!file_exists($dir)){
             return false;
         }
         ShardingPdoContext::setValue(self::$_execSqlTransactionUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
@@ -202,7 +207,6 @@ trait TransactionShardingTrait
         }
         $uniqid = spl_object_hash($this) . uniqid();
         $objHash = md5($uniqid) . sha1($uniqid);  //加上这个避免串事务
-        $_execSqlTransactionUniqidFilePath = ShardingPdoContext::getValue(self::$_execSqlTransactionUniqidFilePath);
         $ext = pathinfo($_execSqlTransactionUniqidFilePath, PATHINFO_EXTENSION);
         $filePath = preg_replace('/\.' . $ext . '$/i', ShardingPdoContext::getCid() . '-' . $objHash . '-' . date('Y-m-d_H_i_s') . '.' . $ext, $_execSqlTransactionUniqidFilePath);
         ShardingPdoContext::array_push(self::$_execSqlTransactionUniqidFilePathArr, $filePath);
