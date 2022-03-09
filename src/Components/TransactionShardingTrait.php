@@ -206,7 +206,8 @@ trait TransactionShardingTrait
         $ext = pathinfo($_execSqlTransactionUniqidFilePath, PATHINFO_EXTENSION);
         $filePath = preg_replace('/\.' . $ext . '$/i', ShardingPdoContext::getCid() . '-' . $objHash . '-' . date('Y-m-d_H_i_s') . '.' . $ext, $_execSqlTransactionUniqidFilePath);
         ShardingPdoContext::array_push(self::$_execSqlTransactionUniqidFilePathArr, $filePath);
-        file_put_contents($filePath, $log . PHP_EOL . 'END' . PHP_EOL, FILE_APPEND);
+//      file_put_contents($filePath, $log . PHP_EOL . 'END' . PHP_EOL, FILE_APPEND  | LOCK_EX);
+        file_put_contents($filePath, $log . PHP_EOL . 'END' . PHP_EOL, FILE_APPEND); //不加锁，因为不存在并发，同一个进程（协程）
         ShardingPdoContext::setValue(self::$_execSqlArr, []);
     }
 
@@ -229,7 +230,7 @@ trait TransactionShardingTrait
         $sqlLogOpen = ConfigEnv::get('shardingPdo.sqlLogOpen', false);
         if (!empty($sqlLogPath) && $sqlLogOpen) {
             $ext = pathinfo($sqlLogPath, PATHINFO_EXTENSION);
-            @file_put_contents(preg_replace('/\.' . $ext . '$/i', date('YmdH') . '.' . $ext, $sqlLogPath), $newSql, FILE_APPEND);
+            @file_put_contents(preg_replace('/\.' . $ext . '$/i', date('YmdH') . '.' . $ext, $sqlLogPath), $newSql, FILE_APPEND | LOCK_EX);  //会消耗性能，线上环境请关闭
         }
     }
 
@@ -253,7 +254,7 @@ trait TransactionShardingTrait
         $sqlLogOpen = ConfigEnv::get('shardingPdo.sqlLogOpen', false);
         if (!empty($sqlLogPath) && $sqlLogOpen) {
             $ext = pathinfo($sqlLogPath, PATHINFO_EXTENSION);
-            @file_put_contents(preg_replace('/\.' . $ext . '$/i', date('YmdH') . '.' . $ext, $sqlLogPath), $newSql, FILE_APPEND);
+            @file_put_contents(preg_replace('/\.' . $ext . '$/i', date('YmdH') . '.' . $ext, $sqlLogPath), $newSql, FILE_APPEND | LOCK_EX);   //会消耗性能，线上环境请关闭
         }
         ShardingPdoContext::array_push(self::$_execSqlArr, $newSql);
     }
