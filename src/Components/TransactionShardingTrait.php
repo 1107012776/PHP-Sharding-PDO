@@ -192,7 +192,7 @@ trait TransactionShardingTrait
             return false;
         }
         $dir = dirname($_execSqlTransactionUniqidFilePath);
-        if(!file_exists($dir)){
+        if (!file_exists($dir)) {
             return false;
         }
         ShardingPdoContext::setValue(self::$_execSqlTransactionUniqidFilePathArr, []);  //每次事务预提交，清空旧的残留预提交，防止事务被串而删除
