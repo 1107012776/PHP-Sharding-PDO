@@ -32,6 +32,9 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
 # 环境要求
 - PHP >= 7.2
 # 安装
+
+You can install the package via composer:
+
 ```bash
 composer require lys/php-sharding-pdo
 ```
