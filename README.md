@@ -31,6 +31,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
   
 # 环境要求
 - PHP >= 7.2
+- Swoole >= 4.1.0 （协程环境需要安装该版本）
 # 安装
 
 You can install the package via composer:
