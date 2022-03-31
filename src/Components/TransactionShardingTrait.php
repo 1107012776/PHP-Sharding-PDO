@@ -111,7 +111,7 @@ trait TransactionShardingTrait
         foreach ($useDatabaseArr as $db) {
             ShardingPdoContext::array_shift(self::$_useDatabaseArr);
             if (empty($this->getXid()) && empty($xid)) {
-                $db->rollBack();
+                $resArr[] = $db->rollBack();
             } else {
                 $resArr[] = $this->rollbackXa($db);
             }
