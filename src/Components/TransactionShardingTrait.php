@@ -78,7 +78,7 @@ trait TransactionShardingTrait
             ShardingPdoContext::array_shift(self::$_useDatabaseArr);
 //          throw new \Exception('中断则事务异常，产生事务日志');
             if (empty($this->getXid())) {
-                $db->commit();
+                $resArr[] = $db->commit();
             } else {
                 $resArr[] = $this->commitXa($db);
             }
