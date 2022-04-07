@@ -686,7 +686,7 @@ $this->assertEquals(empty($articleModel->sqlErrors()), true);
 https://www.developzhe.com
 
 # 联系我（微信）
-![avatar](https://www.developzhe.com/upload/dae99d4a-9639-4939-bd0d-16dcbb2d8490.png =200x200)
+![avatar](https://www.developzhe.com/upload/dae99d4a-9639-4939-bd0d-16dcbb2d8490.png=200x200)
 
 # Page visitor counter
 ![visitor counter](https://profile-counter.glitch.me/1107012776_PHP-Sharding-PDO/count.svg)
