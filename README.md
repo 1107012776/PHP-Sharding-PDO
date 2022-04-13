@@ -689,7 +689,7 @@ https://www.what.pub/
 # 更多请关注本人的博客
 https://www.developzhe.com
 
-# 联系我
+# 联系我 (WeChat)
 
 <img src="https://www.developzhe.com/upload/dae99d4a-9639-4939-bd0d-16dcbb2d8490.png" width="200" height="200" alt="微信"/><br/>
 
