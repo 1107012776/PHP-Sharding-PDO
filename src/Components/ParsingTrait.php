@@ -44,7 +44,7 @@ trait ParsingTrait
                         break;
                     }
                     foreach ($val[1] as $k => $v) {   //多个不等于
-                        $zwKeyNeq = $zwKey . '_neq_' . $k;
+                        $zwKeyNeq = $zwKey . '_neq_' . $k . '_0';
                         $this->_condition_str .= ShardingConst::CONDITION_AND . $key . ' != ' . $zwKeyNeq;
                         $this->_condition_bind[$zwKeyNeq] = $v;
                     }
@@ -82,8 +82,8 @@ trait ParsingTrait
                 case 'in':
                     $zwKeyIn = '';
                     foreach ($val[1] as $k => $v) {
-                        $zwKeyIn .= ',' . $zwKey . '_in_' . $k;
-                        $this->_condition_bind[$zwKey . '_in_' . $k] = $v;
+                        $zwKeyIn .= ',' . $zwKey . '_in_' . $k . '_0';
+                        $this->_condition_bind[$zwKey . '_in_' . $k . '_0'] = $v;
                     }
                     $zwKeyIn = trim($zwKeyIn, ',');
                     $this->_condition_str .= ShardingConst::CONDITION_AND . $key . ' in (' . $zwKeyIn . ')';
@@ -91,8 +91,8 @@ trait ParsingTrait
                 case 'notIn':
                     $zwKeyIn = '';
                     foreach ($val[1] as $k => $v) {
-                        $zwKeyIn .= ',' . $zwKey . '_notIn_' . $k;
-                        $this->_condition_bind[$zwKey . '_notIn_' . $k] = $v;
+                        $zwKeyIn .= ',' . $zwKey . '_notIn_' . $k . '_0';
+                        $this->_condition_bind[$zwKey . '_notIn_' . $k . '_0'] = $v;
                     }
                     $zwKeyIn = trim($zwKeyIn, ',');
                     $this->_condition_str .= ShardingConst::CONDITION_AND . $key . ' not in (' . $zwKeyIn . ')';
