@@ -823,11 +823,6 @@ class IntegrationTest extends TestCase
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
     }
 
-    public function testOneDatabase()
-    {
-        $model = new \PhpShardingPdo\Test\Model\ArticleDefaultModel();
-        $list = $model->limit(1, 3)->findAll();
-        var_dump($list);
-    }
+
 }
 
