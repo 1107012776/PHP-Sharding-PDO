@@ -28,6 +28,7 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
   - [4.Join用法](#4Join用法)  
   
   - [5.XA用法](#5XA用法)  
+- [六、案例](#案例)
   
 # 环境要求
 - PHP >= 7.2
@@ -582,6 +583,59 @@ class IntegrationTest extends TestCase
             ])->findAll();
         $this->assertEquals(count($list) == 1, true);
     }
+    
+    public function testGroupByJoin()
+    {
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $articleModel->alias('ar');
+        $cateModel = new \PhpShardingPdo\Test\Model\CategoryModel();
+        $cateModel->alias('cate');
+        $userModel = new UserModel();  //用户表
+        $userModel->alias('user');
+        $articleModel1 = clone $articleModel;
+        $cateModel1 = clone $cateModel;
+        $userModel1 = clone $userModel;
+        $user_id = 1;
+        $catePlan = $cateModel1->alias('cate')->where(['id' => 1])->createJoinTablePlan([
+            'cate.id' => $articleModel1->getFieldAlias('cate_id')
+        ]);
+        $articlePlan = $articleModel1->alias('ar')->where(['cate_id' => 1])->createJoinTablePlan([
+            'user.id' => $articleModel1->getFieldAlias('user_id')
+        ]);
+        $this->assertEquals(!empty($catePlan), true);
+        $this->assertEquals(!empty($articlePlan), true);
+        $list = $userModel1->field(['user.id', 'ar.cate_id as a', 'cate.id as b'])
+            ->innerJoin($catePlan)
+            ->innerJoin($articlePlan)
+            ->where([
+                'id' => $user_id
+            ])->order('user.id desc')->group('user.id')->findAll();
+        $this->assertEquals(isset($list[0]['id']) && $list[0]['id'] == 1, true);
+        $this->assertEquals(isset($list[0]['a']) && $list[0]['a'] == 1, true);
+        $this->assertEquals(isset($list[0]['b']) && $list[0]['b'] == 1, true);
+        $this->assertEquals(empty($userModel1->sqlErrors()), true);
+        $articleModel1 = clone $articleModel;
+        $cateModel1 = clone $cateModel;
+        $userModel1 = clone $userModel;
+        $catePlan = $cateModel1->alias('cate')->where(['id' => 1])->createJoinTablePlan([
+            'cate.id' => $articleModel1->getFieldAlias('cate_id')
+        ]);
+        $articlePlan = $articleModel1->alias('ar')->where(['cate_id' => 1])->createJoinTablePlan([
+            'user.id' => $articleModel1->getFieldAlias('user_id')
+        ]);
+        $this->assertEquals(!empty($catePlan), true);
+        $this->assertEquals(!empty($articlePlan), true);
+        $list = $userModel1->field(['user.id', 'ar.cate_id as a', 'cate.id as b'])
+            ->innerJoin($catePlan)
+            ->innerJoin($articlePlan)
+            ->where([
+                'id' => $user_id
+            ])->joinWhereCondition([  //这边存在注入的可能，因为不会使用占位符，请确保你传入的值是安全的
+                $userModel1->getFieldAlias('id') => ['neq', 'ar.cate_id'] //请传递比如 ['user.id' => 'ar.cate_id']
+            ])->order('user.id desc')->group('user.id')->findAll();
+        $this->assertEquals(empty($list), true);
+        $this->assertEquals(empty($userModel1->sqlErrors()), true);
+    }
 }
 ```
 
@@ -679,11 +733,19 @@ $this->assertEquals($res, true);
 $this->assertEquals(empty($articleModel->sqlErrors()), true);
 
 ```
+# 案例
+https://www.what.pub/
+
 # License
 [Apache-2.0](https://github.com/1107012776/PHP-Sharding-PDO/blob/master/LICENSE)
 
 # 更多请关注本人的博客
 https://www.developzhe.com
 
+# 联系我 (Contact WeChat)
+
+<img src="https://www.developzhe.com/upload/dae99d4a-9639-4939-bd0d-16dcbb2d8490.png" width="200" height="200" alt="微信"/><br/>
+
 # Page visitor counter
 ![visitor counter](https://profile-counter.glitch.me/1107012776_PHP-Sharding-PDO/count.svg)
+
