@@ -30,7 +30,8 @@ trait SelectSearchSharingTrait
     {
         $result = [];
         $sqlArr = [];
-        if (!empty($this->offset)  //存在偏移的时候，需要特殊处理
+        $map = $this->_databasePdoInstanceMap();
+        if (!empty($this->offset) && count($map) > 1  //存在偏移的时候，需要特殊处理
             && (
                 empty($this->getCurrentExecDb())  //没有找到具体库
                 || empty($this->_current_exec_table)  //没有找到具体表

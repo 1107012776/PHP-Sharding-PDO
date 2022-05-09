@@ -445,14 +445,11 @@ class ShardingPdo
 
     protected function getCurrentExecDb($index = '')
     {
-        $map = $this->_databasePdoInstanceMap();
-        if(count($map) == 1){ //只有一个
-            return array_values($map)[0];
-        }
         empty($index) && $index = $this->_current_exec_db_index;
         if (empty($index)) {
             return null;
         }
+        $map = $this->_databasePdoInstanceMap();
         return isset($map[$index]) ? $map[$index] : null;
     }
 
