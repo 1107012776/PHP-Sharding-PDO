@@ -10,3 +10,6 @@ composer.lock
 Private
 Bak
 .env
+ShardingInitConfig*.php
+Model/*DefaultModel.php
+LocalTest.php
