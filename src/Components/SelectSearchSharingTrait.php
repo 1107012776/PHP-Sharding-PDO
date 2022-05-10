@@ -25,6 +25,8 @@ trait SelectSearchSharingTrait
 
     private $attr_cursor = \PDO::CURSOR_FWDONLY;
 
+    private $is_distributed = false;  //是否分布式查询  true为是 false为否，这边涉及偏移量问题
+
 
     private function _defaultSearch()
     {
@@ -35,6 +37,7 @@ trait SelectSearchSharingTrait
                 || empty($this->_current_exec_table)  //没有找到具体表
             )
         ) {
+            $this->is_distributed = true;
             $this->_limit_str = ' limit ' . strval($this->offset + $this->offset_limit);  //分布式分页，获取的个数
         }
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {  //全部扫描
@@ -204,6 +207,12 @@ trait SelectSearchSharingTrait
                         && count($tmp) == 1) {  //count查询，这种特殊情况下
                         array_push($result, $tmp);
                         continue;
+                    }
+                    if ($this->is_distributed) {
+                        $this->offset--;
+                        if ($this->offset >= 0) {  //这边的偏移性能比较差，最后在条件上面加一个范围查询的比如 id > 110000 之类的降低偏移的压力
+                            continue;
+                        }
                     }
                     $limit--;
                     array_push($result, $tmp);
