@@ -96,21 +96,16 @@ trait SelectSearchSharingTrait
                     $this->_sqlErrors[] = [$this->getCurrentExecDb()->getDsn() => $statement->errorInfo()];
                 }
             }
-            if (count($statementArr) > 1) {
-                if (!empty($limit = $this->_getLimitReCount())) {
-                    return $this->_limitDefaultSearch($statementArr, $limit);
-                } else {
-                    /**
-                     * @var \PDOStatement $s
-                     */
-                    foreach ($statementArr as $s) {
-                        $tmp = $s->fetchAll($this->fetch_style);
-                        !empty($tmp) && $result = array_merge($result, $tmp);
-                    }
-                }
+            if (!empty($limit = $this->_getLimitReCount())) {
+                return $this->_limitDefaultSearch($statementArr, $limit);
             } else {
-                $tmp = $statement->fetchAll($this->fetch_style);
-                !empty($tmp) && $result = array_merge($result, $tmp);
+                /**
+                 * @var \PDOStatement $s
+                 */
+                foreach ($statementArr as $s) {
+                    $tmp = $s->fetchAll($this->fetch_style);
+                    !empty($tmp) && $result = array_merge($result, $tmp);
+                }
             }
         }
         return $result;
