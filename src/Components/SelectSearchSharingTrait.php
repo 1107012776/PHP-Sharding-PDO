@@ -30,9 +30,7 @@ trait SelectSearchSharingTrait
     {
         $result = [];
         $sqlArr = [];
-        $map = $this->_databasePdoInstanceMap();
-        if (!empty($this->offset) && count($map) > 1  //存在偏移的时候，需要特殊处理
-            && (
+        if (!empty($this->offset) && (
                 empty($this->getCurrentExecDb())  //没有找到具体库
                 || empty($this->_current_exec_table)  //没有找到具体表
             )
@@ -210,6 +208,10 @@ trait SelectSearchSharingTrait
                     if (isset($tmp['total_count_num'])
                         && count($tmp) == 1) {  //count查询，这种特殊情况下
                         array_push($result, $tmp);
+                        continue;
+                    }
+                    $this->offset--;
+                    if ($this->offset >= 0) {  //这边的偏移性能比较差，最后在条件上面加一个范围查询的比如 id > 110000 之类的降低偏移的压力
                         continue;
                     }
                     $limit--;
