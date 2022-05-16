@@ -18,6 +18,7 @@ use PhpShardingPdo\Common\ConfigEnv;
 use PhpShardingPdo\Core\ShardingPdoContext;
 use PhpShardingPdo\Test\Migrate\Migrate;
 use PhpShardingPdo\Test\Model\ArticleModel;
+use PhpShardingPdo\Test\Model\CategoryOneModel;
 use PhpShardingPdo\Test\Model\UserModel;
 use PHPUnit\Framework\TestCase;
 
@@ -31,9 +32,7 @@ if (file_exists($file_load_path)) {
 
 ConfigEnv::loadFile(dirname(__FILE__) . '/Config/.env');  //加载配置
 
-/**
- * @method assertEquals($a, $b)
- */
+
 class IntegrationTest extends TestCase
 {
     private $article_title1 = '测试数据article_title1';
@@ -61,6 +60,7 @@ class IntegrationTest extends TestCase
         $this->testOrderByJoin();
         $this->testGroupByJoin();
         $this->testXaTransaction();  //xa事务测试
+        $this->testOneDatabase();  //单库测试，某个表只在某个数据库
     }
 
     /**
@@ -821,6 +821,22 @@ class IntegrationTest extends TestCase
         $res = $articleModel->commit();
         $this->assertEquals($res, true);
         $this->assertEquals(empty($articleModel->sqlErrors()), true);
+    }
+
+    /**
+     * 单个库测试，某个表只存在于单个库
+     */
+    public function testOneDatabase()
+    {
+        $model = new CategoryOneModel();
+        $list = $model->renew()->findAll();
+        $this->assertEquals(implode(',', [1, 2, 3]), implode(',', array_column($list, 'id')));
+        $list = $model->renew()->limit(2, 1)->findAll();
+        $this->assertEquals(implode(',', [3]), implode(',', array_column($list, 'id')));
+        $list = $model->renew()->limit(2, 1)->order('id desc')->findAll();
+        $this->assertEquals(implode(',', [1]), implode(',', array_column($list, 'id')));
+        $list = $model->renew()->limit(2, 1)->order('id asc')->findAll();
+        $this->assertEquals(implode(',', [3]), implode(',', array_column($list, 'id')));
     }
 
 

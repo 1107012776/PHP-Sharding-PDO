@@ -395,7 +395,13 @@ class ShardingPdo
         if ($tableShardingStrategyConfig->isCustomizeRule()) {  //是否自定义规则
             $customizeCondition = !empty($this->_insert_data) ? $this->_insert_data : $this->_condition;
             if (empty($customizeCondition)) {  //自定义，却找不到条件
-                return null;  //返回这个代表没有规则，则需要全部db扫描了
+                $number = $tableShardingStrategyConfig->getCustomizeNum([]);  //自定义规则
+                if ($number === null) {
+                    return null;  //返回这个代表没有规则，则需要全部db扫描了
+                }
+                $index = $tableShardingStrategyConfig->getFix() . $number;
+                $this->_current_exec_db_index = $index;
+                return isset($map[$index]) ? $map[$index] : null;
             }
             $customizeConditionNew = [];
             foreach ($customizeCondition as $key => $val) {
@@ -480,7 +486,11 @@ class ShardingPdo
         if ($tableShardingStrategyConfig->isCustomizeRule()) {  //是否自定义规则
             $customizeCondition = !empty($this->_insert_data) ? $this->_insert_data : $this->_condition;
             if (empty($customizeCondition)) {  //自定义，却找不到条件
-                return null;  //返回这个代表没有规则，则需要全部表扫描了
+                $number = $tableShardingStrategyConfig->getCustomizeNum([]);  //自定义规则
+                if ($number === null) {
+                    return null;
+                }
+                return $tableShardingStrategyConfig->getFix() . $number;
             }
             $customizeConditionNew = [];
             foreach ($customizeCondition as $key => $val) {

@@ -186,11 +186,13 @@ trait SelectSearchSharingTrait
                     $statementCurrentRowObjArr = array_values($statementCurrentRowObjArr);
                     continue;
                 }
-                //MySQL扩展不支持游标，所以使用该种偏移
-                //https://www.bbsmax.com/A/o75NNkGD5W/
-                $this->offset--;
-                if ($this->offset >= 0) {  //这边的偏移性能比较差，最后在条件上面加一个范围查询的比如 id > 110000 之类的降低偏移的压力
-                    continue;
+                if ($this->is_distributed) {
+                    //MySQL扩展不支持游标，所以使用该种偏移
+                    //https://www.bbsmax.com/A/o75NNkGD5W/
+                    $this->offset--;
+                    if ($this->offset >= 0) {  //这边的偏移性能比较差，最后在条件上面加一个范围查询的比如 id > 110000 之类的降低偏移的压力
+                        continue;
+                    }
                 }
                 $limit--;
                 array_push($result, $tmp);
