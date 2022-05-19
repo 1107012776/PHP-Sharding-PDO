@@ -28,7 +28,7 @@ trait ParsingTrait
     private function _bind($key, $val)
     {
         $this->_bind_index++;  //自加
-        $zwKey = ':' . str_replace('.', '_', $key) . '_' . $this->_bind_index;  //占位符
+        $zwKey = ':' . str_replace('.', '_', $key) . '_' . $this->_bind_index . '_';  //占位符
         if (is_array($val)) {
             switch ($val[0]) {
                 case 'eq':
