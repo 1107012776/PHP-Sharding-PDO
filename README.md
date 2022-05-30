@@ -745,7 +745,7 @@ https://www.developzhe.com
 # 联系我 (Contact WeChat)
 
 <img src="https://www.developzhe.com/upload/dae99d4a-9639-4939-bd0d-16dcbb2d8490.png" width="200" height="200" alt="微信"/><br/>
-** 有需要可以加我微信，拉你进群 **
+> 有需要可以加我微信，拉你进群
 
 # Page visitor counter
 ![visitor counter](https://profile-counter.glitch.me/1107012776_PHP-Sharding-PDO/count.svg)
