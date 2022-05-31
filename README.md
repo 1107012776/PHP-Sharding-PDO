@@ -96,8 +96,7 @@ php vendor/bin/phpunit tests/IntegrationCoroutineTest.php --filter testExecStart
 
 # 分表分库的知识可以参考这篇文章
 
-<a target='_blank' href="https://blog.csdn.net/weixin_38642740/article/details/81448762">如何分表分库?</a>
-
+[link](https://blog.csdn.net/weixin_38642740/article/details/81448762){:target="_blank"}
 
 # 示例 
 > 详细请看tests目录
