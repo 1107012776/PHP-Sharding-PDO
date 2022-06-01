@@ -37,11 +37,11 @@ class ShardingInitConfigOneDatabase extends ShardingInitConfigInter
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('category');
         $tableRule->setDatabaseShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
+            new InlineShardingStrategyConfiguration('db', [], function ($condition) {
                 return 0;
             }));
         $tableRule->setTableShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('category', [], function ($condtion) {
+            new InlineShardingStrategyConfiguration('category', [], function ($condition) {
                 return '';
             }));
         $shardingRuleConfig->add($tableRule);  //表5规则

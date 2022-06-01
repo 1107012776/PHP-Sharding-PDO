@@ -58,14 +58,14 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('account');
         $tableRule->setDatabaseShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
-                if (isset($condtion['username']) && !is_array($condtion['username'])) {
-                    return crc32($condtion['username']) % 4;
+            new InlineShardingStrategyConfiguration('db', [], function ($condition) {
+                if (isset($condition['username']) && !is_array($condition['username'])) {
+                    return crc32($condition['username']) % 4;
                 }
                 return null;
             }));
         $tableRule->setTableShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('account_', [], function ($condtion) {
+            new InlineShardingStrategyConfiguration('account_', [], function ($condition) {
                 return 0;
             }));
         $shardingRuleConfig->add($tableRule);  //表2规则
@@ -73,14 +73,14 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('user');
         $tableRule->setDatabaseShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
-                if (isset($condtion['id']) && !is_array($condtion['id'])) {
-                    return $condtion['id'] % 4;
+            new InlineShardingStrategyConfiguration('db', [], function ($condition) {
+                if (isset($condition['id']) && !is_array($condition['id'])) {
+                    return $condition['id'] % 4;
                 }
                 return null;
             }));
         $tableRule->setTableShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('user_', [], function ($condtion) {
+            new InlineShardingStrategyConfiguration('user_', [], function ($condition) {
                 return 0;
             }));
         $shardingRuleConfig->add($tableRule);  //表3规则
@@ -90,14 +90,14 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('auto_distributed');
         $tableRule->setDatabaseShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
-                if (isset($condtion['stub']) && !is_array($condtion['stub'])) {
-                    return $condtion['stub'] % 4;
+            new InlineShardingStrategyConfiguration('db', [], function ($condition) {
+                if (isset($condition['stub']) && !is_array($condition['stub'])) {
+                    return $condition['stub'] % 4;
                 }
                 return null;
             }));
         $tableRule->setTableShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('auto_distributed', [], function ($condtion) {
+            new InlineShardingStrategyConfiguration('auto_distributed', [], function ($condition) {
                 return '';
             }));
         $shardingRuleConfig->add($tableRule);  //表4规则
@@ -106,11 +106,11 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('category');
         $tableRule->setDatabaseShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('db', [], function ($condtion) {
+            new InlineShardingStrategyConfiguration('db', [], function ($condition) {
                 return 0;
             }));
         $tableRule->setTableShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('category', [], function ($condtion) {
+            new InlineShardingStrategyConfiguration('category', [], function ($condition) {
                 return '';
             }));
         $shardingRuleConfig->add($tableRule);  //表5规则
