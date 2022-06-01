@@ -70,7 +70,7 @@ cd PHP-Sharding-PDO
 
 composer install
 ```
-### （1）先要配置tests/Config/.env ，测试环境数据库链接
+### （1）先要配置tests/Config/.env ，测试环境数据库连接
 
 > .env文件
 ```php
