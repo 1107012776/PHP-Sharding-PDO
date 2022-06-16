@@ -745,6 +745,12 @@ https://www.what.pub/
 # 更多请关注本人的博客
 https://www.developzhe.com
 
+# 关于项目
+如果对您有所帮助或者你觉得还不错还请请点个Star支持一波
+
+# 参与贡献
+如果有更好的意见或者方法欢迎私下交流
+
 # 联系我 (Contact WeChat)
 
 <img src="https://www.developzhe.com/upload/dae99d4a-9639-4939-bd0d-16dcbb2d8490.png" width="200" height="200" alt="微信"/><br/>
