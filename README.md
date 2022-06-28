@@ -45,6 +45,7 @@ composer require lys/php-sharding-pdo
 ###### （2）支持分片规则自定义，支持实现复杂的分片，分片规则是依赖输入的where条件或者insert插入的数据来的
 # 注意
 ###### （1）协程模式必须在主进程开启这个东西，否则会出现死锁
+
 ```bash
 \Swoole\Runtime::enableCoroutine(); 
 ```
@@ -62,6 +63,8 @@ reading of the same socket in coroutine#4 at the same time is not allowed
 \PhpShardingPdo\Core\ShardingPdoContext::contextFreed();  
 
 ```
+
+###### (5) 请使用当前最新版本
 # 单元测试
 ```bash
 git clone https://github.com/1107012776/PHP-Sharding-PDO.git
