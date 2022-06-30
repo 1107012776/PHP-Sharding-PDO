@@ -83,7 +83,7 @@ trait  GroupByShardingTrait
                 $intersect = $groupField;
             }
             $reGroupSortField = [];
-            foreach ($groupField as $gf){
+            foreach ($groupField as $gf) {
                 $reGroupSortField[] = [$gf, 'asc'];
             }
             /**
@@ -122,7 +122,7 @@ trait  GroupByShardingTrait
         //存在交集
         if (empty($orderField)) {  //优化
             $reGroupSortField = [];
-            foreach ($groupField as $gf){
+            foreach ($groupField as $gf) {
                 $reGroupSortField[] = [$gf, 'asc'];
             }
             $orderField = $reGroupSortField;
@@ -205,7 +205,7 @@ trait  GroupByShardingTrait
         }
         if (empty($orderField)) {  //优化，没有交集制造交集
             $orderField = [];
-            foreach ($groupField as $gf){
+            foreach ($groupField as $gf) {
                 $orderField[] = [$gf, 'asc'];
             }
         }
