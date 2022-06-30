@@ -80,7 +80,11 @@ trait  GroupByShardingTrait
             || empty($orderField) || $orderField[0][0] != $intersect[0]
         ) {  //不存在交集，内存归并
             if (empty($intersect)) {  //优化group by，使用group by 则必定查询返回
-                $intersect[0] = $groupField[0];
+                $intersect = $groupField;
+            }
+            $reGroupSortField = [];
+            foreach ($groupField as $gf){
+                $reGroupSortField[] = [$gf, 'asc'];
             }
             /**
              * @var \PDOStatement $s
@@ -90,12 +94,12 @@ trait  GroupByShardingTrait
                 !empty($tmp) && $result = array_merge($result, $tmp);
             }
             //默认给group by 字段进行一个排序
-            StatementShardingPdo::reGroupSort($result, [[$intersect[0], 'asc']]);
+            StatementShardingPdo::reGroupSort($result, $reGroupSortField);
             $data = [];
             foreach ($result as &$val) {
                 $tmp = $val;
                 if (strstr($this->_field_str, 'sum(') &&
-                    !empty($data) && end($data)[$intersect[0]] == $tmp[$intersect[0]]) {  //存在sum则累积相加
+                    !empty($data) && self::issetGroupByRecord($data, $intersect, $tmp)) {  //存在sum则累积相加
                     foreach ($this->_field as $v) {
                         if (strstr($v, 'sum(')) {
                             $data[count($data) - 1][$v] += $tmp[$v];
@@ -103,7 +107,7 @@ trait  GroupByShardingTrait
                         }
                     }
                 } else {
-                    if (!empty($data) && end($data)[$intersect[0]] == $tmp[$intersect[0]]) { //只能取一条
+                    if (!empty($data) && self::issetGroupByRecord($data, $intersect, $tmp)) { //只能取一条
                         continue;
                     }
                 }
@@ -116,12 +120,15 @@ trait  GroupByShardingTrait
             return $result;
         }
         //存在交集
-
         if (empty($orderField)) {  //优化
-            $orderField = [[$groupField[0], 'asc']];
+            $reGroupSortField = [];
+            foreach ($groupField as $gf){
+                $reGroupSortField[] = [$gf, 'asc'];
+            }
+            $orderField = $reGroupSortField;
         }
         if (empty($intersect)) {  //优化group by，使用group by 则必定查询返回
-            $intersect[0] = $groupField[0];
+            $intersect = $groupField;
         }
         $statementCurrentRowObjArr = [];
         /**
@@ -149,7 +156,8 @@ trait  GroupByShardingTrait
                 continue;
             }
             if (strstr($this->_field_str, 'sum(') &&
-                !empty($result) && end($result)[$intersect[0]] == $tmp[$intersect[0]]) {  //存在sum则累积相加
+                !empty($result) && self::issetGroupByRecord($result, $intersect, $tmp)
+            ) {  //存在sum则累积相加
                 foreach ($this->_field as $v) {
                     if (strstr($v, 'sum(')) {
                         $v = strtolower($v);
@@ -164,7 +172,7 @@ trait  GroupByShardingTrait
                     }
                 }
             } else {
-                if (!empty($result) && end($result)[$intersect[0]] == $tmp[$intersect[0]]) {
+                if (!empty($result) && self::issetGroupByRecord($result, $intersect, $tmp)) {
                     continue;
                 }
             }
@@ -193,10 +201,13 @@ trait  GroupByShardingTrait
         }
         $intersect = array_intersect($groupField, $this->_field);
         if (empty($intersect)) {  //优化group by，使用group by 则必定查询返回
-            $intersect[0] = $groupField[0];
+            $intersect = $groupField;
         }
         if (empty($orderField)) {  //优化，没有交集制造交集
-            $orderField = [[$groupField[0], 'asc']];
+            $orderField = [];
+            foreach ($groupField as $gf){
+                $orderField[] = [$gf, 'asc'];
+            }
         }
         //存在交集
         $statementCurrentRowObjArr = [];
@@ -225,7 +236,7 @@ trait  GroupByShardingTrait
                 continue;
             }
             if (strstr($this->_field_str, 'sum(') &&
-                !empty($result) && end($result)[$intersect[0]] == $tmp[$intersect[0]]) {  //存在sum则累积相加
+                !empty($result) && self::issetGroupByRecord($result, $intersect, $tmp)) {  //存在sum则累积相加
                 foreach ($this->_field as $v) {
                     if (strstr($v, 'sum(')) {
                         $v = strtolower($v);
@@ -240,17 +251,17 @@ trait  GroupByShardingTrait
                     }
                 }
             } else {
-                if (!empty($offsetDataFlag[$tmp[$intersect[0]]])) {
+                if (!empty($offsetDataFlag[self::groupByRecordKey($intersect, $tmp)])) {
                     continue;
                 }
                 if ($this->offset > 0
-                    && empty($offsetDataFlag[$tmp[$intersect[0]]])
+                    && empty($offsetDataFlag[self::groupByRecordKey($intersect, $tmp)])
                 ) {
                     $this->offset--;
-                    $offsetDataFlag[$tmp[$intersect[0]]] = 1;
+                    $offsetDataFlag[self::groupByRecordKey($intersect, $tmp)] = 1;
                     continue;
                 }
-                if (!empty($result) && end($result)[$intersect[0]] == $tmp[$intersect[0]]) {
+                if (!empty($result) && self::issetGroupByRecord($result, $intersect, $tmp)) {
                     continue;
                 }
             }
@@ -285,6 +296,47 @@ trait  GroupByShardingTrait
             $group = [$group];
         }
         return $group;
+    }
+
+
+    /**
+     * key 获取
+     * @param $intersect
+     * @param $tmp
+     * @return bool
+     */
+    public static function groupByRecordKey($intersect, $tmp)
+    {
+        $key = '';
+        foreach ($intersect as $value) {
+            $key .= $tmp[$value];
+        }
+        return $key;
+    }
+
+
+    /**
+     * 记录是否存在
+     * @param $result
+     * @param $intersect
+     * @param $tmp
+     * @return bool
+     */
+    public static function issetGroupByRecord($result, $intersect, $tmp)
+    {
+        if (empty($result)) {
+            return false;
+        }
+        $lastRow = end($result);
+        $arr = [];
+        foreach ($intersect as $value) {
+            if ($lastRow[$value] == $tmp[$value]) {
+                $arr[] = true;
+            } else {
+                $arr[] = false;
+            }
+        }
+        return !in_array(false, $arr);  //全部都对应上了
     }
 
 
