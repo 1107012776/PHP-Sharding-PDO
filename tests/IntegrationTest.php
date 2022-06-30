@@ -348,6 +348,15 @@ class IntegrationTest extends TestCase
             ->findAll();
         $this->assertEquals(count($list) == 1, true);
         $this->assertEquals($list[0]['choice'] == 4, true);
+        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $list = $model->renew()->field('article_title,sum(is_choice) as choice')
+            ->where(['article_title' => $this->article_title1])
+            ->order('article_title desc')
+            ->group('article_title,del_flag')
+            ->limit(0, 1)
+            ->findAll();
+        $this->assertEquals(count($list) == 1, true);
+        $this->assertEquals($list[0]['choice'] == 4, true);
     }
 
     public function testUpdateDelete()
