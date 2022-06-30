@@ -305,25 +305,25 @@ class IntegrationTest extends TestCase
         $count = $model->where([
             'cate_id' => 1,
         ])->count();
-        var_dump($count);
+        $this->assertEquals($count == 3, true);
         $count = $model->renew()->where([
             'cate_id' => 2,
         ])->count();
-        var_dump($count);
+        $this->assertEquals($count == 1, true);
         $count = $model->renew()->where([
             'cate_id' => 3,
         ])->count();
-        var_dump($count);
+        $this->assertEquals($count == 2, true);
         $count = $model->renew()->where([
             'cate_id' => 4,
         ])->count();
-        var_dump($count);
-        $count = $model->renew()
+        $this->assertEquals($count == 0, true);
+        $countArr = $model->renew()
             ->group('cate_id,del_flag')->count();
-        var_dump($count);
-        $count = $model->renew()
+        $this->assertEquals(count($countArr) == 3, true);
+        $list = $model->renew()
             ->group('cate_id,del_flag')->findAll();
-        var_dump($count);
+        $this->assertEquals(count($list) == 3, true);
     }
 
     public function testSelectGroupOrderFindAll()

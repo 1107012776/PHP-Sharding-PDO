@@ -272,9 +272,8 @@ class ShardingPdo
         $this->clearSqlErrors();
         $old = $this->_field_str;
         empty($field_count) && $field_count = '*';
-        $getGroupField = $this->_getGroupField();
-        if (!empty($getGroupField)) {
-            $getGroupFieldStr = implode(',', $this->_getGroupField());
+        if (!empty($this->_group_str)) {
+            $getGroupFieldStr = $this->_group_str;
             $this->_field_str = 'count(' . $field_count . ') as total_count_num,' . $getGroupFieldStr;
         } else {
             $this->_field_str = 'count(' . $field_count . ') as total_count_num';
@@ -285,12 +284,13 @@ class ShardingPdo
         if (empty($list)) {
             return $count;
         }
-        if (empty($getGroupField)) {
+        if (empty($this->_group_str)) {
             foreach ($list as &$value) {
                 $count += $value['total_count_num'];
             }
             return $count;
         } else {
+            $getGroupField = $this->_getGroupField();
             $data = [];
             foreach ($list as &$value) {
                 if (isset($data[self::groupByRecordKey($getGroupField, $value)])) {

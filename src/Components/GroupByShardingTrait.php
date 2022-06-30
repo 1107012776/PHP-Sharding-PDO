@@ -293,6 +293,9 @@ trait  GroupByShardingTrait
             }
         } else {
             $group = trim($group);
+            if (empty($group)) {
+                return [];
+            }
             $group = [$group];
         }
         return $group;
