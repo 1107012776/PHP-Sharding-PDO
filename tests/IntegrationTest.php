@@ -302,10 +302,10 @@ class IntegrationTest extends TestCase
             ->group('article_title')->findAll();
         $this->assertEquals(!empty($list), true);
         $model = new \PhpShardingPdo\Test\Model\ArticleModel();
-        $count = $model->where([
+        $count = $model->renew()->where([
             'cate_id' => 1,
         ])->count();
-        $this->assertEquals($count == 3, true);
+        $this->assertEquals($count == 2, true);
         $count = $model->renew()->where([
             'cate_id' => 2,
         ])->count();
@@ -313,7 +313,7 @@ class IntegrationTest extends TestCase
         $count = $model->renew()->where([
             'cate_id' => 3,
         ])->count();
-        $this->assertEquals($count == 2, true);
+        $this->assertEquals($count == 1, true);
         $count = $model->renew()->where([
             'cate_id' => 4,
         ])->count();
