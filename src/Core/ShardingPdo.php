@@ -265,24 +265,42 @@ class ShardingPdo
 
     /**
      * 查找所有数据的条数
-     * @return int
+     * @return int|array
      */
     public function count($field_count = '')
     {
         $this->clearSqlErrors();
         $old = $this->_field_str;
         empty($field_count) && $field_count = '*';
-        $this->_field_str = 'count(' . $field_count . ') as total_count_num';
+        $getGroupField = $this->_getGroupField();
+        if (!empty($getGroupField)) {
+            $getGroupFieldStr = implode(',', $this->_getGroupField());
+            $this->_field_str = 'count(' . $field_count . ') as total_count_num,' . $getGroupFieldStr;
+        } else {
+            $this->_field_str = 'count(' . $field_count . ') as total_count_num';
+        }
         $list = $this->_search();
         $this->_field_str = $old;
         $count = 0;
         if (empty($list)) {
             return $count;
         }
-        foreach ($list as &$value) {
-            $count += $value['total_count_num'];
+        if (empty($getGroupField)) {
+            foreach ($list as &$value) {
+                $count += $value['total_count_num'];
+            }
+            return $count;
+        } else {
+            $data = [];
+            foreach ($list as &$value) {
+                if (isset($data[self::groupByRecordKey($getGroupField, $value)])) {
+                    $data[self::groupByRecordKey($getGroupField, $value)]['total_count_num'] += $value['total_count_num'];
+                } else {
+                    $data[] = $value;
+                }
+            }
+            return $data;
         }
-        return $count;
     }
 
 

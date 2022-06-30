@@ -330,7 +330,7 @@ trait  GroupByShardingTrait
         $lastRow = end($result);
         $arr = [];
         foreach ($intersect as $value) {
-            if ($lastRow[$value] == $tmp[$value]) {
+            if (isset($lastRow[$value]) && $lastRow[$value] == $tmp[$value]) {
                 $arr[] = true;
             } else {
                 $arr[] = false;

@@ -301,6 +301,29 @@ class IntegrationTest extends TestCase
             ->where(['article_title' => $this->article_title1])
             ->group('article_title')->findAll();
         $this->assertEquals(!empty($list), true);
+        $model = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $count = $model->where([
+            'cate_id' => 1,
+        ])->count();
+        var_dump($count);
+        $count = $model->renew()->where([
+            'cate_id' => 2,
+        ])->count();
+        var_dump($count);
+        $count = $model->renew()->where([
+            'cate_id' => 3,
+        ])->count();
+        var_dump($count);
+        $count = $model->renew()->where([
+            'cate_id' => 4,
+        ])->count();
+        var_dump($count);
+        $count = $model->renew()
+            ->group('cate_id,del_flag')->count();
+        var_dump($count);
+        $count = $model->renew()
+            ->group('cate_id,del_flag')->findAll();
+        var_dump($count);
     }
 
     public function testSelectGroupOrderFindAll()

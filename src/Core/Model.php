@@ -143,8 +143,8 @@ class Model
 
 
     /**
-     * 查找所有数据的条数
-     * @return int
+     * 查找所有数据的条数，这边有可能是数组，那是因为使用了group by
+     * @return int|array
      */
     public function count($field_count = '')
     {
