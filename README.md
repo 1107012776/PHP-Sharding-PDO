@@ -67,7 +67,7 @@ reading of the same socket in coroutine#4 at the same time is not allowed
 ###### （5） 请使用当前最新版本
 
 
-###### （6） 当前Group by多字段还有问题，所以请使用Group by单字段
+###### （6） 用Group by的时候，请大家帮忙多测试测试，这边修复了部分group by的BUG，现在支持多字段group by
 
 # 单元测试
 ```bash
