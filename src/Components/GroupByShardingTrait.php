@@ -103,7 +103,7 @@ trait  GroupByShardingTrait
                     foreach ($this->_field as $v) {
                         if (strstr($v, 'sum(')) {
                             $data[count($data) - 1][$v] += $tmp[$v];
-                            continue;
+                            continue 2;
                         }
                     }
                 } else {
