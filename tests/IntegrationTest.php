@@ -886,6 +886,7 @@ class IntegrationTest extends TestCase
      */
     public function testGroupByComprehensive()
     {
+        $this->testClearArticle();  //清理所有数据
         $this->insert(1, $this->article_title1);
         $this->insert(1, $this->article_title1);
         $this->insert(2, $this->article_title1);
@@ -909,6 +910,12 @@ class IntegrationTest extends TestCase
         $this->assertEquals(count($list) == 9, true);
         $count = $articleModel->renew()->group("article_title,cate_id")->count();
         $this->assertEquals($count == 9, true);
+        $list = $articleModel->renew()->findAll();
+        $this->assertEquals(count($list) == 12, true);
+        $list = $articleModel->renew()->group("article_title,cate_id,user_id")->findAll();
+        $this->assertEquals(count($list) == 12, true);
+        $count = $articleModel->renew()->group("article_title,cate_id,user_id")->count();
+        $this->assertEquals($count == 12, true);
     }
 
 
