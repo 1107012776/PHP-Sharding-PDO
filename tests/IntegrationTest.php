@@ -930,6 +930,8 @@ class IntegrationTest extends TestCase
         $this->assertEquals(count($list) == 3, true);
         $count = $articleModel->renew()->field('sum(cate_id),cate_id')->group("cate_id")->limit(0, 4)->count();
         $this->assertEquals($count == 3, true);
+        $count = $articleModel->renew()->field('sum(cate_id),cate_id')->group("cate_id")->where(['cate_id' => ['gt', 2]])->limit(0, 4)->count();
+        $this->assertEquals($count == 1, true);
     }
 
 
