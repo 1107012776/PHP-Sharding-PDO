@@ -101,10 +101,15 @@ trait  GroupByShardingTrait
                 if (strstr($this->_field_str, 'sum(') &&
                     !empty($data) && self::issetGroupByRecord($data, $intersect, $tmp)) {  //存在sum则累积相加
                     foreach ($this->_field as $v) {
-                        if (strstr($v, 'sum(')) {
+                        $v = strtolower($v);
+                        if (strstr($v, ' as ')) {  //处理sum之后的别名数值累加
+                            $vFieldArr = explode(' as ', $v);
+                            $vFieldArr[1] = trim($vFieldArr[1]);
+                            $data[count($data) - 1][$vFieldArr[1]] += $tmp[$vFieldArr[1]];
+                        } else {
                             $data[count($data) - 1][$v] += $tmp[$v];
-                            continue 2;
                         }
+                        continue 2;
                     }
                 } else {
                     if (!empty($data) && self::issetGroupByRecord($data, $intersect, $tmp)) { //只能取一条
