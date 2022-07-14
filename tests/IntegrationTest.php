@@ -918,17 +918,17 @@ class IntegrationTest extends TestCase
         $this->assertEquals($count == 12, true);
         $count = $articleModel->renew()->group("article_title,cate_id,user_id")->limit(1)->count();
         $this->assertEquals($count == 1, true);
-        $count = $articleModel->renew()->group("article_title,cate_id,user_id")->limit(0,1)->count();
+        $count = $articleModel->renew()->group("article_title,cate_id,user_id")->limit(0, 1)->count();
         $this->assertEquals($count == 1, true);
         $list = $articleModel->renew()->group("article_title,cate_id,user_id")->limit(1)->findAll();
         $this->assertEquals(count($list) == 1, true);
-        $list = $articleModel->renew()->group("article_title,cate_id,user_id")->limit(0,1)->findAll();
+        $list = $articleModel->renew()->group("article_title,cate_id,user_id")->limit(0, 1)->findAll();
         $this->assertEquals(count($list) == 1, true);
-        $list = $articleModel->renew()->field('sum(cate_id),cate_id')->group("cate_id")->limit(0,1)->findAll();
+        $list = $articleModel->renew()->field('sum(cate_id),cate_id')->group("cate_id")->limit(0, 1)->findAll();
         $this->assertEquals(count($list) == 1, true);
-        $list = $articleModel->renew()->field('sum(cate_id),cate_id')->group("cate_id")->limit(0,4)->findAll();
+        $list = $articleModel->renew()->field('sum(cate_id),cate_id')->group("cate_id")->limit(0, 4)->findAll();
         $this->assertEquals(count($list) == 3, true);
-        $count = $articleModel->renew()->field('sum(cate_id),cate_id')->group("cate_id")->limit(0,4)->count();
+        $count = $articleModel->renew()->field('sum(cate_id),cate_id')->group("cate_id")->limit(0, 4)->count();
         $this->assertEquals($count == 3, true);
     }
 
