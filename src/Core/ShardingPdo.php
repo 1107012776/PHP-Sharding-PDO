@@ -299,7 +299,7 @@ class ShardingPdo
                     $data[] = $value;
                 }
             }
-            return $data;
+            return count($data);
         }
     }
 

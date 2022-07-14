@@ -65,6 +65,8 @@ class IntegrationCoroutineTest extends IntegrationTest
             $this->testGroupByJoin();
             $this->testXaTransaction();  //xa事务测试
             $this->testOneDatabase();  //单库测试，某个表只在某个数据库
+            $this->testClearArticle();  //清理所有数据
+            $this->testGroupByComprehensive();  //综合group by测试
         });
         \Swoole\Event::wait(); //https://wiki.swoole.com/wiki/page/1081.html
     }

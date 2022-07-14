@@ -37,6 +37,7 @@ class IntegrationTest extends TestCase
 {
     private $article_title1 = '测试数据article_title1';
     private $article_title2 = '测试数据article_title2';
+    private $article_title3 = '测试数据groupBy';
 
     /**
      * 一键启动测试
@@ -61,6 +62,8 @@ class IntegrationTest extends TestCase
         $this->testGroupByJoin();
         $this->testXaTransaction();  //xa事务测试
         $this->testOneDatabase();  //单库测试，某个表只在某个数据库
+        $this->testClearArticle();  //清理所有数据
+        $this->testGroupByComprehensive();  //综合group by测试
     }
 
     /**
@@ -869,6 +872,43 @@ class IntegrationTest extends TestCase
         $this->assertEquals(implode(',', [1]), implode(',', array_column($list, 'id')));
         $list = $model->renew()->limit(2, 1)->order('id asc')->findAll();
         $this->assertEquals(implode(',', [3]), implode(',', array_column($list, 'id')));
+    }
+
+    public function testClearArticle()
+    {
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $articleModel->delete(true); //全部清理掉，物理真实删除
+        $this->assertEquals($articleModel->renew()->count() == 0, true);
+    }
+
+    /**
+     * Group by综合测试
+     */
+    public function testGroupByComprehensive()
+    {
+        $this->insert(1, $this->article_title1);
+        $this->insert(1, $this->article_title1);
+        $this->insert(2, $this->article_title1);
+        $this->insert(3, $this->article_title1);
+
+        $this->insert(1, $this->article_title2);
+        $this->insert(1, $this->article_title2);
+        $this->insert(2, $this->article_title2);
+        $this->insert(3, $this->article_title2);
+
+        $this->insert(1, $this->article_title3);
+        $this->insert(1, $this->article_title3);
+        $this->insert(2, $this->article_title3);
+        $this->insert(3, $this->article_title3);
+        $articleModel = new \PhpShardingPdo\Test\Model\ArticleModel();
+        $list = $articleModel->renew()->group("article_title")->findAll();
+        $this->assertEquals(count($list) == 3, true);
+        $count = $articleModel->renew()->group("article_title")->count();
+        $this->assertEquals($count == 3, true);
+        $list = $articleModel->renew()->group("article_title,cate_id")->findAll();
+        $this->assertEquals(count($list) == 9, true);
+        $count = $articleModel->renew()->group("article_title,cate_id")->count();
+        $this->assertEquals($count == 9, true);
     }
 
 
