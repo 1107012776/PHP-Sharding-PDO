@@ -321,9 +321,9 @@ class IntegrationTest extends TestCase
             'cate_id' => 4,
         ])->count();
         $this->assertEquals($count == 0, true);
-        $countArr = $model->renew()
+        $count = $model->renew()
             ->group('cate_id,del_flag')->count();
-        $this->assertEquals(count($countArr) == 3, true);
+        $this->assertEquals($count == 3, true);
         $list = $model->renew()
             ->group('cate_id,del_flag')->findAll();
         $this->assertEquals(count($list) == 3, true);
