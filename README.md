@@ -760,6 +760,17 @@ https://www.developzhe.com
 <img src="https://www.developzhe.com/upload/dae99d4a-9639-4939-bd0d-16dcbb2d8490.png" width="200" height="200" alt="微信"/><br/>
 > 有需要可以加我微信
 
+# 赞助我 (请备注好赞助人)
+<img src="https://www.developzhe.com/upload/e3c2290c-74a2-40b6-932f-8bcdda4a5e5c.png" width="200" height="200" title="" alt="微信收款"/>
+
+## 赞助名单 （排名不分先后）
+
+```
+林雨  9.9元
+
+```
+
+
 # Page visitor counter
 ![visitor counter](https://profile-counter.glitch.me/1107012776_PHP-Sharding-PDO/count.svg)
 
