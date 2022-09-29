@@ -66,6 +66,8 @@ reading of the same socket in coroutine#4 at the same time is not allowed
 
 ###### （5） 请使用当前最新版本
 
+###### （6）如果是insert匹配了多个库或者多张表就会返回false，请确认你insert插入匹配的规则只会有一个库的一张表
+
 # 单元测试
 ```bash
 git clone https://github.com/1107012776/PHP-Sharding-PDO.git
