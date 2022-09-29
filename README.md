@@ -43,7 +43,7 @@ composer require lys/php-sharding-pdo
 # 说明
 ###### （1）已支持协程，使用协程必须在主进程开启   \Swoole\Runtime::enableCoroutine(); 
 ###### （2）支持分片规则自定义，支持实现复杂的分片，分片规则是依赖输入的where条件或者insert插入的数据来的
-###### （3）如果是insert匹配了多个库或者多张表就会返回false，请确认你insert插入匹配的规则只会有一个库的一张表
+###### （3）如果是insert匹配了多个库或者多张表就会返回false，请确认你insert插入匹配的规则只会有一个库和一张表
 # 注意
 ###### （1）协程模式必须在主进程开启这个东西，否则会出现死锁
 
