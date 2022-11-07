@@ -70,7 +70,7 @@ reading of the same socket in coroutine#4 at the same time is not allowed
 \PhpShardingPdo\Core\ShardingPdoContext::contextFreed();  
 
 ```
-###### (5)在事务中同时插入更新二个库或者多个库的事务，是有一定机率（2PC提交）由于事务提交失败而导致数据不一致的，所以建议把某个维度的数据放在同一个数据库，或使用软性事务，达到最终一致性
+###### （5）在事务中同时插入更新二个库或者多个库的事务，是有一定机率（2PC提交）由于事务提交失败而导致数据不一致的，所以建议把某个维度的数据放在同一个数据库，或使用软性事务，达到最终一致性
 
 ###### （6） 请使用当前最新版本
 
