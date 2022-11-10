@@ -155,7 +155,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
                     4
                 ]]));
         $tableRule->setTableShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('article_', [   //系统自带使用 % 进行分片的规则
+            new InlineShardingStrategyConfiguration('article_', [   //插件自带使用 % 进行分片的规则
                 'operator' => '%',
                 'data' => [    //具体的字段和相对运算符右边的数
                     'cate_id',  //字段名
@@ -168,7 +168,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $tableRule->setLogicTable('account');
         $tableRule->setDatabaseShardingStrategyConfig(
             new InlineShardingStrategyConfiguration('db', 
-            [  //系统自带使用 % 进行分片的规则 由于要使用匿名函数自定义分片规则，所以这边是设置一个空数组
+            [  //插件自带使用 % 进行分片的规则 由于要使用匿名函数自定义分片规则，所以这边是设置一个空数组
          
             ], function ($condition) {  //匿名函数自定义分片规则
                 if (isset($condition['username']) && !is_array($condition['username'])) {
