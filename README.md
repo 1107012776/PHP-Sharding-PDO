@@ -167,8 +167,9 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $tableRule = new ShardingTableRuleConfig();
         $tableRule->setLogicTable('account');
         $tableRule->setDatabaseShardingStrategyConfig(
-            new InlineShardingStrategyConfiguration('db', [ //系统自带使用 % 进行分片的规则 由于要使用匿名函数自定义分片规则，所以这边是设置一个空数组
-             
+            new InlineShardingStrategyConfiguration('db', 
+            [  //系统自带使用 % 进行分片的规则 由于要使用匿名函数自定义分片规则，所以这边是设置一个空数组
+         
             ], function ($condition) {  //匿名函数自定义分片规则
                 if (isset($condition['username']) && !is_array($condition['username'])) {
                     return crc32($condition['username']) % 4;
