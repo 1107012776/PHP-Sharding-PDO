@@ -7,3 +7,4 @@
 *.sln
 vendor
 composer.lock
+./tests
