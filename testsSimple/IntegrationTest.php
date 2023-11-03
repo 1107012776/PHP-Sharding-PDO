@@ -20,16 +20,8 @@ use PhpShardingPdo\Test\Migrate\Migrate;
 use PhpShardingPdo\Test\Model\ArticleModel;
 use PhpShardingPdo\Test\Model\CategoryOneModel;
 use PhpShardingPdo\Test\Model\UserModel;
-use PHPUnit\Framework\TestCase;
 
-$file_load_path = __DIR__ . '/../../../autoload.php';
-if (file_exists($file_load_path)) {
-    require_once $file_load_path;
-} else {
-    $vendor = __DIR__ . '/../vendor/autoload.php';
-    require_once $vendor;
-}
-
+var_dump(dirname(__FILE__) . '/Config/.env');
 ConfigEnv::loadFile(dirname(__FILE__) . '/Config/.env');  //加载配置
 
 
@@ -38,6 +30,13 @@ class IntegrationTest
     private $article_title1 = '测试数据article_title1';
     private $article_title2 = '测试数据article_title2';
     private $article_title3 = '测试数据groupBy';
+
+    public function assertEquals($a, $b)
+    {
+        if($a != $b){
+            new \Exception(sprintf('异常%s!=%s', strval($a), strval($b)));
+        }
+    }
 
     /**
      * 一键启动测试

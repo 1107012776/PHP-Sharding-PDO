@@ -17,7 +17,7 @@ class ConfigEnv
      * @param string $filePath 配置文件路径
      * @return mixed
      */
-    public static function loadFile(string $filePath)
+    public static function loadFile($filePath)
     {
         if (!file_exists($filePath)) {
             return false;
@@ -45,7 +45,7 @@ class ConfigEnv
      * @param string $default 默认值
      * @return mixed
      */
-    public static function get(string $name, $default = null)
+    public static function get($name, $default = null)
     {
         $result = getenv(static::ENV_PREFIX . strtoupper(str_replace('.', '_', $name)));
         if (false !== $result) {

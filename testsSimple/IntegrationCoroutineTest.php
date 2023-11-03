@@ -15,14 +15,6 @@ error_reporting(E_ALL); //显示所有错误信息
 use PhpShardingPdo\Common\ConfigEnv;
 
 
-$file_load_path = __DIR__ . '/../../../autoload.php';
-if (file_exists($file_load_path)) {
-    require_once $file_load_path;
-} else {
-    $vendor = __DIR__ . '/../vendor/autoload.php';
-    require_once $vendor;
-}
-
 ConfigEnv::loadFile(dirname(__FILE__) . '/Config/.env');  //加载配置
 
 
