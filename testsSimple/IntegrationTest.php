@@ -21,7 +21,6 @@ use PhpShardingPdo\Test\Model\ArticleModel;
 use PhpShardingPdo\Test\Model\CategoryOneModel;
 use PhpShardingPdo\Test\Model\UserModel;
 
-var_dump(dirname(__FILE__) . '/Config/.env');
 ConfigEnv::loadFile(dirname(__FILE__) . '/Config/.env');  //加载配置
 
 

@@ -30,7 +30,7 @@ class JoinTablePlan
     /**
      * @return int
      */
-    public function getJoinType(): int
+    public function getJoinType()
     {
         return $this->joinType;
     }
@@ -38,7 +38,7 @@ class JoinTablePlan
     /**
      * @param int $joinType
      */
-    public function setJoinType(int $joinType): void
+    public function setJoinType($joinType)
     {
         $this->joinType = $joinType;
     }
@@ -47,7 +47,7 @@ class JoinTablePlan
     /**
      * @return string
      */
-    public function getTableName(): string
+    public function getTableName()
     {
         return $this->tableName;
     }
@@ -55,7 +55,7 @@ class JoinTablePlan
     /**
      * @param string $tableName
      */
-    public function setTableName(string $tableName): void
+    public function setTableName($tableName)
     {
         $this->tableName = $tableName;
     }
@@ -63,7 +63,7 @@ class JoinTablePlan
     /**
      * @return string
      */
-    public function getTableNameAlias(): string
+    public function getTableNameAlias()
     {
         return $this->tableNameAlias;
     }
@@ -71,7 +71,7 @@ class JoinTablePlan
     /**
      * @param string $tableNameAlias
      */
-    public function setTableNameAlias(string $tableNameAlias): void
+    public function setTableNameAlias($tableNameAlias)
     {
         $this->tableNameAlias = $tableNameAlias;
     }

@@ -61,7 +61,7 @@ class ShardingInitConfigOneDatabase extends ShardingInitConfigInter
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
             if (ShardingPdoContext::getCid() > -1) {
-                \Swoole\Event::exit();
+//                \Swoole\Event::exit();
             } else {
                 die();
             }
