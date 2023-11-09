@@ -60,7 +60,9 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         $tableRule->setDatabaseShardingStrategyConfig(
             new InlineShardingStrategyConfiguration('db', [], function ($condition) {
                 if (isset($condition['username']) && !is_array($condition['username'])) {
-                    return crc32($condition['username']) % 4;
+                    $index = sprintf('%u', crc32($condition['username']));
+                    $index = empty($index) ? 0:abs($index);
+                    return abs($index  % 4);
                 }
                 return null;
             }));
@@ -151,6 +153,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
+            var_dump($e->getTraceAsString());
             if (ShardingPdoContext::getCid() > -1) {
 //                \Swoole\Event::exit();
             } else {
@@ -170,6 +173,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
+            var_dump($e->getTraceAsString());
             if (ShardingPdoContext::getCid() > -1) {
 //                \Swoole\Event::exit();
             } else {
@@ -190,6 +194,7 @@ class ShardingInitConfig4 extends ShardingInitConfigInter
         try {
             return self::connect($dsn, $username, $password);
         } catch (\PDOException $e) {
+            var_dump($e->getTraceAsString());
             if (ShardingPdoContext::getCid() > -1) {
 //                \Swoole\Event::exit();
             } else {

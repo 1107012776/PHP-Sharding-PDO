@@ -44,6 +44,7 @@ trait InsertShardingTrait
         }
         $column_str = trim($column_str, ',');
         if (empty($column_str)) {
+            $this->_sqlErrors[] = __FILE__.__LINE__.' column_str 不能为空';
             return false;
         }
         $sql .= $column_str . ')';
@@ -52,6 +53,7 @@ trait InsertShardingTrait
         if (empty($this->_current_exec_table) && empty($this->_table_name_index)) {
             $sqlArr[] = str_replace('###TABLENAME###', $this->_table_name, $sql);
         } elseif (empty($this->_current_exec_table) && !empty($this->_table_name_index)) {  //不允许插入到多张表
+            $this->_sqlErrors[] = __FILE__.__LINE__.'不允许插入到多张表';
             return false;
         } else {
             $sqlArr[] = str_replace('###TABLENAME###', $this->_current_exec_table, $sql);
@@ -74,11 +76,13 @@ trait InsertShardingTrait
                 }
                 return $res;
             }
+            $this->_sqlErrors[] = '必须找到具体的库才能插入，否者直接false';
             return false; //必须找到具体的库才能插入，否者直接false
         };
         foreach ($sqlArr as $sql) {
             $res = $searchFunc($sql);
             if (empty($res)) {  //出现false则说有出现失败插入
+                $this->_sqlErrors[] = '出现false则说有出现失败插入 sql='.$sql.' db='.$this->getCurrentExecDb();
                 return false;
             }
         }
