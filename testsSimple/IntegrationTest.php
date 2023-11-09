@@ -133,7 +133,7 @@ class IntegrationTest
             'id' => $id
         ]);
         $dd = $accountModel->getLastInsertId();
-        if (empty($res)) {
+        if (empty($res) || $dd <= 0) {
             $model->rollback();
             var_dump($accountModel->sqlErrors());
         }
