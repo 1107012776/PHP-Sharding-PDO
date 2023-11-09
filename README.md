@@ -31,14 +31,16 @@ PHP、MySQL分库分表中间件，需要依赖PDO，PHP分库分表，支持协
 - [六、案例](#案例)
   
 # 环境要求
-- PHP >= 7.2
+- PHP >= 5.6
 - Swoole >= 4.1.0 （协程环境）
 # 安装
 
-You can install the package via composer:
-
 ```bash
-composer require lys/php-sharding-pdo
+
+git clone --single-branch -b simple https://github.com/1107012776/PHP-Sharding-PDO.git
+
+include_once './SimpleAutoload.php';
+
 ```
 # 说明
 ###### （1）已支持协程，使用协程必须在主进程开启   \Swoole\Runtime::enableCoroutine(); 
@@ -87,7 +89,7 @@ composer install
 ### （1）先要配置tests/Config/.env ，测试环境数据库连接
 
 > .env文件
-```php
+```
 [database]
 host=localhost
 username=root
