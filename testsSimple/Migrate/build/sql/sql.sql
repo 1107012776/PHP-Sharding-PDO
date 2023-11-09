@@ -6,7 +6,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `account_0`;
 CREATE TABLE `account_0`  (
-  `id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'id主键',
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id主键',
   `username` varchar(255)  NOT NULL DEFAULT ''  COMMENT '账号',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username`) USING BTREE
