@@ -103,11 +103,11 @@ sqlLogPath=sql.sql
 
 > 非协程
 ```bash
-php vendor/bin/phpunit tests/IntegrationTest.php --filter testExecStart
+php  tests/test.php
 ```
 > 协程
 ```bash
-php vendor/bin/phpunit tests/IntegrationCoroutineTest.php --filter testExecStart
+php  tests/testCoroutine.php
 ```
 
 # 分表分库的知识可以参考这篇文章
