@@ -1,5 +1,5 @@
 # PHP-Sharding-PDO
-A PHP and MySQL database sharding middleware that depends on PDO, supporting coroutines.
+A PHP and MySQL database sharding middleware that depends on PDO, supporting coroutines.  
 
 [Table of Contents](#PHP-Sharding-PDO)
 - [I. Installation](#Installation)
